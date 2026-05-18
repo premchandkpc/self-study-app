@@ -1,24 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TOPICS } from '../../../core/constants/topics';
+import { SUBTOPIC_ROUTES } from '../../../core/constants/routes';
 import styles from './Sidebar.module.css';
-
-const SUBTOPIC_ROUTES = {
-  'dsa:Arrays':            '/visualizer/array',
-  'dsa:Graphs':            '/visualizer/graph',
-  'dsa:Trees':             '/visualizer/tree',
-  'kafka:Partitions':      '/visualizer/kafka',
-  'java:JVM':              '/visualizer/jvm',
-  'java:GC':               '/visualizer/jvm',
-  'java:Threads':          '/visualizer/threads',
-  'kubernetes:Pods':       '/visualizer/kubernetes',
-  'kubernetes:HPA':        '/visualizer/kubernetes',
-  'kubernetes:Deployments':    '/visualizer/kubernetes',
-  'system-design:Load Balancer': '/visualizer/systemdesign',
-  'system-design:Cache':         '/visualizer/systemdesign',
-  'system-design:CDN':           '/visualizer/systemdesign',
-  'system-design:Raft':          '/visualizer/systemdesign',
-};
 
 export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
