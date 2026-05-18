@@ -156,11 +156,98 @@ export default function Home({ onSelectTopic }) {
         </div>
         <div className={styles.modesGrid}>
           {[
-            { name: 'ByteByteGo', desc: 'Dark architecture flows', icon: '🌌' },
-            { name: 'Miro', desc: 'Infinite whiteboard canvas', icon: '🎨' },
-            { name: 'Terminal', desc: 'Matrix green on black', icon: '💻' },
-            { name: 'Cyberpunk', desc: 'Neon holographic UI', icon: '⚡' },
-          ].map((mode, i) => (
+  {
+    name: 'ByteByteGo',
+    desc: 'Distributed systems architecture flows',
+    icon: '🌌',
+  },
+
+  {
+    name: 'Miro',
+    desc: 'Infinite collaborative whiteboard canvas',
+    icon: '🎨',
+  },
+
+  {
+    name: 'Brilliant',
+    desc: 'Interactive visual learning experience',
+    icon: '🧠',
+  },
+
+  {
+    name: 'Terminal',
+    desc: 'Classic hacker terminal aesthetics',
+    icon: '💻',
+  },
+
+  {
+    name: 'Cyberpunk',
+    desc: 'Neon holographic futuristic runtime UI',
+    icon: '⚡',
+  },
+
+  // 🔥 New Premium Themes
+
+  {
+    name: 'Obsidian',
+    desc: 'Premium dark observability platform',
+    icon: '🪨',
+  },
+
+  {
+    name: 'Graphite',
+    desc: 'Minimal gray engineering workspace',
+    icon: '⬛',
+  },
+
+  {
+    name: 'Mono',
+    desc: 'Black and white ultra-clean architecture',
+    icon: '⚪',
+  },
+
+  {
+    name: 'Midnight',
+    desc: 'Deep dark runtime systems universe',
+    icon: '🌑',
+  },
+
+  {
+    name: 'Slate',
+    desc: 'Modern cloud-native infrastructure UI',
+    icon: '🩶',
+  },
+
+  {
+    name: 'Polar',
+    desc: 'Bright clean system design canvas',
+    icon: '❄️',
+  },
+
+  {
+    name: 'PaperLight',
+    desc: 'Soft Figma-style minimal workspace',
+    icon: '📄',
+  },
+
+  {
+    name: 'Glass',
+    desc: 'Transparent glassmorphism runtime UI',
+    icon: '🪟',
+  },
+
+  {
+    name: 'Nebula',
+    desc: 'AI orchestration cosmic interface',
+    icon: '🌌',
+  },
+
+  {
+    name: 'Aurora',
+    desc: 'Gradient neon observability aesthetics',
+    icon: '🌈',
+  },
+].map((mode, i) => (
             <AnimatedBox key={mode.name} animation="fade-in" delay={i * 80}>
               <Card variant="glass" className={styles.modeCard}>
                 <span className={styles.modeIcon}>{mode.icon}</span>
