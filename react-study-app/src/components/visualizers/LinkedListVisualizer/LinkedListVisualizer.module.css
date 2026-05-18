@@ -1,0 +1,244 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* ── Arena ───────────────────────────────────────────── */
+.arena {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+
+.listsArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.listLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* ── Node row ────────────────────────────────────────── */
+.nodeRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  min-height: 80px;
+}
+
+.nodeWrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── Node box ────────────────────────────────────────── */
+.node {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-hover);
+  overflow: hidden;
+  width: 56px;
+  position: relative;
+  transition: all var(--transition-fast);
+  cursor: default;
+}
+
+.nodeVal {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  padding: 8px 4px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.nodeNext {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2px 4px 5px;
+  background: var(--bg-card);
+}
+
+.pointerBadge {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  color: var(--node-active);
+  background: rgba(247, 129, 102, 0.12);
+  border: 1px solid rgba(247, 129, 102, 0.3);
+}
+
+/* ── Arrows ──────────────────────────────────────────── */
+.arrow {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  color: var(--text-muted);
+  padding: 0 4px;
+  align-self: flex-start;
+  padding-top: 14px;
+}
+
+.nullLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  padding: 0 6px;
+  align-self: flex-start;
+  padding-top: 18px;
+}
+
+.cycleArrow {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--pod-crash);
+  padding: 0 6px;
+  align-self: flex-start;
+  padding-top: 18px;
+  font-weight: 700;
+}
+
+/* ── Node state overrides ────────────────────────────── */
+.nodeIdle {
+  border-color: var(--border);
+}
+
+.nodeActive {
+  border-color: var(--node-active);
+  background: rgba(247, 129, 102, 0.12);
+  box-shadow: 0 0 10px rgba(247, 129, 102, 0.3);
+  animation: node-pop 0.3s ease;
+}
+.nodeActive .nodeVal { color: var(--node-active); }
+
+.nodePrev {
+  border-color: var(--node-comparing);
+  background: rgba(227, 179, 65, 0.12);
+}
+.nodePrev .nodeVal { color: var(--node-comparing); }
+.nodePrev .pointerBadge { color: var(--node-comparing); background: rgba(227, 179, 65, 0.12); border-color: rgba(227, 179, 65, 0.3); }
+
+.nodeCurr {
+  border-color: var(--node-active);
+  background: rgba(247, 129, 102, 0.15);
+  box-shadow: 0 0 10px rgba(247, 129, 102, 0.3);
+  animation: node-pop 0.3s ease;
+}
+.nodeCurr .nodeVal { color: var(--node-active); }
+.nodeCurr .pointerBadge { color: var(--node-active); }
+
+.nodeNext {
+  border-color: var(--node-default);
+  background: rgba(88, 166, 255, 0.1);
+}
+.nodeNext .nodeVal { color: var(--node-default); }
+.nodeNext .pointerBadge { color: var(--node-default); background: rgba(88, 166, 255, 0.1); border-color: rgba(88, 166, 255, 0.25); }
+
+.nodeSlow {
+  border-color: var(--node-comparing);
+  background: rgba(227, 179, 65, 0.12);
+  animation: node-pop 0.3s ease;
+}
+.nodeSlow .nodeVal { color: var(--node-comparing); }
+.nodeSlow .pointerBadge { color: var(--node-comparing); background: rgba(227, 179, 65, 0.1); border-color: rgba(227, 179, 65, 0.3); }
+
+.nodeFast {
+  border-color: var(--node-active);
+  background: rgba(247, 129, 102, 0.12);
+  animation: node-pop 0.3s ease;
+}
+.nodeFast .nodeVal { color: var(--node-active); }
+.nodeFast .pointerBadge { color: var(--node-active); }
+
+.nodeMeet {
+  border-color: var(--node-visited);
+  background: rgba(63, 185, 80, 0.18);
+  box-shadow: 0 0 14px rgba(63, 185, 80, 0.4);
+  animation: node-meet 0.5s ease;
+}
+.nodeMeet .nodeVal { color: var(--node-visited); }
+.nodeMeet .pointerBadge { color: var(--node-visited); background: rgba(63, 185, 80, 0.12); border-color: rgba(63, 185, 80, 0.3); }
+
+.nodeVisited {
+  border-color: var(--node-visited);
+  background: rgba(63, 185, 80, 0.08);
+  opacity: 0.8;
+}
+.nodeVisited .nodeVal { color: var(--node-visited); }
+
+.nodeDone {
+  border-color: var(--node-done);
+  background: rgba(124, 77, 255, 0.12);
+}
+.nodeDone .nodeVal { color: var(--node-done); }
+
+/* ── Side panel ──────────────────────────────────────── */
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Bottom ──────────────────────────────────────────── */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+  align-items: start;
+}
+
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes node-pop {
+  0%   { transform: scale(0.88); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes node-meet {
+  0%   { transform: scale(0.9); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .arena  { grid-template-columns: 1fr; }
+  .bottom { grid-template-columns: 1fr; }
+  .node   { width: 46px; }
+  .nodeVal { font-size: var(--font-size-sm); }
+}

@@ -1,0 +1,550 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* === VIZ AREA === */
+.vizArea {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  min-height: 300px;
+  align-items: start;
+}
+
+.mainViz {
+  flex: 1;
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* === EVENTS === */
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.eventsLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.evDot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.ev-info  { color: var(--text-accent); }
+.ev-ok    { color: var(--pod-running); }
+.ev-warn  { color: var(--node-comparing); }
+.ev-error { color: var(--pod-crash); }
+
+/* === NARRATION === */
+.narration {
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+}
+
+/* === LAYERS === */
+.layersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.layersLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.layerStack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layer {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  transition: all var(--transition-fast);
+}
+
+.layerCached {
+  background: color-mix(in srgb, var(--pod-running) 6%, transparent);
+  border-color: color-mix(in srgb, var(--pod-running) 30%, transparent);
+}
+
+.layerNew {
+  background: color-mix(in srgb, var(--node-active) 6%, transparent);
+  border-color: color-mix(in srgb, var(--node-active) 30%, transparent);
+}
+
+.layerBuilding {
+  animation: layer-pulse 0.6s ease infinite alternate;
+}
+
+@keyframes layer-pulse {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+
+.layerInstruction {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.layerMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 2px;
+}
+
+.layerHash {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.layerSize {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.cachedBadge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--pod-running) 15%, transparent);
+  color: var(--pod-running);
+  border: 1px solid var(--pod-running);
+}
+
+.emptyState {
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+/* === LIFECYCLE === */
+.lifecycleLayout {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+.stateMachine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.stateRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stateBox {
+  padding: var(--space-xs) var(--space-md);
+  border: 1.5px solid var(--state-color, var(--border));
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--state-color, var(--text-muted));
+  background: color-mix(in srgb, var(--state-color, transparent) 6%, transparent);
+  transition: all var(--transition-fast);
+  min-width: 110px;
+  text-align: center;
+}
+
+.stateActive {
+  background: color-mix(in srgb, var(--state-color) 15%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--state-color) 40%, transparent);
+  animation: state-glow 0.8s ease infinite alternate;
+}
+
+@keyframes state-glow {
+  from { box-shadow: 0 0 6px color-mix(in srgb, var(--state-color) 25%, transparent); }
+  to   { box-shadow: 0 0 18px color-mix(in srgb, var(--state-color) 55%, transparent); }
+}
+
+.stateArrow {
+  color: var(--text-faint);
+  font-size: 14px;
+  line-height: 1;
+  margin: 2px 0;
+}
+
+.containerBox {
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.containerHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.containerIcon {
+  font-size: 20px;
+}
+
+.containerName {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.containerState {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.processList {
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs);
+  font-family: var(--font-mono);
+}
+
+.processHeader {
+  font-size: 10px;
+  color: var(--text-faint);
+  font-weight: 700;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3px;
+}
+
+.processRow {
+  display: flex;
+  gap: var(--space-sm);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.processPid {
+  color: var(--pod-running);
+  min-width: 20px;
+}
+
+.processCmd { flex: 1; }
+
+.processStatus {
+  color: var(--text-faint);
+}
+
+.containerStats {
+  display: flex;
+  gap: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+/* === NETWORKING === */
+.networkLayout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.hostBox {
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  background: var(--bg-elevated);
+}
+
+.hostLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.portMappings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.portMap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: color-mix(in srgb, var(--node-active) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--node-active) 30%, transparent);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.hostPort { color: var(--node-active); font-weight: 700; }
+.portArrow { color: var(--text-faint); }
+.containerPort { color: var(--pod-running); }
+
+.bridgeBox {
+  border: 1.5px dashed var(--node-comparing);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  background: color-mix(in srgb, var(--node-comparing) 4%, transparent);
+}
+
+.bridgeLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--node-comparing);
+  margin-bottom: var(--space-sm);
+}
+
+.containerGrid {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.netContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  min-width: 90px;
+}
+
+.netContainerRunning {
+  border-color: var(--pod-running);
+  background: color-mix(in srgb, var(--pod-running) 8%, transparent);
+}
+
+.netContainerActive {
+  border-color: var(--node-active);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--node-active) 40%, transparent);
+  animation: net-pulse 0.5s ease infinite alternate;
+}
+
+@keyframes net-pulse {
+  from { box-shadow: 0 0 6px color-mix(in srgb, var(--node-active) 30%, transparent); }
+  to   { box-shadow: 0 0 16px color-mix(in srgb, var(--node-active) 60%, transparent); }
+}
+
+.netContainerName {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.netContainerIP {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.netContainerPort {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--pod-running);
+}
+
+.packetInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: color-mix(in srgb, var(--kafka-producer) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--kafka-producer) 30%, transparent);
+  border-radius: var(--radius-md);
+  animation: packet-slide 0.4s ease;
+}
+
+@keyframes packet-slide {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.packetLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.packetFlow {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--kafka-producer);
+}
+
+.packetData {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* === COMPOSE === */
+.composeLayout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.serviceCard {
+  padding: var(--space-sm) var(--space-md);
+  border: 1.5px solid var(--svc-color, var(--border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--svc-color, transparent) 5%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: all var(--transition-fast);
+}
+
+.serviceRunning {
+  box-shadow: 0 0 10px color-mix(in srgb, var(--pod-running) 25%, transparent);
+}
+
+.serviceWaiting {
+  animation: svc-wait 0.8s ease infinite alternate;
+}
+
+@keyframes svc-wait {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+
+.serviceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.serviceName {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.serviceStatus {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--svc-color, var(--text-muted));
+  text-transform: uppercase;
+}
+
+.serviceImage {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.servicePort {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--pod-running);
+}
+
+.serviceDeps {
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.serviceHealth {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.healthOk      { color: var(--pod-running); }
+.healthPending { color: var(--node-comparing); }
+
+/* === BOTTOM === */
+.bottomPanels {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+}
+
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .vizArea {
+    grid-template-columns: 1fr;
+    padding: var(--space-md);
+  }
+  .composeLayout {
+    grid-template-columns: 1fr;
+  }
+  .lifecycleLayout {
+    grid-template-columns: 1fr;
+  }
+  .bottomPanels {
+    grid-template-columns: 1fr;
+  }
+}

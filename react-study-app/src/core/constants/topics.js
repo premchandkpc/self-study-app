@@ -3,7 +3,7 @@ export const TOPICS = [
     id: 'dsa',
     label: 'DSA',
     icon: '🧩',
-    subtopics: ['Arrays', 'Graphs', 'Trees', 'DP', 'Matrix', 'Strings'],
+    subtopics: ['Arrays', 'TwoPointers', 'BinarySearch', 'PrefixSum', 'Matrices', 'LinkedList', 'Graphs', 'Trees', 'DP', 'Strings', 'HashMaps', 'Sets'],
   },
   {
     id: 'java',

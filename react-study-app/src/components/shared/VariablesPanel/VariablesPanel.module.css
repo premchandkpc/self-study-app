@@ -1,0 +1,153 @@
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.count {
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+  background: var(--bg-hover);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 80px 1fr 60px;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 3px var(--space-sm);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  animation: var-change 0.25s ease;
+  min-height: 26px;
+}
+
+.row:last-child { border-bottom: none; }
+
+@keyframes var-change {
+  from { background: rgba(245, 158, 11, 0.08); }
+  to   { background: transparent; }
+}
+
+.varName {
+  font-size: var(--font-size-xs);
+  color: var(--node-default);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.varValue {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.varType {
+  font-size: 9px;
+  color: var(--text-faint);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* === VALUE TYPES === */
+.valNull  { color: var(--text-faint); font-style: italic; font-size: var(--font-size-xs); }
+.valNum   { color: var(--node-active); font-size: var(--font-size-xs); font-weight: 700; }
+.valStr   { color: var(--text-success); font-size: var(--font-size-xs); }
+.valDefault { color: var(--text-secondary); font-size: var(--font-size-xs); }
+
+.valBool  { font-size: var(--font-size-xs); font-weight: 700; padding: 1px 6px; border-radius: var(--radius-full); }
+.valTrue  { background: rgba(34, 197, 94, 0.15); color: var(--text-success); border: 1px solid rgba(34,197,94,0.3); }
+.valFalse { background: rgba(239, 68, 68, 0.12); color: var(--text-error);   border: 1px solid rgba(239,68,68,0.25); }
+
+/* === CELLS (array / string) === */
+.cells {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.arrCell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 3px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--node-active);
+  font-weight: 700;
+}
+
+.strCell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 18px;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--text-success);
+}
+
+.cellNull { opacity: 0.3; }
+
+.cellMore {
+  font-size: 9px;
+  color: var(--text-faint);
+  padding-left: 2px;
+}
+
+/* === MAP === */
+.mapEntries {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+}
+
+.mapEntry {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 9px;
+  overflow: hidden;
+}
+
+.mapKey  { color: var(--node-default); font-weight: 700; }
+.mapSep  { color: var(--text-faint); }
+.mapVal  { color: var(--node-active); }

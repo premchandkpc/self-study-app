@@ -1,4 +1,6 @@
 import ArrayVisualizer from '../../components/visualizers/ArrayVisualizer/ArrayVisualizer';
+import MatrixVisualizer from '../../components/visualizers/MatrixVisualizer/MatrixVisualizer';
+import LinkedListVisualizer from '../../components/visualizers/LinkedListVisualizer/LinkedListVisualizer';
 import GraphVisualizer from '../../components/visualizers/GraphVisualizer/GraphVisualizer';
 import KafkaVisualizer from '../../components/visualizers/KafkaVisualizer/KafkaVisualizer';
 import JVMVisualizer from '../../components/visualizers/JVMVisualizer/JVMVisualizer';
@@ -9,13 +11,33 @@ import SystemDesignVisualizer from '../../components/visualizers/SystemDesignVis
 import GoVisualizer from '../../components/visualizers/GoVisualizer/GoVisualizer';
 import AWSVisualizer from '../../components/visualizers/AWSVisualizer/AWSVisualizer';
 import PythonVisualizer from '../../components/visualizers/PythonVisualizer/PythonVisualizer';
+import StringVisualizer from '../../components/visualizers/StringVisualizer/StringVisualizer';
+import HashMapVisualizer from '../../components/visualizers/HashMapVisualizer/HashMapVisualizer';
+import SetVisualizer from '../../components/visualizers/SetVisualizer/SetVisualizer';
+import SortingVisualizer from '../../components/visualizers/SortingVisualizer/SortingVisualizer';
+import DatabaseVisualizer from '../../components/visualizers/DatabaseVisualizer/DatabaseVisualizer';
+import RedisVisualizer from '../../components/visualizers/RedisVisualizer/RedisVisualizer';
+import DockerVisualizer from '../../components/visualizers/DockerVisualizer/DockerVisualizer';
+import NetworkingVisualizer from '../../components/visualizers/NetworkingVisualizer/NetworkingVisualizer';
 
 export const VISUALIZERS = {
   array: {
-    label: 'Array — Sliding Window',
+    label: 'Array — Sliding Window, Two Pointers, Prefix Sum, Binary Search',
     icon: '📊',
     component: ArrayVisualizer,
-    desc: 'Maximum sum subarray of size k. O(n) time, O(1) space.',
+    desc: 'Sliding window, two pointers, prefix sum queries, binary search. O(n)/O(log n) time.',
+  },
+  matrix: {
+    label: 'Matrix — Spiral, Flood Fill, Rotate 90°',
+    icon: '🔢',
+    component: MatrixVisualizer,
+    desc: 'Spiral traversal, BFS flood fill, in-place 90° rotation. O(m·n) time.',
+  },
+  linkedlist: {
+    label: 'Linked List — Reverse, Cycle Detection, Merge',
+    icon: '🔗',
+    component: LinkedListVisualizer,
+    desc: 'Iterative reversal, Floyd\'s cycle detection, merge two sorted lists. O(n) time.',
   },
   graph: {
     label: 'Graph — BFS / DFS',
@@ -76,5 +98,53 @@ export const VISUALIZERS = {
     icon: '🐍',
     component: PythonVisualizer,
     desc: 'GIL thread contention, asyncio event loop coroutines, decorator wrapping patterns.',
+  },
+  string: {
+    label: 'Strings — KMP, Sliding Window Anagram, Palindrome',
+    icon: '🔤',
+    component: StringVisualizer,
+    desc: 'KMP pattern matching, sliding window anagram finder, expand-around-center palindrome. O(n) time.',
+  },
+  hashmap: {
+    label: 'HashMap — Put/Get, Two Sum, LRU Cache',
+    icon: '🗺️',
+    component: HashMapVisualizer,
+    desc: 'Hash function + chaining, O(n) two-sum with complement lookup, doubly-linked-list LRU cache.',
+  },
+  set: {
+    label: 'Set — Union/Intersection, Merge, Contains Duplicate',
+    icon: '🔵',
+    component: SetVisualizer,
+    desc: 'Set union/intersection/difference, sorted merge with dedup, sliding window duplicate detection.',
+  },
+  sorting: {
+    label: 'Sorting — Bubble, Merge, Quick, Heap',
+    icon: '📶',
+    component: SortingVisualizer,
+    desc: 'Bubble, merge, quick, heap sort with step-by-step comparison and swap tracking.',
+  },
+  database: {
+    label: 'Database — B-Tree, Query Plan, ACID, Joins',
+    icon: '🗄️',
+    component: DatabaseVisualizer,
+    desc: 'B-Tree index insertion/search, SQL query planning, ACID transactions, join algorithms.',
+  },
+  redis: {
+    label: 'Redis — Data Types, Pub/Sub, Cluster, Pipeline',
+    icon: '🔴',
+    component: RedisVisualizer,
+    desc: 'Redis data types, pub/sub channels, cluster hash slots, pipelining RTT savings.',
+  },
+  docker: {
+    label: 'Docker — Layers, Lifecycle, Network, Compose',
+    icon: '🐳',
+    component: DockerVisualizer,
+    desc: 'Image layer filesystem, container lifecycle, bridge networking, docker-compose orchestration.',
+  },
+  networking: {
+    label: 'Networking — TCP, HTTP/2, DNS, Load Balancer',
+    icon: '🌐',
+    component: NetworkingVisualizer,
+    desc: 'TCP 3-way handshake, HTTP/1 vs HTTP/2 multiplexing, DNS resolution chain, LB algorithms.',
   },
 };

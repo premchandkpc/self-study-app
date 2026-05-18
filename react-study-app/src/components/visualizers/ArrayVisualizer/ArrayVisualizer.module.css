@@ -12,8 +12,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
 }
 
+/* ── Array cells ─────────────────────────────────────── */
 .arrayContainer {
   display: flex;
   align-items: flex-end;
@@ -45,13 +48,6 @@
   font-weight: 700;
   color: var(--cell-color, var(--node-default));
   transition: all 0.3s ease;
-  position: relative;
-}
-
-.inWindow .cellValue {
-  background: rgba(var(--cell-color-raw, 88, 166, 255), 0.1);
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .cellIndex {
@@ -60,31 +56,52 @@
   color: var(--text-muted);
 }
 
-/* State-specific styles */
-.state-active .cellValue {
+.pointerLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cell-color, var(--node-default));
+  background: color-mix(in srgb, var(--cell-color, var(--node-default)) 12%, transparent);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+/* ── In-window lift ──────────────────────────────────── */
+.inWindow .cellValue {
+  background: rgba(88, 166, 255, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ── State-specific overrides ────────────────────────── */
+.stateActive .cellValue {
   background: rgba(247, 129, 102, 0.15);
   animation: pop 0.3s ease;
 }
-.state-visiting .cellValue {
-  background: rgba(227, 179, 65, 0.15);
+.stateWindow .cellValue {
+  background: rgba(227, 179, 65, 0.12);
 }
-.state-visited .cellValue {
-  opacity: 0.6;
+.stateLeft .cellValue {
+  background: rgba(247, 129, 102, 0.15);
+  animation: pop 0.3s ease;
 }
-.state-adding .cellValue {
+.stateRight .cellValue {
+  background: rgba(248, 81, 73, 0.12);
+}
+.stateFound .cellValue {
+  background: rgba(63, 185, 80, 0.2);
   animation: bounce-in 0.4s ease;
+  box-shadow: 0 0 12px rgba(63, 185, 80, 0.35);
 }
-.state-removing .cellValue {
-  opacity: 0.4;
-  text-decoration: line-through;
-}
-.state-done .cellValue {
-  background: rgba(124, 77, 255, 0.15);
-}
+.stateAdding .cellValue  { animation: bounce-in 0.4s ease; }
+.stateRemoving .cellValue { opacity: 0.4; text-decoration: line-through; }
+.stateDone .cellValue    { background: rgba(124, 77, 255, 0.15); }
 
 @keyframes pop {
   0%, 100% { transform: scale(1); }
-  40%        { transform: scale(1.15); }
+  40%       { transform: scale(1.15); }
 }
 @keyframes bounce-in {
   0%   { transform: scale(0.8) translateY(8px); opacity: 0.5; }
@@ -92,6 +109,58 @@
   100% { transform: scale(1) translateY(0); }
 }
 
+/* ── Prefix array row ────────────────────────────────── */
+.prefixRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.prefixLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-right: 4px;
+  align-self: center;
+}
+
+.prefixCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.prefixVal {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(124, 77, 255, 0.1);
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--node-done);
+  animation: prefix-appear 0.25s ease;
+}
+
+.prefixIdx {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+@keyframes prefix-appear {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Labels ──────────────────────────────────────────── */
 .windowLabel {
   text-align: center;
   font-family: var(--font-mono);
@@ -100,20 +169,21 @@
   padding: var(--space-xs) 0;
 }
 
+/* ── Bottom panels ───────────────────────────────────── */
 .panels {
   display: grid;
-  grid-template-columns: 1fr 240px;
+  grid-template-columns: 1fr 260px;
   gap: var(--space-md);
   align-items: start;
 }
 
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
 @media (max-width: 640px) {
-  .panels {
-    grid-template-columns: 1fr;
-  }
-  .cellValue {
-    width: 36px;
-    height: 36px;
-    font-size: var(--font-size-md);
-  }
+  .panels { grid-template-columns: 1fr; }
+  .cellValue { width: 36px; height: 36px; font-size: var(--font-size-md); }
 }

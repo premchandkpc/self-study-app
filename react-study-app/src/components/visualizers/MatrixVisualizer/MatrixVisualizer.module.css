@@ -1,0 +1,236 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* ── Arena (matrix + side panel) ────────────────────── */
+.arena {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+
+.matrixSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.matrixLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* ── Grid ────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), 1fr);
+  gap: 6px;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+/* ── Cell ────────────────────────────────────────────── */
+.cell {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border);
+  background: var(--bg-hover);
+  transition: all var(--transition-fast);
+  cursor: default;
+  position: relative;
+}
+
+.cellVal {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.cellCoord {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* ── Cell States ─────────────────────────────────────── */
+.cellIdle {
+  border-color: var(--border);
+  background: var(--bg-hover);
+}
+
+.cellActive {
+  border-color: var(--node-active);
+  background: rgba(247, 129, 102, 0.15);
+  box-shadow: 0 0 12px rgba(247, 129, 102, 0.4);
+  animation: cell-pop 0.3s ease;
+  z-index: 1;
+}
+
+.cellActive .cellVal {
+  color: var(--node-active);
+}
+
+.cellVisited {
+  border-color: var(--node-visited);
+  background: rgba(63, 185, 80, 0.1);
+  opacity: 0.75;
+}
+
+.cellVisited .cellVal {
+  color: var(--node-visited);
+}
+
+.cellFilled {
+  border-color: var(--node-comparing);
+  background: rgba(227, 179, 65, 0.15);
+  animation: cell-fill 0.25s ease;
+}
+
+.cellFilled .cellVal {
+  color: var(--node-comparing);
+}
+
+.cellQueued {
+  border-color: var(--node-default);
+  background: rgba(88, 166, 255, 0.1);
+  animation: cell-queue 1s ease-in-out infinite;
+}
+
+.cellQueued .cellVal {
+  color: var(--node-default);
+}
+
+.cellResult {
+  border-color: var(--node-done);
+  background: rgba(124, 77, 255, 0.15);
+}
+
+.cellResult .cellVal {
+  color: var(--node-done);
+}
+
+@keyframes cell-pop {
+  0%   { transform: scale(0.85); }
+  60%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cell-fill {
+  from { transform: scale(0.9); opacity: 0.4; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes cell-queue {
+  0%, 100% { border-color: var(--node-default); }
+  50%       { border-color: rgba(88, 166, 255, 0.4); }
+}
+
+/* ── Path row ────────────────────────────────────────── */
+.pathRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pathLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 4px;
+}
+
+.pathBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  background: rgba(63, 185, 80, 0.1);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--node-visited);
+}
+
+.pathMore {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ── Queue row ───────────────────────────────────────── */
+.queueRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.queueLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 4px;
+}
+
+.queueItem {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  background: rgba(88, 166, 255, 0.1);
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--node-default);
+}
+
+/* ── Side panel ──────────────────────────────────────── */
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Bottom ──────────────────────────────────────────── */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+  align-items: start;
+}
+
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .arena  { grid-template-columns: 1fr; }
+  .bottom { grid-template-columns: 1fr; }
+  .cell   { width: 44px; height: 44px; }
+  .cellVal { font-size: var(--font-size-sm); }
+}
