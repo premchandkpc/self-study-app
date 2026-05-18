@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, useRef } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 
 const SimulationContext = createContext(null);
 
@@ -17,9 +17,10 @@ function reducer(state, action) {
     case 'SET_STEPS':
       return { ...state, steps: action.payload, currentStep: 0, isPlaying: false };
 
-    case 'STEP_FORWARD':
+    case 'STEP_FORWARD': {
       if (state.currentStep >= state.steps.length - 1) return { ...state, isPlaying: false };
       return applyStep(state, state.currentStep + 1);
+    }
 
     case 'STEP_BACK':
       if (state.currentStep <= 0) return state;
@@ -29,19 +30,22 @@ function reducer(state, action) {
       return applyStep(state, Math.max(0, Math.min(action.payload, state.steps.length - 1)));
 
     case 'JUMP_START':
-      return applyStep(state, 0);
+      return { ...applyStep(state, 0), isPlaying: false };
 
     case 'JUMP_END':
-      return applyStep(state, state.steps.length - 1);
+      return { ...applyStep(state, state.steps.length - 1), isPlaying: false };
 
     case 'SET_PLAYING':
       return { ...state, isPlaying: action.payload };
+
+    case 'TOGGLE_PLAY':
+      return { ...state, isPlaying: !state.isPlaying };
 
     case 'SET_SPEED':
       return { ...state, speed: action.payload };
 
     case 'RESET':
-      return { ...initialState, steps: state.steps };
+      return { ...initialState, steps: state.steps, speed: state.speed };
 
     default:
       return state;
@@ -64,22 +68,21 @@ export function SimulationProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const timerRef = useRef(null);
 
-  const play = useCallback(() => {
-    dispatch({ type: 'SET_PLAYING', payload: true });
+  useEffect(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+    if (!state.isPlaying) return;
     timerRef.current = setInterval(() => {
       dispatch({ type: 'STEP_FORWARD' });
     }, state.speed);
-  }, [state.speed]);
+    return () => clearInterval(timerRef.current);
+  }, [state.isPlaying, state.speed]);
 
-  const pause = useCallback(() => {
-    dispatch({ type: 'SET_PLAYING', payload: false });
-    clearInterval(timerRef.current);
-  }, []);
-
+  const play  = useCallback(() => dispatch({ type: 'SET_PLAYING', payload: true  }), []);
+  const pause = useCallback(() => dispatch({ type: 'SET_PLAYING', payload: false }), []);
   const togglePlay = useCallback(() => {
-    if (state.isPlaying) pause();
-    else play();
-  }, [state.isPlaying, play, pause]);
+    dispatch({ type: 'TOGGLE_PLAY' });
+  }, []);
 
   const value = { state, dispatch, play, pause, togglePlay };
   return (

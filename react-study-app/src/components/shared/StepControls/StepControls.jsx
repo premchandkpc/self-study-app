@@ -34,7 +34,7 @@ export default function StepControls() {
           title="Step forward"
           onClick={() => dispatch({ type: 'STEP_FORWARD' })}
           disabled={currentStep >= total - 1}
-        >▶</CtrlBtn>
+        >▷</CtrlBtn>
 
         <CtrlBtn
           title="Jump to end"
