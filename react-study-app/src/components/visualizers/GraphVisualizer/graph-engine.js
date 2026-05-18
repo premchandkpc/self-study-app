@@ -1,0 +1,155 @@
+export function buildAdjacency(nodes, edges) {
+  const adj = {};
+  nodes.forEach((n) => (adj[n.id] = []));
+  edges.forEach(({ from, to }) => {
+    adj[from].push(to);
+    adj[to].push(from);
+  });
+  return adj;
+}
+
+export function buildBFSSteps(nodes, edges, startId) {
+  const adj = buildAdjacency(nodes, edges);
+  const steps = [];
+  const visited = new Set();
+  const queue = [startId];
+  visited.add(startId);
+
+  function snapshot(nodeStates, edgeStates, narration, codeLine) {
+    steps.push({
+      nodeStates: { ...nodeStates },
+      edgeStates: { ...edgeStates },
+      narration,
+      codeLine,
+      complexity: { ops: steps.length + 1, label: 'O(V+E)', space: 'O(V)' },
+    });
+  }
+
+  const nodeStates = Object.fromEntries(nodes.map((n) => [n.id, 'default']));
+  const edgeStates = Object.fromEntries(
+    edges.map((e) => [`${e.from}-${e.to}`, 'default'])
+  );
+
+  nodeStates[startId] = 'active';
+  snapshot(nodeStates, edgeStates, `BFS starts at node ${startId}. Push to queue.`, 2);
+
+  while (queue.length) {
+    const curr = queue.shift();
+    nodeStates[curr] = 'visiting';
+    snapshot(nodeStates, edgeStates, `Dequeue ${curr}. Visit neighbors.`, 5);
+
+    for (const neighbor of adj[curr]) {
+      const edgeKey = `${curr}-${neighbor}`;
+      const edgeKeyRev = `${neighbor}-${curr}`;
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+        edgeStates[edgeKey] = edgeStates[edgeKeyRev] = 'active';
+        nodeStates[neighbor] = 'active';
+        snapshot(
+          nodeStates,
+          edgeStates,
+          `${curr} → ${neighbor}: unvisited. Enqueue ${neighbor}.`,
+          7
+        );
+      } else {
+        edgeStates[edgeKey] = edgeStates[edgeKeyRev] = 'visited';
+        snapshot(
+          nodeStates,
+          edgeStates,
+          `${curr} → ${neighbor}: already visited. Skip.`,
+          8
+        );
+      }
+    }
+    nodeStates[curr] = 'visited';
+    snapshot(nodeStates, edgeStates, `${curr} fully processed. Mark visited.`, 10);
+  }
+
+  Object.keys(nodeStates).forEach((id) => {
+    if (nodeStates[id] !== 'visited') nodeStates[id] = 'done';
+    else nodeStates[id] = 'done';
+  });
+  snapshot(nodeStates, edgeStates, `BFS complete. All reachable nodes visited.`, 12);
+  return steps;
+}
+
+export function buildDFSSteps(nodes, edges, startId) {
+  const adj = buildAdjacency(nodes, edges);
+  const steps = [];
+  const visited = new Set();
+
+  const nodeStates = Object.fromEntries(nodes.map((n) => [n.id, 'default']));
+  const edgeStates = Object.fromEntries(
+    edges.map((e) => [`${e.from}-${e.to}`, 'default'])
+  );
+
+  function snapshot(narration, codeLine) {
+    steps.push({
+      nodeStates: { ...nodeStates },
+      edgeStates: { ...edgeStates },
+      narration,
+      codeLine,
+      complexity: { ops: steps.length + 1, label: 'O(V+E)', space: 'O(V)' },
+    });
+  }
+
+  function dfs(node) {
+    visited.add(node);
+    nodeStates[node] = 'active';
+    snapshot(`DFS enters ${node}. Mark active.`, 3);
+
+    for (const neighbor of adj[node]) {
+      const ek = `${node}-${neighbor}`;
+      const ekr = `${neighbor}-${node}`;
+      if (!visited.has(neighbor)) {
+        edgeStates[ek] = edgeStates[ekr] = 'active';
+        snapshot(`${node} → ${neighbor}: recurse deeper.`, 6);
+        dfs(neighbor);
+        edgeStates[ek] = edgeStates[ekr] = 'visited';
+      } else {
+        snapshot(`${node} → ${neighbor}: already visited. Back-edge.`, 8);
+      }
+    }
+    nodeStates[node] = 'visited';
+    snapshot(`${node} backtrack. Mark done.`, 10);
+  }
+
+  dfs(startId);
+  Object.keys(nodeStates).forEach((id) => (nodeStates[id] = 'done'));
+  snapshot('DFS complete.', 12);
+  return steps;
+}
+
+const BFS_CODE = [
+  'function bfs(graph, start) {',
+  '  const visited = new Set([start]);',
+  '  const queue = [start];',
+  '  while (queue.length) {',
+  '    const node = queue.shift();',
+  '    visit(node);',
+  '    for (const nb of graph[node]) {',
+  '      if (!visited.has(nb)) {',
+  '        visited.add(nb); queue.push(nb);',
+  '      }',
+  '    }',
+  '  }',
+  '}',
+];
+
+const DFS_CODE = [
+  'function dfs(graph, node, visited = new Set()) {',
+  '  visited.add(node);',
+  '  visit(node);',
+  '  for (const nb of graph[node]) {',
+  '    if (!visited.has(nb)) {',
+  '      dfs(graph, nb, visited);',
+  '    } else {',
+  '      // back-edge',
+  '    }',
+  '  }',
+  '  // backtrack',
+  '}',
+];
+
+export const ALGO_CODE = { bfs: BFS_CODE, dfs: DFS_CODE };

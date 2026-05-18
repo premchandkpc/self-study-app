@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { NavLink as RouterNavLink } from 'react-router-dom';
 import { useTheme } from '../../../core/context/ThemeContext';
-import { THEMES, THEME_LABELS } from '../../../core/constants/themes';
+import { THEME_LABELS } from '../../../core/constants/themes';
 import styles from './Navbar.module.css';
 
 export default function Navbar({ onMenuToggle }) {
@@ -22,11 +23,10 @@ export default function Navbar({ onMenuToggle }) {
       </div>
 
       <nav className={styles.center}>
-        <NavLink href="#dsa" label="DSA" />
-        <NavLink href="#java" label="Java" />
-        <NavLink href="#golang" label="Go" />
-        <NavLink href="#kubernetes" label="K8s" />
-        <NavLink href="#system-design" label="Systems" />
+        <NavItem to="/" label="Home" />
+        <NavItem to="/topics" label="Topics" />
+        <NavItem to="/visualizer/array" label="DSA" />
+        <NavItem to="/visualizer/graph" label="Graphs" />
       </nav>
 
       <div className={styles.right}>
@@ -58,10 +58,16 @@ export default function Navbar({ onMenuToggle }) {
   );
 }
 
-function NavLink({ href, label }) {
+function NavItem({ to, label }) {
   return (
-    <a href={href} className={styles.navLink}>
+    <RouterNavLink
+      to={to}
+      end={to === '/'}
+      className={({ isActive }) =>
+        [styles.navLink, isActive ? styles.navLinkActive : ''].join(' ')
+      }
+    >
       {label}
-    </a>
+    </RouterNavLink>
   );
 }

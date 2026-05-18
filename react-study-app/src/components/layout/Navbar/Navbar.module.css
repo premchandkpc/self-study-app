@@ -88,6 +88,11 @@
   background: var(--bg-hover);
 }
 
+.navLinkActive {
+  color: var(--text-accent) !important;
+  background: rgba(88, 166, 255, 0.1);
+}
+
 .right {
   display: flex;
   align-items: center;

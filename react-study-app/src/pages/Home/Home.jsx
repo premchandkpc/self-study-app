@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card, { CardHeader, CardBody } from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import ArrayVisualizer from '../../components/visualizers/ArrayVisualizer/ArrayVisualizer';
+import GraphVisualizer from '../../components/visualizers/GraphVisualizer/GraphVisualizer';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import { TOPICS } from '../../core/constants/topics';
 import styles from './Home.module.css';
@@ -17,6 +19,7 @@ const STATS = [
 
 export default function Home({ onSelectTopic }) {
   const [activeDemo, setActiveDemo] = useState('array');
+  const navigate = useNavigate();
 
   return (
     <div className={styles.page}>
@@ -45,11 +48,11 @@ export default function Home({ onSelectTopic }) {
 
         <AnimatedBox animation="slide-up" delay={240}>
           <div className={styles.heroActions}>
-            <Button variant="gradient" size="lg" icon="🚀">
+            <Button variant="gradient" size="lg" icon="🚀" onClick={() => navigate('/topics')}>
               Start Learning
             </Button>
-            <Button variant="secondary" size="lg" icon="🎮">
-              Interview Mode
+            <Button variant="secondary" size="lg" icon="🎮" onClick={() => navigate('/visualizer/array')}>
+              Try Visualizer
             </Button>
           </div>
         </AnimatedBox>
@@ -95,10 +98,16 @@ export default function Home({ onSelectTopic }) {
           </SimulationProvider>
         )}
 
-        {activeDemo !== 'array' && (
+        {activeDemo === 'graph' && (
+          <SimulationProvider>
+            <GraphVisualizer />
+          </SimulationProvider>
+        )}
+
+        {activeDemo === 'jvm' && (
           <Card className={styles.comingSoon}>
             <CardBody>
-              <p>🚧 {activeDemo.toUpperCase()} visualizer coming soon…</p>
+              <p>🚧 JVM visualizer coming soon…</p>
             </CardBody>
           </Card>
         )}
