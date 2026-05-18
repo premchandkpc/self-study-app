@@ -4,12 +4,16 @@ import { TOPICS } from '../../../core/constants/topics';
 import styles from './Sidebar.module.css';
 
 const SUBTOPIC_ROUTES = {
-  'dsa:Arrays':        '/visualizer/array',
-  'dsa:Graphs':        '/visualizer/graph',
-  'dsa:Trees':         '/visualizer/tree',
-  'kafka:Partitions':  '/visualizer/kafka',
-  'java:JVM':          '/visualizer/jvm',
-  'java:GC':           '/visualizer/jvm',
+  'dsa:Arrays':            '/visualizer/array',
+  'dsa:Graphs':            '/visualizer/graph',
+  'dsa:Trees':             '/visualizer/tree',
+  'kafka:Partitions':      '/visualizer/kafka',
+  'java:JVM':              '/visualizer/jvm',
+  'java:GC':               '/visualizer/jvm',
+  'java:Threads':          '/visualizer/threads',
+  'kubernetes:Pods':       '/visualizer/kubernetes',
+  'kubernetes:HPA':        '/visualizer/kubernetes',
+  'kubernetes:Deployments':'/visualizer/kubernetes',
 };
 
 export default function Sidebar({ collapsed }) {

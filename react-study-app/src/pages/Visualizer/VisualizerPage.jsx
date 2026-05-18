@@ -5,6 +5,8 @@ import GraphVisualizer from '../../components/visualizers/GraphVisualizer/GraphV
 import KafkaVisualizer from '../../components/visualizers/KafkaVisualizer/KafkaVisualizer';
 import JVMVisualizer from '../../components/visualizers/JVMVisualizer/JVMVisualizer';
 import TreeVisualizer from '../../components/visualizers/TreeVisualizer/TreeVisualizer';
+import KubernetesVisualizer from '../../components/visualizers/KubernetesVisualizer/KubernetesVisualizer';
+import ThreadVisualizer from '../../components/visualizers/ThreadVisualizer/ThreadVisualizer';
 import Button from '../../components/shared/Button/Button';
 import styles from './VisualizerPage.module.css';
 
@@ -38,6 +40,18 @@ const VISUALIZERS = {
     icon: '🌳',
     component: TreeVisualizer,
     desc: 'BST insert path animation. Inorder / Preorder / Postorder traversals.',
+  },
+  kubernetes: {
+    label: 'Kubernetes — Pods, HPA, Rolling, CrashLoop',
+    icon: '☸️',
+    component: KubernetesVisualizer,
+    desc: 'Pod scheduling, HPA scale-out, rolling deployments, CrashLoopBackOff.',
+  },
+  threads: {
+    label: 'Threads — Mutex, Deadlock, Semaphore',
+    icon: '🧵',
+    component: ThreadVisualizer,
+    desc: 'Thread states, mutex lock/unlock, deadlock cycle, semaphore counting.',
   },
 };
 

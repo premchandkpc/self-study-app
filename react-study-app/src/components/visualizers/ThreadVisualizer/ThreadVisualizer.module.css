@@ -1,0 +1,401 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.deadlockActive {
+  border-color: var(--pod-crash);
+  box-shadow: 0 0 20px rgba(248, 81, 73, 0.15);
+}
+
+/* === TOOLBAR === */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* === DEADLOCK BANNER === */
+.deadlockBanner {
+  background: rgba(248, 81, 73, 0.12);
+  border-bottom: 1px solid var(--pod-crash);
+  color: var(--pod-crash);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-align: center;
+  padding: var(--space-sm);
+  letter-spacing: 0.05em;
+  animation: deadlock-pulse 0.8s ease infinite alternate;
+}
+
+@keyframes deadlock-pulse {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+
+/* === ARENA === */
+.arena {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+@media (max-width: 640px) {
+  .arena { grid-template-columns: 1fr; }
+}
+
+.threadsCol,
+.locksCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.colLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+/* === THREAD CARD === */
+.threadCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all var(--transition-fast);
+  border-left: 3px solid var(--t-color, var(--border));
+}
+
+.threadRunning {
+  border-left-color: var(--node-default);
+  background: rgba(88, 166, 255, 0.06);
+  animation: thread-run 1.5s ease-in-out infinite;
+}
+
+@keyframes thread-run {
+  0%, 100% { box-shadow: none; }
+  50%       { box-shadow: 0 0 10px rgba(88, 166, 255, 0.2); }
+}
+
+.threadBlocked {
+  border-left-color: var(--pod-crash);
+  background: rgba(248, 81, 73, 0.06);
+  animation: thread-block 0.6s ease infinite alternate;
+}
+
+@keyframes thread-block {
+  from { border-left-color: var(--pod-crash); }
+  to   { border-left-color: var(--text-warn); }
+}
+
+.threadDone {
+  opacity: 0.45;
+}
+
+.threadHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.threadDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--t-color, var(--text-muted));
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.threadName {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.threadId {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.threadState {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  transition: color 0.3s ease;
+}
+
+.threadMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: 2px;
+}
+
+.holds,
+.wants,
+.ops {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.holds {
+  background: rgba(63, 185, 80, 0.12);
+  color: var(--pod-running);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+
+.wants {
+  background: rgba(248, 81, 73, 0.12);
+  color: var(--pod-crash);
+  border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
+.ops {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* === LOCK CARD === */
+.lockCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.lockFree {
+  border-color: var(--pod-running);
+  background: rgba(63, 185, 80, 0.04);
+}
+
+.lockHeld {
+  border-color: var(--node-comparing);
+  background: rgba(227, 179, 65, 0.06);
+}
+
+.lockDeadlock {
+  border-color: var(--pod-crash);
+  background: rgba(248, 81, 73, 0.08);
+  animation: lock-flash 0.5s ease infinite alternate;
+}
+
+@keyframes lock-flash {
+  from { border-color: var(--pod-crash); }
+  to   { border-color: transparent; }
+}
+
+.lockIcon { font-size: 1.5rem; }
+
+.lockId {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.lockHolder {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.lockQueue {
+  font-size: 10px;
+  color: var(--pod-crash);
+  font-family: var(--font-mono);
+  background: rgba(248, 81, 73, 0.08);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* === SEMAPHORE === */
+.semView {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.semCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.semName {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.semCount {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.semCurrent {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--pod-running);
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.semMax {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.semBar {
+  height: 6px;
+  background: var(--bg-hover);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.semBarFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease, background 0.3s ease;
+}
+
+.semLabel {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.semQueue {
+  font-size: var(--font-size-xs);
+  color: var(--pod-crash);
+  font-family: var(--font-mono);
+  padding: 3px 8px;
+  background: rgba(248, 81, 73, 0.08);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(248, 81, 73, 0.2);
+}
+
+.semSlots {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.semSlot {
+  flex: 1;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.semSlotFree {
+  background: rgba(63, 185, 80, 0.2);
+  border: 1px solid rgba(63, 185, 80, 0.4);
+}
+
+.semSlotUsed {
+  background: rgba(248, 81, 73, 0.2);
+  border: 1px solid rgba(248, 81, 73, 0.35);
+}
+
+/* === EVENTS === */
+.events {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eventsLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  animation: slide-in 0.2s ease;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.evDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.ev-ok    { color: var(--pod-running); }
+.ev-warn  { color: var(--text-warn); }
+.ev-error { color: var(--pod-crash); }
+
+/* === BOTTOM === */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .bottom { grid-template-columns: 1fr; }
+}
