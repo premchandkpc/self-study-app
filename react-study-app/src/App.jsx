@@ -5,6 +5,7 @@ import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
+import InterviewMode from './pages/InterviewMode/InterviewMode';
 import NotFound from './pages/NotFound/NotFound';
 
 function AppRoutes() {
@@ -18,6 +19,7 @@ function AppRoutes() {
           <Route path="/topics" element={<Topics />} />
           <Route path="/topics/:topicId" element={<Topics />} />
           <Route path="/visualizer/:type" element={<VisualizerPage />} />
+          <Route path="/interview" element={<InterviewMode />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainLayout>

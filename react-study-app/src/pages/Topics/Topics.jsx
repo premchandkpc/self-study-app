@@ -27,7 +27,12 @@ const VISUALIZER_MAP = {
   'kafka:Partitions':       'kafka',
   'kubernetes:Pods':        'kubernetes',
   'kubernetes:HPA':         'kubernetes',
-  'kubernetes:Deployments': 'kubernetes',
+  'kubernetes:Deployments':      'kubernetes',
+  'system-design:Load Balancer': 'systemdesign',
+  'system-design:Cache':         'systemdesign',
+  'system-design:CDN':           'systemdesign',
+  'system-design:Raft':          'systemdesign',
+  'system-design:Microservices': 'systemdesign',
 };
 
 export default function Topics() {

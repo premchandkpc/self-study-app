@@ -7,6 +7,7 @@ import JVMVisualizer from '../../components/visualizers/JVMVisualizer/JVMVisuali
 import TreeVisualizer from '../../components/visualizers/TreeVisualizer/TreeVisualizer';
 import KubernetesVisualizer from '../../components/visualizers/KubernetesVisualizer/KubernetesVisualizer';
 import ThreadVisualizer from '../../components/visualizers/ThreadVisualizer/ThreadVisualizer';
+import SystemDesignVisualizer from '../../components/visualizers/SystemDesignVisualizer/SystemDesignVisualizer';
 import Button from '../../components/shared/Button/Button';
 import styles from './VisualizerPage.module.css';
 
@@ -52,6 +53,12 @@ const VISUALIZERS = {
     icon: '🧵',
     component: ThreadVisualizer,
     desc: 'Thread states, mutex lock/unlock, deadlock cycle, semaphore counting.',
+  },
+  systemdesign: {
+    label: 'System Design — LB, Cache, CDN, Raft',
+    icon: '🏗️',
+    component: SystemDesignVisualizer,
+    desc: 'Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election.',
   },
 };
 

@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../../core/context/ThemeContext';
 import { THEME_LABELS } from '../../../core/constants/themes';
 import styles from './Navbar.module.css';
 
 export default function Navbar({ onMenuToggle }) {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
   const [themeOpen, setThemeOpen] = useState(false);
 
   return (
@@ -27,6 +28,7 @@ export default function Navbar({ onMenuToggle }) {
         <NavItem to="/topics" label="Topics" />
         <NavItem to="/visualizer/array" label="DSA" />
         <NavItem to="/visualizer/graph" label="Graphs" />
+        <NavItem to="/interview" label="Interview" />
       </nav>
 
       <div className={styles.right}>
@@ -52,7 +54,7 @@ export default function Navbar({ onMenuToggle }) {
             </div>
           )}
         </div>
-        <button className={styles.interviewBtn}>Interview Mode</button>
+        <button className={styles.interviewBtn} onClick={() => navigate('/interview')}>Interview Mode</button>
       </div>
     </header>
   );

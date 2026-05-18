@@ -13,7 +13,11 @@ const SUBTOPIC_ROUTES = {
   'java:Threads':          '/visualizer/threads',
   'kubernetes:Pods':       '/visualizer/kubernetes',
   'kubernetes:HPA':        '/visualizer/kubernetes',
-  'kubernetes:Deployments':'/visualizer/kubernetes',
+  'kubernetes:Deployments':    '/visualizer/kubernetes',
+  'system-design:Load Balancer': '/visualizer/systemdesign',
+  'system-design:Cache':         '/visualizer/systemdesign',
+  'system-design:CDN':           '/visualizer/systemdesign',
+  'system-design:Raft':          '/visualizer/systemdesign',
 };
 
 export default function Sidebar({ collapsed }) {
