@@ -273,6 +273,107 @@
   transition: width var(--transition-base);
 }
 
+/* === CONSUMER GROUP VIEW === */
+.cgLayout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  align-items: start;
+  width: 100%;
+}
+
+.cgCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.cgCenter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.cgPartitionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.cgAssignLine {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cgAssignBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--kafka-consumer) 15%, transparent);
+  border: 1px solid var(--kafka-consumer);
+  color: var(--kafka-consumer);
+  white-space: nowrap;
+}
+
+.cgJoining {
+  background: color-mix(in srgb, var(--node-comparing) 15%, transparent);
+  border-color: var(--node-comparing);
+  color: var(--node-comparing);
+  animation: pulse-badge 0.6s ease infinite alternate;
+}
+
+@keyframes pulse-badge {
+  from { opacity: 0.6; }
+  to   { opacity: 1; }
+}
+
+.cgLagMeter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.cgLagLabel {
+  font-size: 10px;
+  color: var(--kafka-lag);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cgLagBar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-hover);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.cgLagFill {
+  height: 100%;
+  background: var(--kafka-lag);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+.cgLagVal {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--kafka-lag);
+  min-width: 20px;
+  text-align: right;
+}
+
 /* === BOTTOM === */
 .bottomPanels {
   display: grid;

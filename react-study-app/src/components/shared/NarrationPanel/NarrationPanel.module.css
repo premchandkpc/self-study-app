@@ -27,3 +27,16 @@
   from { opacity: 0; transform: translateX(8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+.inline {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border);
+  min-height: 40px;
+}
+
+.inline .text {
+  font-size: var(--font-size-sm);
+}

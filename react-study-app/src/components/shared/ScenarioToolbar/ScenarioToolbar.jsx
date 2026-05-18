@@ -5,7 +5,7 @@ import styles from './ScenarioToolbar.module.css';
 export default function ScenarioToolbar({ scenarios, active, onChange }) {
   return (
     <div className={styles.toolbar}>
-      <div className={styles.tabs}>
+      <div className={styles.tabRow}>
         {scenarios.map((sc) => (
           <Button
             key={sc.id}
@@ -18,7 +18,7 @@ export default function ScenarioToolbar({ scenarios, active, onChange }) {
           </Button>
         ))}
       </div>
-      <NarrationPanel />
+      <NarrationPanel inline />
     </div>
   );
 }

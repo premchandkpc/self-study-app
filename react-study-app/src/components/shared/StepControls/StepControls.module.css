@@ -70,6 +70,9 @@
   flex: 1;
   min-width: 120px;
   position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .range {
@@ -78,22 +81,59 @@
   width: 100%;
   opacity: 0;
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
   height: 100%;
 }
 
-.progressBar {
+.track {
+  position: relative;
+  width: 100%;
   height: 4px;
-  background: var(--bg-hover);
-  border-radius: var(--radius-full);
-  overflow: hidden;
 }
 
-.progressFill {
+.trackBg {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-hover);
+  border-radius: var(--radius-full);
+}
+
+.trackFill {
+  position: absolute;
+  left: 0;
+  top: 0;
   height: 100%;
   background: var(--node-default);
   border-radius: var(--radius-full);
   transition: width var(--transition-fast);
+  z-index: 1;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  border: 1.5px solid var(--border-strong);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.markerPast {
+  background: var(--node-default);
+  border-color: var(--node-default);
+}
+
+.markerActive {
+  background: var(--node-active);
+  border-color: var(--node-active);
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
 }
 
 .right {

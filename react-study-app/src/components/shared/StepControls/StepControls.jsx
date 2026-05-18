@@ -57,8 +57,20 @@ export default function StepControls() {
           value={currentStep}
           onChange={(e) => dispatch({ type: 'JUMP_TO', payload: Number(e.target.value) })}
         />
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+        <div className={styles.track}>
+          <div className={styles.trackBg} />
+          <div className={styles.trackFill} style={{ width: `${progress}%` }} />
+          {steps.map((step, i) => {
+            const pct = total > 1 ? (i / (total - 1)) * 100 : 0;
+            return (
+              <span
+                key={i}
+                className={`${styles.marker} ${i === currentStep ? styles.markerActive : i < currentStep ? styles.markerPast : ''}`}
+                style={{ left: `${pct}%` }}
+                title={step.narration?.slice(0, 80)}
+              />
+            );
+          })}
         </div>
       </div>
 

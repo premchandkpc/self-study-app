@@ -16,11 +16,11 @@ export default function KafkaVisualizer() {
     <div className={styles.wrapper}>
       <ScenarioToolbar scenarios={SCENARIOS} active={activeId} onChange={select} />
 
-      <div className={styles.narrationBar} />
-
       <div className={styles.vizArea}>
         {activeId === 'isr' ? (
           <ISRView viz={viz} />
+        ) : activeId === 'consumer-groups' ? (
+          <ConsumerGroupView viz={viz} />
         ) : (
           <ProduceConsumeView viz={viz} />
         )}
@@ -154,6 +154,70 @@ function BrokerNode({ broker, isrList }) {
       <div className={styles.nodeDetail}>{isLeader ? '👑 Leader' : 'Follower'}</div>
       <div className={styles.nodeDetail}>{inISR ? '✓ ISR' : '⚠ Out of ISR'}</div>
       {isDown && <span className={styles.downBadge}>DOWN</span>}
+    </div>
+  );
+}
+
+function ConsumerGroupView({ viz }) {
+  const partitions = viz.partitions || [];
+  const consumers  = viz.consumers  || [];
+
+  return (
+    <div className={styles.cgLayout}>
+      <div className={styles.cgCol}>
+        <div className={styles.colLabel}>Producer</div>
+        {viz.producers?.map((p) => (
+          <KafkaNode key={p.id} label={p.id} state={p.state} colorVar="var(--kafka-producer)" detail={p.sending ? `→ ${p.sending}` : ''} />
+        ))}
+      </div>
+
+      <div className={styles.cgCenter}>
+        <div className={styles.colLabel}>Partitions</div>
+        {partitions.map((part, idx) => (
+          <div key={part.id} className={styles.cgPartitionRow}>
+            <PartitionNode partition={part} />
+            <div className={styles.cgAssignLine}>
+              {consumers
+                .filter((c) => c.assigned?.includes(idx))
+                .map((c) => (
+                  <span key={c.id} className={`${styles.cgAssignBadge} ${c.state === 'joining' ? styles.cgJoining : ''}`}>
+                    {c.id}
+                  </span>
+                ))}
+            </div>
+          </div>
+        ))}
+        {viz.metrics?.lag > 0 && (
+          <div className={styles.cgLagMeter}>
+            <span className={styles.cgLagLabel}>Total Lag</span>
+            <div className={styles.cgLagBar}>
+              <div className={styles.cgLagFill} style={{ width: `${Math.min((viz.metrics.lag / 20) * 100, 100)}%` }} />
+            </div>
+            <span className={styles.cgLagVal}>{viz.metrics.lag}</span>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.cgCol}>
+        <div className={styles.colLabel}>Consumers</div>
+        {consumers.map((c) => {
+          const assignedIds = (c.assigned || []).map((i) => partitions[i]?.id).filter(Boolean);
+          const detail = c.state === 'joining'
+            ? '⚡ joining…'
+            : assignedIds.length
+              ? `owns: [${assignedIds.join(', ')}]`
+              : 'unassigned';
+          return (
+            <KafkaNode
+              key={c.id}
+              label={c.id}
+              state={c.state === 'joining' ? 'active' : c.state}
+              colorVar={c.state === 'joining' ? 'var(--node-comparing)' : 'var(--kafka-consumer)'}
+              detail={detail}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
