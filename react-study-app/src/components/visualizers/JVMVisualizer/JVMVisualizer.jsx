@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useSimulation } from '../../../core/context/SimulationContext';
-import { buildJVMSteps, JVM_CODE } from './jvm-engine';
+import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { SCENARIOS } from './jvm-engine';
+import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';
 import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
@@ -9,35 +9,17 @@ import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
 import styles from './JVMVisualizer.module.css';
 
 export default function JVMVisualizer() {
-  const { state, dispatch } = useSimulation();
-  const [viz, setViz] = useState(null);
-
-  useEffect(() => {
-    dispatch({ type: 'SET_STEPS', payload: buildJVMSteps() });
-  }, [dispatch]);
-
-  useEffect(() => {
-    const step = state.steps[state.currentStep];
-    if (step) setViz(step);
-  }, [state.currentStep, state.steps]);
+  const { activeId, active, viz, select, metrics } = useVisualizerScenario(SCENARIOS);
 
   if (!viz) return null;
-
-  const metrics = [
-    { label: 'Heap Used', value: viz.metrics?.heapUsed || 0, max: 200, unit: 'MB', color: 'var(--heap-eden)', warn: 60, critical: 85 },
-    { label: 'GC Count',  value: viz.metrics?.gcCount  || 0, max: 10,  unit: '',   color: 'var(--node-visited)' },
-    { label: 'GC Pause',  value: viz.metrics?.gcPause  || 0, max: 300, unit: 'ms', color: 'var(--gc-sweep)', warn: 50, critical: 80 },
-  ];
 
   const isSTW = viz.stopTheWorld;
 
   return (
     <div className={`${styles.wrapper} ${isSTW ? styles.stopWorld : ''}`}>
-      {isSTW && <div className={styles.stwBanner}>⚠ STOP-THE-WORLD PAUSE</div>}
+      <ScenarioToolbar scenarios={SCENARIOS} active={activeId} onChange={select} />
 
-      <div className={styles.narration}>
-        <NarrationPanel />
-      </div>
+      {isSTW && <div className={styles.stwBanner}>⚠ STOP-THE-WORLD PAUSE</div>}
 
       <div className={styles.jvmLayout}>
         {/* LEFT: heap zones */}
@@ -93,7 +75,7 @@ export default function JVMVisualizer() {
       </div>
 
       <div className={styles.codePanelWrap}>
-        <CodePanel code={JVM_CODE} language="Java" />
+        <CodePanel code={active.code} language={active.language} />
       </div>
 
       <StepControls />

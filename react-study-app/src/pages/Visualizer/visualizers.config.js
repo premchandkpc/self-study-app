@@ -8,6 +8,7 @@ import ThreadVisualizer from '../../components/visualizers/ThreadVisualizer/Thre
 import SystemDesignVisualizer from '../../components/visualizers/SystemDesignVisualizer/SystemDesignVisualizer';
 import GoVisualizer from '../../components/visualizers/GoVisualizer/GoVisualizer';
 import AWSVisualizer from '../../components/visualizers/AWSVisualizer/AWSVisualizer';
+import PythonVisualizer from '../../components/visualizers/PythonVisualizer/PythonVisualizer';
 
 export const VISUALIZERS = {
   array: {
@@ -65,9 +66,15 @@ export const VISUALIZERS = {
     desc: 'Lambda cold/warm start, SQS DLQ, API Gateway throttling, EKS cluster autoscaler.',
   },
   systemdesign: {
-    label: 'System Design — LB, Cache, CDN, Raft',
+    label: 'System Design — LB, Cache, CDN, Raft, Microservices',
     icon: '🏗️',
     component: SystemDesignVisualizer,
-    desc: 'Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election.',
+    desc: 'Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election, Circuit Breaker.',
+  },
+  python: {
+    label: 'Python — GIL, asyncio, Decorators',
+    icon: '🐍',
+    component: PythonVisualizer,
+    desc: 'GIL thread contention, asyncio event loop coroutines, decorator wrapping patterns.',
   },
 };

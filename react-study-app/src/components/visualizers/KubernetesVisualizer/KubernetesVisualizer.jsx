@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSimulation } from '../../../core/context/SimulationContext';
-import { buildK8sSteps, K8S_CODE } from './k8s-engine';
+import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { SCENARIOS } from './k8s-engine';
+import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';
-import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
 import CodePanel from '../../shared/CodePanel/CodePanel';
 import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
-import Button from '../../shared/Button/Button';
 import styles from './KubernetesVisualizer.module.css';
-
-const SCENARIOS = [
-  { id: 'schedule', label: 'Scheduling',  icon: '📅' },
-  { id: 'hpa',      label: 'HPA Scale',   icon: '📈' },
-  { id: 'rolling',  label: 'Rolling',     icon: '🔄' },
-  { id: 'crash',    label: 'Crash Loop',  icon: '💥' },
-];
 
 const POD_STATE_COLOR = {
   pending:          'var(--pod-pending)',
@@ -24,53 +15,21 @@ const POD_STATE_COLOR = {
   crashloopbackoff: 'var(--pod-crash)',
 };
 
+const SERVICE_TYPE_COLOR = {
+  ClusterIP:    'var(--node-default)',
+  NodePort:     'var(--node-comparing)',
+  LoadBalancer: 'var(--pod-running)',
+};
+
 export default function KubernetesVisualizer() {
-  const { state, dispatch } = useSimulation();
-  const [scenario, setScenario] = useState('schedule');
-  const [viz, setViz] = useState(null);
-
-  function init(sc) {
-    setScenario(sc);
-    dispatch({ type: 'RESET' });
-    dispatch({ type: 'SET_STEPS', payload: buildK8sSteps(sc) });
-  }
-
-  useEffect(() => { init('schedule'); }, []);
-
-  useEffect(() => {
-    const step = state.steps[state.currentStep];
-    if (step) setViz(step);
-  }, [state.currentStep, state.steps]);
+  const { activeId, active, viz, select, metrics } = useVisualizerScenario(SCENARIOS);
 
   if (!viz) return null;
 
-  const metrics = [
-    { label: 'Pods',     value: viz.metrics?.pods     || 0, max: 8,   unit: '',  color: 'var(--pod-running)' },
-    { label: 'CPU avg',  value: viz.metrics?.cpu      || 0, max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
-    { label: 'Restarts', value: viz.metrics?.restarts || 0, max: 10,  unit: '',  color: 'var(--pod-crash)', warn: 30, critical: 60 },
-  ];
-
   return (
     <div className={styles.wrapper}>
-      {/* toolbar */}
-      <div className={styles.toolbar}>
-        <div className={styles.tabs}>
-          {SCENARIOS.map((sc) => (
-            <Button
-              key={sc.id}
-              variant={scenario === sc.id ? 'primary' : 'ghost'}
-              size="sm"
-              icon={sc.icon}
-              onClick={() => init(sc.id)}
-            >
-              {sc.label}
-            </Button>
-          ))}
-        </div>
-        <NarrationPanel />
-      </div>
+      <ScenarioToolbar scenarios={SCENARIOS} active={activeId} onChange={select} />
 
-      {/* cluster viz */}
       <div className={styles.cluster}>
         <div className={styles.controlPlane}>
           <span className={styles.planeLabel}>⚙ Control Plane</span>
@@ -91,7 +50,6 @@ export default function KubernetesVisualizer() {
           ))}
         </div>
 
-        {/* event log */}
         {viz.events?.length > 0 && (
           <div className={styles.events}>
             <div className={styles.eventsLabel}>Events</div>
@@ -105,26 +63,12 @@ export default function KubernetesVisualizer() {
         )}
       </div>
 
-      {/* HPA indicator */}
-      {viz.hpa && (
-        <div className={styles.hpaBar}>
-          <span className={styles.hpaLabel}>HPA</span>
-          <span>min:{viz.hpa.min}</span>
-          <div className={styles.hpaPods}>
-            {Array.from({ length: viz.hpa.max }, (_, i) => (
-              <div
-                key={i}
-                className={`${styles.hpaDot} ${i < viz.hpa.current ? styles.hpaDotActive : ''} ${i < viz.hpa.target && i >= viz.hpa.current ? styles.hpaDotTarget : ''}`}
-              />
-            ))}
-          </div>
-          <span>max:{viz.hpa.max}</span>
-          <span className={styles.hpaCurrent}>current: {viz.hpa.current}</span>
-        </div>
-      )}
+      {viz.hpa && <HPABar hpa={viz.hpa} />}
+
+      {viz.services?.length > 0 && <ServicesView services={viz.services} />}
 
       <div className={styles.bottom}>
-        <CodePanel code={K8S_CODE[scenario] || []} language="YAML/Shell" />
+        <CodePanel code={active.code} language={active.language} />
         <div className={styles.rightPanels}>
           <MetricsPanel metrics={metrics} />
           <ComplexityPanel />
@@ -138,7 +82,6 @@ export default function KubernetesVisualizer() {
 
 function NodeCard({ node, pods }) {
   const cpuPct = Math.min(100, (node.cpu / node.maxCpu) * 100);
-  const memPct = Math.min(100, (node.mem / node.maxMem) * 100);
   return (
     <div className={styles.node}>
       <div className={styles.nodeHeader}>
@@ -153,9 +96,7 @@ function NodeCard({ node, pods }) {
         <div className={styles.nodeBarFill} style={{ width: `${cpuPct}%`, background: cpuPct > 80 ? 'var(--pod-crash)' : 'var(--pod-running)' }} />
       </div>
       <div className={styles.podSlots}>
-        {pods.map((pod) => (
-          <PodChip key={pod.id} pod={pod} />
-        ))}
+        {pods.map((pod) => <PodChip key={pod.id} pod={pod} />)}
         {pods.length === 0 && <span className={styles.empty}>no pods</span>}
       </div>
     </div>
@@ -163,9 +104,9 @@ function NodeCard({ node, pods }) {
 }
 
 function PodChip({ pod }) {
-  const color = POD_STATE_COLOR[pod.state] || 'var(--text-muted)';
+  const color    = POD_STATE_COLOR[pod.state] || 'var(--text-muted)';
   const isActive = pod.state === 'running';
-  const isCrash = pod.state === 'error' || pod.state === 'crashloopbackoff';
+  const isCrash  = pod.state === 'error' || pod.state === 'crashloopbackoff';
   return (
     <div
       className={`${styles.pod} ${isActive ? styles.podRunning : ''} ${isCrash ? styles.podCrash : ''} ${pod.state === 'terminating' ? styles.podTerminating : ''}`}
@@ -176,6 +117,45 @@ function PodChip({ pod }) {
       <span className={styles.podId}>{pod.id}</span>
       {pod.version && <span className={styles.podVersion}>{pod.version}</span>}
       {pod.restarts > 0 && <span className={styles.podRestarts}>↺{pod.restarts}</span>}
+    </div>
+  );
+}
+
+function HPABar({ hpa }) {
+  return (
+    <div className={styles.hpaBar}>
+      <span className={styles.hpaLabel}>HPA</span>
+      <span>min:{hpa.min}</span>
+      <div className={styles.hpaPods}>
+        {Array.from({ length: hpa.max }, (_, i) => (
+          <div
+            key={i}
+            className={`${styles.hpaDot} ${i < hpa.current ? styles.hpaDotActive : ''} ${i < hpa.target && i >= hpa.current ? styles.hpaDotTarget : ''}`}
+          />
+        ))}
+      </div>
+      <span>max:{hpa.max}</span>
+      <span className={styles.hpaCurrent}>current: {hpa.current}</span>
+    </div>
+  );
+}
+
+function ServicesView({ services }) {
+  return (
+    <div className={styles.servicesView}>
+      <div className={styles.servicesLabel}>Services</div>
+      <div className={styles.servicesRow}>
+        {services.map((svc) => (
+          <div key={svc.id} className={styles.serviceCard} style={{ '--svc-color': SERVICE_TYPE_COLOR[svc.type] || 'var(--node-default)' }}>
+            <div className={styles.svcHeader}>
+              <span className={styles.svcName}>{svc.id}</span>
+              <span className={styles.svcType}>{svc.type}</span>
+            </div>
+            <div className={styles.svcIp}>{svc.ip}:{svc.port}</div>
+            <div className={styles.svcEndpoints}>→ {svc.endpoints?.join(', ')}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

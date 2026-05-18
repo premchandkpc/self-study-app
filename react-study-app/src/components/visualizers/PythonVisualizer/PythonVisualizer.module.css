@@ -1,0 +1,283 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.arena {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 260px;
+}
+
+/* === SECTION === */
+.section { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.sectionLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* === GIL BADGE === */
+.gilBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-xs) var(--space-md);
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  border-radius: var(--radius-md);
+  align-self: flex-start;
+}
+
+.gilLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 900;
+  color: var(--node-default);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.gilHolder {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* === THREADS === */
+.threadRow { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+.threadCard {
+  background: var(--bg-card);
+  border: 2px solid var(--t-color, var(--border));
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color 0.3s ease;
+}
+
+.threadGIL {
+  background: color-mix(in srgb, var(--t-color) 12%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--t-color) 30%, transparent);
+}
+
+.threadHeader { display: flex; align-items: center; justify-content: space-between; }
+.threadId     { font-family: var(--font-mono); font-size: var(--font-size-sm); font-weight: 700; color: var(--text-primary); }
+.threadFn     { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+.threadState  { font-size: 10px; font-family: var(--font-mono); font-weight: 700; }
+.threadOps    { font-size: 9px; color: var(--text-muted); font-family: var(--font-mono); }
+
+.gilBadgeSmall {
+  font-size: 9px;
+  background: var(--node-default);
+  color: var(--bg-primary);
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+}
+
+/* === I/O POOL === */
+.ioPool { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+.ioOp {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px dashed rgba(88, 166, 255, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--node-default);
+  animation: io-pulse 1s ease infinite alternate;
+}
+
+@keyframes io-pulse {
+  from { opacity: 0.6; }
+  to   { opacity: 1; }
+}
+
+/* === EVENT LOOP === */
+.eventLoopCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.loopStatus { font-family: var(--font-mono); font-size: var(--font-size-sm); font-weight: 700; color: var(--pod-running); }
+.loopQueue  { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: var(--space-xs); }
+.loopIO     { font-size: 10px; color: var(--node-comparing); display: flex; align-items: center; gap: var(--space-xs); }
+
+.queueTask {
+  font-family: var(--font-mono);
+  padding: 1px 6px;
+  background: rgba(63, 185, 80, 0.12);
+  border-radius: var(--radius-sm);
+  color: var(--pod-running);
+}
+
+.ioCallback {
+  font-family: var(--font-mono);
+  padding: 1px 6px;
+  background: rgba(88, 166, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--node-comparing);
+}
+
+/* === COROUTINES === */
+.coroGrid { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+.coroCard {
+  background: var(--bg-card);
+  border: 1.5px solid var(--c-color, var(--border));
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: all 0.3s ease;
+}
+
+.coroRunning {
+  background: color-mix(in srgb, var(--node-default) 10%, transparent);
+  animation: coro-pulse 0.8s ease infinite alternate;
+}
+
+@keyframes coro-pulse {
+  from { box-shadow: 0 0 6px rgba(88, 166, 255, 0.2); }
+  to   { box-shadow: 0 0 18px rgba(88, 166, 255, 0.5); }
+}
+
+.coroDone { opacity: 0.7; }
+
+.coroHeader { display: flex; align-items: center; justify-content: space-between; }
+.coroId     { font-family: var(--font-mono); font-size: var(--font-size-sm); font-weight: 700; color: var(--text-primary); }
+.coroState  { font-size: 9px; font-family: var(--font-mono); color: var(--c-color); font-weight: 700; }
+.coroFn     { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+.coroAwait  { font-size: 10px; color: var(--node-comparing); font-family: var(--font-mono); }
+.coroResult { font-size: 10px; color: var(--pod-running); font-family: var(--font-mono); }
+
+/* === DECORATORS === */
+.decoratorList { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.decoratorChip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-xs) var(--space-md);
+  background: rgba(206, 145, 120, 0.08);
+  border: 1px solid rgba(206, 145, 120, 0.25);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.decName   { font-family: var(--font-mono); font-size: var(--font-size-xs); font-weight: 700; color: var(--kafka-producer); }
+.decTarget { font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--text-muted); }
+.decDesc   { font-size: var(--font-size-xs); color: var(--text-muted); font-style: italic; }
+
+/* === CALL STACK === */
+.callStackBox {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: var(--font-mono);
+}
+
+.stackFrame {
+  font-size: 11px;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--bg-secondary);
+  border-left: 2px solid var(--border);
+  color: var(--text-muted);
+}
+
+.stackFrameTop {
+  border-left-color: var(--node-default);
+  color: var(--text-primary);
+  background: rgba(88, 166, 255, 0.06);
+  font-weight: 600;
+}
+
+/* === OUTPUT === */
+.outputBox {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-mono);
+}
+
+.outputLine {
+  font-size: var(--font-size-xs);
+  color: var(--pod-running);
+  animation: slide-in 0.2s ease;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* === EVENTS === */
+.events {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.eventsLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.evDot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.ev-info  { color: var(--text-accent); }
+.ev-ok    { color: var(--pod-running); }
+.ev-warn  { color: var(--text-warn); }
+.ev-error { color: var(--pod-crash); }
+
+/* === BOTTOM === */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+}
+
+.rightPanels { display: flex; flex-direction: column; gap: var(--space-md); }
+
+@media (max-width: 768px) {
+  .bottom { grid-template-columns: 1fr; }
+  .threadRow { flex-direction: column; }
+}

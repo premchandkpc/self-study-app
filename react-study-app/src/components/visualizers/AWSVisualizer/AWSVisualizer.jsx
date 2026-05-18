@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSimulation } from '../../../core/context/SimulationContext';
-import { buildAWSSteps, AWS_CODE } from './aws-engine';
+import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { SCENARIOS } from './aws-engine';
+import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';
-import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
 import CodePanel from '../../shared/CodePanel/CodePanel';
 import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
-import Button from '../../shared/Button/Button';
 import styles from './AWSVisualizer.module.css';
-
-const SCENARIOS = [
-  { id: 'lambda', label: 'Lambda',      icon: '⚡' },
-  { id: 'sqs',    label: 'SQS',         icon: '📬' },
-  { id: 'apigw',  label: 'API Gateway', icon: '🚪' },
-  { id: 'eks',    label: 'EKS',         icon: '☸️' },
-];
 
 const NODE_COLORS = {
   client:  'var(--node-default)',
@@ -42,41 +33,14 @@ const SVG_W = 700;
 const SVG_H = 380;
 
 export default function AWSVisualizer() {
-  const { state, dispatch } = useSimulation();
-  const [scenario, setScenario] = useState('lambda');
-  const [viz, setViz] = useState(null);
-
-  function init(sc) {
-    setScenario(sc);
-    dispatch({ type: 'RESET' });
-    dispatch({ type: 'SET_STEPS', payload: buildAWSSteps(sc) });
-  }
-
-  useEffect(() => { init('lambda'); }, []);
-
-  useEffect(() => {
-    const step = state.steps[state.currentStep];
-    if (step) setViz(step);
-  }, [state.currentStep, state.steps]);
+  const { activeId, active, viz, select, metrics } = useVisualizerScenario(SCENARIOS);
 
   if (!viz) return null;
 
-  const metrics = buildMetrics(scenario, viz.metrics || {});
-
   return (
     <div className={styles.wrapper}>
-      <div className={styles.toolbar}>
-        <div className={styles.tabs}>
-          {SCENARIOS.map((sc) => (
-            <Button key={sc.id} variant={scenario === sc.id ? 'primary' : 'ghost'} size="sm" icon={sc.icon} onClick={() => init(sc.id)}>
-              {sc.label}
-            </Button>
-          ))}
-        </div>
-        <NarrationPanel />
-      </div>
+      <ScenarioToolbar scenarios={SCENARIOS} active={activeId} onChange={select} />
 
-      {/* SVG diagram */}
       <div className={styles.svgWrap}>
         <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className={styles.svg} preserveAspectRatio="xMidYMid meet">
           <defs>
@@ -128,8 +92,7 @@ export default function AWSVisualizer() {
         </svg>
       </div>
 
-      {/* Lambda containers panel */}
-      {scenario === 'lambda' && viz.lambdaContainers?.length > 0 && (
+      {activeId === 'lambda' && viz.lambdaContainers?.length > 0 && (
         <div className={styles.containersBar}>
           <span className={styles.containersLabel}>Lambda Containers</span>
           {viz.lambdaContainers.map((c) => (
@@ -141,8 +104,7 @@ export default function AWSVisualizer() {
         </div>
       )}
 
-      {/* SQS messages panel */}
-      {scenario === 'sqs' && <SQSPanel nodes={viz.nodes} />}
+      {activeId === 'sqs' && <SQSPanel nodes={viz.nodes} />}
 
       {viz.events?.length > 0 && (
         <div className={styles.events}>
@@ -156,7 +118,7 @@ export default function AWSVisualizer() {
       )}
 
       <div className={styles.bottom}>
-        <CodePanel code={AWS_CODE[scenario] || []} language="YAML/CLI" />
+        <CodePanel code={active.code} language={active.language} />
         <div className={styles.rightPanels}>
           <MetricsPanel metrics={metrics} />
           <ComplexityPanel />
@@ -173,7 +135,11 @@ function AWSNode({ node }) {
   const icon  = NODE_ICONS[node.type]  || '●';
   const W = 100, H = 50;
   const x = node.x - W / 2, y = node.y - H / 2;
-  const stateColor = node.state === 'active' ? 'var(--node-active)' : node.state === 'error' || node.state === 'warn' ? 'var(--pod-crash)' : node.state === 'cold' ? 'var(--node-default)' : color;
+  const stateColor =
+    node.state === 'active' ? 'var(--node-active)' :
+    node.state === 'error'  ? 'var(--pod-crash)' :
+    node.state === 'cold'   ? 'var(--node-default)' :
+    color;
 
   return (
     <g>
@@ -231,28 +197,4 @@ function SQSPanel({ nodes }) {
       )}
     </div>
   );
-}
-
-function buildMetrics(scenario, m) {
-  if (scenario === 'lambda') return [
-    { label: 'Requests',   value: m.requests   || 0, max: 5,   unit: '',   color: 'var(--node-default)' },
-    { label: 'Cold Starts',value: m.coldStarts || 0, max: 5,   unit: '',   color: 'var(--pod-crash)', warn: 20, critical: 40 },
-    { label: 'P99 (ms)',   value: m.p99ms      || 0, max: 1000, unit: 'ms', color: 'var(--node-comparing)' },
-  ];
-  if (scenario === 'sqs') return [
-    { label: 'Sent',     value: m.sent     || 0, max: 5, unit: '', color: 'var(--node-default)' },
-    { label: 'Received', value: m.received || 0, max: 5, unit: '', color: 'var(--pod-running)' },
-    { label: 'DLQ',      value: m.dlq      || 0, max: 3, unit: '', color: 'var(--pod-crash)' },
-  ];
-  if (scenario === 'apigw') return [
-    { label: 'Requests',  value: m.requests  || 0, max: 10,   unit: '',     color: 'var(--node-default)' },
-    { label: 'Throttled', value: m.throttled || 0, max: 5,    unit: '',     color: 'var(--pod-crash)' },
-    { label: 'P50 (ms)',  value: m.p50ms     || 0, max: 100,  unit: 'ms',   color: 'var(--pod-running)' },
-  ];
-  if (scenario === 'eks') return [
-    { label: 'Nodes', value: m.nodes || 0, max: 6,   unit: '',  color: 'var(--node-default)' },
-    { label: 'Pods',  value: m.pods  || 0, max: 10,  unit: '',  color: 'var(--pod-running)' },
-    { label: 'CPU %', value: m.cpu   || 0, max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
-  ];
-  return [];
 }

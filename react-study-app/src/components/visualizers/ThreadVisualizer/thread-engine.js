@@ -225,3 +225,45 @@ export const THREAD_CODE = {
     '}',
   ],
 };
+
+export const SCENARIOS = [
+  {
+    id: 'mutex',
+    label: 'Mutex',
+    icon: '🔒',
+    build: buildMutexSteps,
+    code: THREAD_CODE.mutex,
+    language: 'Java',
+    metrics: [
+      { key: 'runs',    label: 'Runs',    max: 5, color: 'var(--pod-running)' },
+      { key: 'blocked', label: 'Blocked', max: 5, color: 'var(--pod-crash)' },
+      { key: 'done',    label: 'Done',    max: 5, color: 'var(--text-muted)' },
+    ],
+  },
+  {
+    id: 'deadlock',
+    label: 'Deadlock',
+    icon: '💀',
+    build: buildDeadlockSteps,
+    code: THREAD_CODE.deadlock,
+    language: 'Java',
+    metrics: [
+      { key: 'runs',    label: 'Runs',    max: 5, color: 'var(--pod-running)' },
+      { key: 'blocked', label: 'Blocked', max: 5, color: 'var(--pod-crash)' },
+      { key: 'done',    label: 'Done',    max: 5, color: 'var(--text-muted)' },
+    ],
+  },
+  {
+    id: 'semaphore',
+    label: 'Semaphore',
+    icon: '🚦',
+    build: buildSemaphoreSteps,
+    code: THREAD_CODE.semaphore,
+    language: 'Java',
+    metrics: [
+      { key: 'runs',    label: 'Active', max: 5, color: 'var(--pod-running)' },
+      { key: 'blocked', label: 'Waiting',max: 5, color: 'var(--pod-crash)' },
+      { key: 'done',    label: 'Done',   max: 5, color: 'var(--text-muted)' },
+    ],
+  },
+];

@@ -135,3 +135,19 @@ export const JVM_CODE = [
   '  // < 1ms pauses, no STW',
   '}',
 ];
+
+export const SCENARIOS = [
+  {
+    id: 'jvm',
+    label: 'JVM Heap & GC',
+    icon: '☕',
+    build: buildJVMSteps,
+    code: JVM_CODE,
+    language: 'Java',
+    metrics: [
+      { key: 'heapUsed', label: 'Heap (MB)', max: 256, unit: 'MB', color: 'var(--node-default)', warn: 60, critical: 85 },
+      { key: 'gcCount',  label: 'GC cycles', max: 5,              color: 'var(--node-comparing)' },
+      { key: 'gcPause',  label: 'Pause (ms)', max: 500, unit: 'ms', color: 'var(--pod-crash)', warn: 30, critical: 60 },
+    ],
+  },
+];
