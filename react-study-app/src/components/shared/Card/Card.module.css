@@ -1,0 +1,110 @@
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+/* === VARIANTS === */
+.variant-default {}
+
+.variant-glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-color: var(--glass-border);
+}
+
+.variant-elevated {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+}
+
+.variant-outlined {
+  background: transparent;
+  border-color: var(--border-strong);
+}
+
+.variant-filled {
+  background: var(--bg-secondary);
+  border-color: transparent;
+}
+
+/* === PADDING === */
+.padding-none { padding: 0; }
+.padding-xs   { padding: var(--space-xs); }
+.padding-sm   { padding: var(--space-sm); }
+.padding-md   { padding: var(--space-md); }
+.padding-lg   { padding: var(--space-lg); }
+.padding-xl   { padding: var(--space-xl); }
+
+/* === GLOW === */
+.glow-blue   { box-shadow: var(--shadow-glow-blue); }
+.glow-green  { box-shadow: var(--shadow-glow-green); }
+.glow-yellow { box-shadow: var(--shadow-glow-yellow); }
+.glow-red    { box-shadow: var(--shadow-glow-red); }
+.glow-purple { box-shadow: var(--shadow-glow-purple); }
+
+/* === HOVERABLE === */
+.hoverable {
+  cursor: pointer;
+}
+.hoverable:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* === INNER PARTS === */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.headerIcon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.headerAction {
+  flex-shrink: 0;
+}
+
+.body {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+}
+
+.footer {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}

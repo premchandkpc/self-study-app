@@ -1,0 +1,143 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: var(--navbar-height);
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-base);
+  z-index: var(--z-raised);
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+.inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-md) 0;
+}
+
+.sectionLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 0 var(--space-md) var(--space-sm);
+  margin: 0;
+}
+
+.nav {
+  flex: 1;
+}
+
+.topicGroup {
+  margin-bottom: 2px;
+}
+
+.topicBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: 10px var(--space-md);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: var(--font-size-base);
+  border-radius: 0;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.topicBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.topicIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.topicLabel {
+  flex: 1;
+  font-weight: 500;
+}
+
+.chevron {
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+  display: inline-block;
+  line-height: 1;
+}
+
+.chevron.open {
+  transform: rotate(90deg);
+}
+
+.subtopics {
+  padding: 2px 0 var(--space-sm);
+}
+
+.subtopicBtn {
+  display: block;
+  width: 100%;
+  padding: 7px var(--space-md) 7px calc(var(--space-md) + 28px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  transition: all var(--transition-fast);
+  border-radius: 0;
+}
+
+.subtopicBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.subtopicBtn.active {
+  color: var(--text-accent);
+  background: rgba(88, 166, 255, 0.08);
+  font-weight: 500;
+  border-left: 2px solid var(--text-accent);
+}
+
+.footer {
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.footerStats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.dot {
+  opacity: 0.5;
+}
+
+/* Collapsed: hide scrollbar */
+.sidebar.collapsed .inner {
+  overflow: hidden;
+}

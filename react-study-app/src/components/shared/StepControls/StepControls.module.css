@@ -1,0 +1,134 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  flex-wrap: wrap;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.ctrlBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.ctrlBtn:hover:not(:disabled) {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.ctrlBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.playBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--node-default);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.playBtn:hover {
+  transform: scale(1.08);
+}
+
+.playBtn.playing {
+  background: var(--node-active);
+  box-shadow: var(--shadow-glow-red);
+}
+
+.scrubber {
+  flex: 1;
+  min-width: 120px;
+  position: relative;
+}
+
+.range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  height: 100%;
+}
+
+.progressBar {
+  height: 4px;
+  background: var(--bg-hover);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--node-default);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-fast);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.counter {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+  min-width: 48px;
+}
+
+.speedControl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.speedLabel {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.speedRange {
+  width: 80px;
+  accent-color: var(--node-default);
+}
+
+.speedValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  min-width: 40px;
+}

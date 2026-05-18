@@ -1,0 +1,75 @@
+/* Import design system */
+@import './styles/tokens.css';
+@import './styles/animations.css';
+@import './styles/utilities.css';
+
+/* === RESET + BASE === */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* === SELECTION === */
+::selection {
+  background: rgba(88, 166, 255, 0.25);
+  color: var(--text-primary);
+}
+
+/* === FOCUS RING === */
+:focus-visible {
+  outline: 2px solid var(--node-default);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* === TYPOGRAPHY RESETS === */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+p { margin: 0; }
+a { color: var(--text-accent); text-decoration: none; }
+a:hover { opacity: 0.85; }
+
+button { font-family: var(--font-sans); }
+input, select, textarea { font-family: var(--font-sans); }

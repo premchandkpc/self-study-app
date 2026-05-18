@@ -1,0 +1,22 @@
+.root {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.main {
+  margin-top: var(--navbar-height);
+  margin-left: var(--sidebar-width);
+  min-height: calc(100vh - var(--navbar-height));
+  transition: margin-left var(--transition-base);
+  overflow: auto;
+}
+
+.mainExpanded {
+  margin-left: var(--sidebar-collapsed);
+}
+
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+  }
+}

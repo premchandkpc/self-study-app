@@ -1,0 +1,128 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* === VARIANTS === */
+.variant-primary {
+  background: var(--node-default);
+  color: #fff;
+}
+.variant-primary:hover:not(:disabled) {
+  background: #79b8ff;
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.variant-secondary {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.variant-secondary:hover:not(:disabled) {
+  background: var(--bg-card);
+  border-color: var(--border-strong);
+}
+
+.variant-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.variant-ghost:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.variant-danger {
+  background: var(--text-error);
+  color: #fff;
+}
+.variant-danger:hover:not(:disabled) {
+  background: #ff6b6b;
+  box-shadow: var(--shadow-glow-red);
+}
+
+.variant-success {
+  background: var(--text-success);
+  color: #fff;
+}
+
+.variant-gradient {
+  background: linear-gradient(135deg, var(--node-default), var(--node-done));
+  color: #fff;
+}
+.variant-gradient:hover:not(:disabled) {
+  opacity: 0.9;
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.variant-icon {
+  background: none;
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+}
+.variant-icon:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+/* === SIZES === */
+.size-xs {
+  padding: 4px var(--space-sm);
+  font-size: var(--font-size-xs);
+}
+.size-sm {
+  padding: 6px var(--space-md);
+  font-size: var(--font-size-sm);
+}
+.size-md {
+  padding: 8px var(--space-md);
+  font-size: var(--font-size-base);
+}
+.size-lg {
+  padding: 10px var(--space-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* === LOADING SPINNER === */
+.loading { cursor: wait; }
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.icon {
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  line-height: 1;
+}

@@ -1,0 +1,74 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+}
+
+/* === SIZES === */
+.size-xs {
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.size-sm {
+  padding: 2px 8px;
+  font-size: var(--font-size-xs);
+}
+.size-md {
+  padding: 4px 10px;
+  font-size: var(--font-size-sm);
+}
+
+/* === VARIANTS === */
+.variant-default {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.variant-blue {
+  background: rgba(88, 166, 255, 0.15);
+  color: var(--node-default);
+  border: 1px solid rgba(88, 166, 255, 0.3);
+}
+.variant-green {
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--text-success);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+.variant-yellow {
+  background: rgba(227, 179, 65, 0.15);
+  color: var(--text-warn);
+  border: 1px solid rgba(227, 179, 65, 0.3);
+}
+.variant-red {
+  background: rgba(248, 81, 73, 0.15);
+  color: var(--text-error);
+  border: 1px solid rgba(248, 81, 73, 0.3);
+}
+.variant-purple {
+  background: rgba(124, 77, 255, 0.15);
+  color: var(--node-done);
+  border: 1px solid rgba(124, 77, 255, 0.3);
+}
+
+/* === DOT === */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* === PULSE === */
+.pulse .dot {
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.7; }
+}

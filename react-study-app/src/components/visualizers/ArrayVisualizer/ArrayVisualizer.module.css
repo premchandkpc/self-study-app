@@ -1,0 +1,119 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.vizArea {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.arrayContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--space-lg) 0;
+  flex-wrap: wrap;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.cellValue {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-hover);
+  border: 2px solid var(--cell-color, var(--node-default));
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--cell-color, var(--node-default));
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.inWindow .cellValue {
+  background: rgba(var(--cell-color-raw, 88, 166, 255), 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cellIndex {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* State-specific styles */
+.state-active .cellValue {
+  background: rgba(247, 129, 102, 0.15);
+  animation: pop 0.3s ease;
+}
+.state-visiting .cellValue {
+  background: rgba(227, 179, 65, 0.15);
+}
+.state-visited .cellValue {
+  opacity: 0.6;
+}
+.state-adding .cellValue {
+  animation: bounce-in 0.4s ease;
+}
+.state-removing .cellValue {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+.state-done .cellValue {
+  background: rgba(124, 77, 255, 0.15);
+}
+
+@keyframes pop {
+  0%, 100% { transform: scale(1); }
+  40%        { transform: scale(1.15); }
+}
+@keyframes bounce-in {
+  0%   { transform: scale(0.8) translateY(8px); opacity: 0.5; }
+  60%  { transform: scale(1.08) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.windowLabel {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--text-accent);
+  padding: var(--space-xs) 0;
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .panels {
+    grid-template-columns: 1fr;
+  }
+  .cellValue {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-md);
+  }
+}

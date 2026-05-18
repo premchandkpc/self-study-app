@@ -1,0 +1,161 @@
+:root {
+  /* === BACKGROUNDS === */
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-card: #1c2128;
+  --bg-hover: #21262d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+
+  /* === NODE STATES === */
+  --node-default: #58a6ff;
+  --node-active: #f78166;
+  --node-visited: #3fb950;
+  --node-comparing: #e3b341;
+  --node-blocked: #ff6e6e;
+  --node-done: #7c4dff;
+  --node-pending: #8b949e;
+
+  /* === EDGES === */
+  --edge-default: #30363d;
+  --edge-active: #e3b341;
+  --edge-flow: #58a6ff;
+  --edge-error: #f85149;
+
+  /* === TEXT === */
+  --text-primary: #e6edf3;
+  --text-secondary: #c9d1d9;
+  --text-muted: #8b949e;
+  --text-accent: #58a6ff;
+  --text-warn: #e3b341;
+  --text-error: #f85149;
+  --text-success: #3fb950;
+
+  /* === COMPLEXITY BANDS === */
+  --complexity-best: #3fb950;
+  --complexity-good: #3fb950;
+  --complexity-ok: #e3b341;
+  --complexity-bad: #f78166;
+  --complexity-worst: #f85149;
+
+  /* === KAFKA === */
+  --kafka-producer: #58a6ff;
+  --kafka-broker: #e3b341;
+  --kafka-consumer: #3fb950;
+  --kafka-lag: #f85149;
+  --kafka-partition: #7c4dff;
+
+  /* === K8S === */
+  --pod-running: #3fb950;
+  --pod-pending: #e3b341;
+  --pod-crash: #f85149;
+  --pod-terminating: #8b949e;
+
+  /* === JVM === */
+  --heap-eden: #58a6ff;
+  --heap-survivor: #e3b341;
+  --heap-old: #7c4dff;
+  --metaspace: #3fb950;
+  --gc-sweep: #f85149;
+
+  /* === GLASSMORPHISM === */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(16px);
+
+  /* === SPACING === */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* === RADIUS === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* === TYPOGRAPHY === */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-sans: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 28px;
+  --font-size-4xl: 36px;
+
+  /* === SHADOWS === */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-blue: 0 0 20px rgba(88, 166, 255, 0.3);
+  --shadow-glow-green: 0 0 20px rgba(63, 185, 80, 0.3);
+  --shadow-glow-yellow: 0 0 20px rgba(227, 179, 65, 0.3);
+  --shadow-glow-red: 0 0 20px rgba(248, 81, 73, 0.3);
+  --shadow-glow-purple: 0 0 20px rgba(124, 77, 255, 0.3);
+
+  /* === TRANSITIONS === */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === Z-INDEX === */
+  --z-base: 1;
+  --z-raised: 10;
+  --z-overlay: 100;
+  --z-modal: 200;
+  --z-tooltip: 300;
+  --z-nav: 400;
+
+  /* === LAYOUT === */
+  --navbar-height: 56px;
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 60px;
+  --panel-min-width: 280px;
+}
+
+/* === THEME OVERRIDES === */
+[data-theme="miro"] {
+  --bg-primary: #f2f3f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-muted: #666;
+  --border: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="brilliant"] {
+  --bg-primary: #1b1f3b;
+  --bg-secondary: #252a4a;
+  --bg-card: #2d3256;
+  --node-default: #7c4dff;
+  --text-accent: #7c4dff;
+}
+
+[data-theme="terminal"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111;
+  --bg-card: #0f0f0f;
+  --text-primary: #00ff41;
+  --text-accent: #00ff41;
+  --border: rgba(0, 255, 65, 0.15);
+}
+
+[data-theme="cyberpunk"] {
+  --bg-primary: #0a0014;
+  --bg-secondary: #0d0020;
+  --bg-card: #120028;
+  --node-default: #ff00ff;
+  --text-accent: #ff00ff;
+  --border: rgba(255, 0, 255, 0.2);
+  --shadow-glow-blue: 0 0 20px rgba(255, 0, 255, 0.4);
+}
