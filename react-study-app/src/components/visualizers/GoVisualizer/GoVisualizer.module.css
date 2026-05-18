@@ -347,6 +347,37 @@
 
 .rightPanels { display: flex; flex-direction: column; gap: var(--space-md); }
 
+/* === MUTEX VIEW === */
+.lockCard {
+  background: var(--bg-card);
+  border: 2px solid var(--lock-color, var(--border));
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.lockHeader { display: flex; align-items: center; justify-content: space-between; }
+.lockName   { font-family: var(--font-mono); font-size: var(--font-size-sm); font-weight: 700; color: var(--text-primary); }
+.lockState  { font-size: 10px; font-family: var(--font-mono); font-weight: 700; color: var(--lock-color, var(--text-muted)); }
+.lockHolder { font-size: 10px; color: var(--pod-crash); font-family: var(--font-mono); }
+.lockWaiters { font-size: 10px; color: var(--node-comparing); font-family: var(--font-mono); }
+
+.counterDisplay {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  border-radius: var(--radius-md);
+}
+.counterLabel { font-size: var(--font-size-xs); color: var(--text-muted); font-weight: 700; }
+.counterValue { font-family: var(--font-mono); font-size: var(--font-size-xl); font-weight: 900; color: var(--node-default); }
+
 @media (max-width: 768px) {
   .bottom { grid-template-columns: 1fr; }
   .processorRow { flex-direction: column; }
