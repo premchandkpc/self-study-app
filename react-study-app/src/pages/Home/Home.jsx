@@ -6,6 +6,7 @@ import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import ArrayVisualizer from '../../components/visualizers/ArrayVisualizer/ArrayVisualizer';
 import GraphVisualizer from '../../components/visualizers/GraphVisualizer/GraphVisualizer';
+import KafkaVisualizer from '../../components/visualizers/KafkaVisualizer/KafkaVisualizer';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import { TOPICS } from '../../core/constants/topics';
 import styles from './Home.module.css';
@@ -79,7 +80,7 @@ export default function Home({ onSelectTopic }) {
         </div>
 
         <div className={styles.demoTabs}>
-          {['array', 'graph', 'jvm'].map((tab) => (
+          {['array', 'graph', 'kafka'].map((tab) => (
             <button
               key={tab}
               className={`${styles.demoTab} ${activeDemo === tab ? styles.activeTab : ''}`}
@@ -87,7 +88,7 @@ export default function Home({ onSelectTopic }) {
             >
               {tab === 'array' && '📊 Array'}
               {tab === 'graph' && '🕸️ Graph'}
-              {tab === 'jvm' && '☕ JVM'}
+              {tab === 'kafka' && '📨 Kafka'}
             </button>
           ))}
         </div>
@@ -104,12 +105,10 @@ export default function Home({ onSelectTopic }) {
           </SimulationProvider>
         )}
 
-        {activeDemo === 'jvm' && (
-          <Card className={styles.comingSoon}>
-            <CardBody>
-              <p>🚧 JVM visualizer coming soon…</p>
-            </CardBody>
-          </Card>
+        {activeDemo === 'kafka' && (
+          <SimulationProvider>
+            <KafkaVisualizer />
+          </SimulationProvider>
         )}
       </section>
 

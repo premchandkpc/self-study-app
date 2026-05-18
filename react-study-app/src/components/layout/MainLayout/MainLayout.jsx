@@ -9,10 +9,7 @@ export default function MainLayout({ children, onSelectTopic }) {
   return (
     <div className={styles.root}>
       <Navbar onMenuToggle={() => setSidebarCollapsed((v) => !v)} />
-      <Sidebar
-        collapsed={sidebarCollapsed}
-        onSelectTopic={onSelectTopic}
-      />
+      <Sidebar collapsed={sidebarCollapsed} />
       <main
         className={`${styles.main} ${sidebarCollapsed ? styles.mainExpanded : ''}`}
       >

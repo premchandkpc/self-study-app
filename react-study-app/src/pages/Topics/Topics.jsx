@@ -18,9 +18,12 @@ const TOPIC_META = {
 };
 
 const VISUALIZER_MAP = {
-  'dsa:Arrays':      'array',
-  'dsa:Graphs':      'graph',
-  'kafka:Partitions': 'kafka',
+  'dsa:Arrays':        'array',
+  'dsa:Graphs':        'graph',
+  'dsa:Trees':         'tree',
+  'java:JVM':          'jvm',
+  'java:GC':           'jvm',
+  'kafka:Partitions':  'kafka',
 };
 
 export default function Topics() {

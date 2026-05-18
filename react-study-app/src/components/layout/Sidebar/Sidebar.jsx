@@ -1,9 +1,20 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { TOPICS } from '../../../core/constants/topics';
 import styles from './Sidebar.module.css';
 
-export default function Sidebar({ collapsed, onSelectTopic }) {
-  const [activeTopic, setActiveTopic] = useState(null);
+const SUBTOPIC_ROUTES = {
+  'dsa:Arrays':        '/visualizer/array',
+  'dsa:Graphs':        '/visualizer/graph',
+  'dsa:Trees':         '/visualizer/tree',
+  'kafka:Partitions':  '/visualizer/kafka',
+  'java:JVM':          '/visualizer/jvm',
+  'java:GC':           '/visualizer/jvm',
+};
+
+export default function Sidebar({ collapsed }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [expandedTopics, setExpandedTopics] = useState({});
 
   function toggleExpand(id) {
@@ -11,8 +22,13 @@ export default function Sidebar({ collapsed, onSelectTopic }) {
   }
 
   function handleSelect(topicId, subtopic) {
-    setActiveTopic(`${topicId}:${subtopic}`);
-    onSelectTopic?.({ topicId, subtopic });
+    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
+    navigate(route);
+  }
+
+  function isActive(topicId, subtopic) {
+    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
+    return location.pathname === route;
   }
 
   return (
@@ -50,7 +66,7 @@ export default function Sidebar({ collapsed, onSelectTopic }) {
                       return (
                         <button
                           key={key}
-                          className={`${styles.subtopicBtn} ${activeTopic === key ? styles.active : ''}`}
+                          className={`${styles.subtopicBtn} ${isActive(topic.id, sub) ? styles.active : ''}`}
                           onClick={() => handleSelect(topic.id, sub)}
                         >
                           {sub}

@@ -1,0 +1,250 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.narrationBar {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border);
+}
+
+/* === MAIN VIZ AREA === */
+.vizArea {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr 40px 1fr;
+  gap: 0;
+  padding: var(--space-lg);
+  align-items: center;
+  min-height: 280px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.colLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xs);
+  text-align: center;
+}
+
+/* === ARROWS === */
+.arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding-top: 24px; /* offset colLabel */
+}
+
+.flowArrow {
+  font-size: 18px;
+  color: var(--edge-default);
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.flowActive {
+  color: var(--kafka-producer);
+  animation: pulse-arrow 0.6s ease infinite alternate;
+}
+
+@keyframes pulse-arrow {
+  from { transform: scale(1); }
+  to   { transform: scale(1.3); }
+}
+
+/* === KAFKA NODE === */
+.node {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--node-color, var(--border));
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: all var(--transition-fast);
+  position: relative;
+  min-height: 52px;
+}
+
+.nodeActive {
+  background: color-mix(in srgb, var(--node-color) 12%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--node-color) 30%, transparent);
+  animation: node-breathe 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes node-breathe {
+  from { box-shadow: 0 0 8px color-mix(in srgb, var(--node-color, var(--node-default)) 20%, transparent); }
+  to   { box-shadow: 0 0 20px color-mix(in srgb, var(--node-color, var(--node-default)) 50%, transparent); }
+}
+
+.nodeLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--node-color, var(--text-primary));
+}
+
+.nodeDetail {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.ackBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--kafka-consumer);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: var(--radius-full);
+  animation: bounce-in 0.3s ease;
+}
+
+@keyframes bounce-in {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* === PARTITION NODE === */
+.partition {
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--kafka-broker);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  transition: all var(--transition-fast);
+}
+
+.partitionElection {
+  border-color: var(--text-error);
+  animation: election-flash 0.5s ease infinite alternate;
+}
+
+@keyframes election-flash {
+  from { border-color: var(--text-error); box-shadow: 0 0 8px rgba(248, 81, 73, 0.3); }
+  to   { border-color: var(--text-warn); box-shadow: 0 0 16px rgba(227, 179, 65, 0.4); }
+}
+
+.partitionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xs);
+}
+
+.partitionId {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--kafka-broker);
+}
+
+.partitionRole {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.partitionLog {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 80px;
+  overflow: hidden;
+  min-height: 24px;
+}
+
+.logEntry {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+  padding: 1px 4px;
+  background: rgba(227, 179, 65, 0.08);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--kafka-broker);
+}
+
+.logNew {
+  animation: log-append 0.3s ease;
+}
+
+@keyframes log-append {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.logOffset {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.logFrom {
+  font-size: 10px;
+  color: var(--kafka-producer);
+}
+
+.logEmpty {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--space-xs);
+}
+
+.lagBar {
+  margin-top: var(--space-xs);
+}
+
+.lagLabel {
+  font-size: 10px;
+  color: var(--kafka-lag);
+  font-family: var(--font-mono);
+}
+
+.lagFill {
+  height: 3px;
+  background: var(--kafka-lag);
+  border-radius: var(--radius-full);
+  margin-top: 2px;
+  transition: width var(--transition-base);
+}
+
+/* === BOTTOM === */
+.bottomPanels {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+}
+
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .vizArea {
+    grid-template-columns: 1fr 24px 1fr 24px 1fr;
+    padding: var(--space-md);
+  }
+  .bottomPanels {
+    grid-template-columns: 1fr;
+  }
+}
