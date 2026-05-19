@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildHouseRobberSteps({ houses = [2, 7, 9, 3, 1, 8, 5] } = {}) {
   houses = houses.filter((v) => Number.isFinite(v) && v >= 0).slice(0, 12);

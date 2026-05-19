@@ -1,4 +1,9 @@
-import { snap, packet, clientNode, lbNode, serverNode } from './shared.js';
+import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { ICONS } from '../sd-types';
+const _mk = createNodeFactory(ICONS);
+const clientNode = _mk('client');
+const lbNode = _mk('lb');
+const serverNode = _mk('server');
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Load Balancer — Round-Robin with health checks
@@ -53,7 +58,6 @@ function buildLBSteps() {
   snap(steps, s, 'Request 2 → Server 2. Even distribution across all servers.', 5);
 
   s.packets = [packet('lb', 's3', 'GET /api', 'request')];
-  void('lb-s3';
   s.nodes[4].state = 'active';
   s.nodes[4].load = 1;
   s.metrics.requests = 3; s.metrics.s3 = 1;
@@ -63,12 +67,10 @@ function buildLBSteps() {
   s.packets = [];
   s.nodes[3].state = 'error';
   s.nodes[3].healthy = false;
-  void(null;
   s.events.push({ type: 'error', msg: 'Server 2 health check FAIL — marking unhealthy' });
   snap(steps, s, 'Server 2 fails health check. LB marks it UNHEALTHY. Removes from rotation.', 7);
 
   s.packets = [packet('lb', 's1', 'GET /api', 'request')];
-  void('lb-s1';
   s.nodes[2].load = 1;
   s.metrics.requests = 4; s.metrics.s1 = 2;
   s.events.push({ type: 'warn', msg: 'Skipping Server 2 (unhealthy). Routing to Server 1.' });

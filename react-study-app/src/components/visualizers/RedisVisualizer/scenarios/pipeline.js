@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const COMMAND_LIST = ['SET key1 v1', 'SET key2 v2', 'GET key1', 'INCR counter', 'LPUSH queue task1'];
 const RTT_PER_CMD = 100; // ms simulated

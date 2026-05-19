@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildLCSSteps({ s1 = 'ABCBD', s2 = 'ABDB' } = {}) {
   s1 = s1.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8) || 'ABCBD';

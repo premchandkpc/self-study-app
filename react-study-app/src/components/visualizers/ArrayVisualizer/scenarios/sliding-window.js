@@ -1,4 +1,4 @@
-import { snap, makeArr } from './shared';
+import { snap, makeArr } from '@/core/utils/scenarioShared';
 
 const DEFAULT_ARR = [2, 1, 5, 1, 3, 2];
 const DEFAULT_K = 3;

@@ -3,8 +3,8 @@
   align-items: flex-start;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  background: rgba(88, 166, 255, 0.06);
-  border: 1px solid rgba(88, 166, 255, 0.15);
+  background: color-mix(in srgb, var(--node-default) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--node-default) 20%, transparent);
   border-radius: var(--radius-md);
   min-height: 48px;
 }

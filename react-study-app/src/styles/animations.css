@@ -198,3 +198,48 @@
 .stagger-children > *:nth-child(6)  { animation-delay: 300ms; }
 .stagger-children > *:nth-child(7)  { animation-delay: 360ms; }
 .stagger-children > *:nth-child(8)  { animation-delay: 420ms; }
+
+/* --- SVG NODE GLOW (CSS animated, not SVG filter) --- */
+@keyframes node-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px var(--glow-c, var(--node-default))); }
+  50%      { filter: drop-shadow(0 0 10px var(--glow-c, var(--node-default))); }
+}
+.animate-node-glow {
+  animation: node-glow 2s ease-in-out infinite;
+}
+
+/* --- PACKET TRAIL FADE --- */
+@keyframes packet-trail {
+  0%   { opacity: 1; r: 7; }
+  100% { opacity: 0; r: 2; }
+}
+.animate-packet-trail {
+  animation: packet-trail 0.5s ease forwards;
+}
+
+/* --- LAYER FADE IN --- */
+@keyframes layer-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-layer-in {
+  animation: layer-fade-in 0.4s ease forwards;
+}
+
+/* --- HIGHLIGHT PULSE --- */
+@keyframes highlight-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.animate-highlight-pulse {
+  animation: highlight-pulse 1.2s ease-in-out infinite;
+}
+
+/* --- SVG DASH FLOW --- */
+@keyframes dash-flow {
+  to { stroke-dashoffset: -20; }
+}
+.animate-dash-flow {
+  stroke-dasharray: 4 3;
+  animation: dash-flow 0.5s linear infinite;
+}

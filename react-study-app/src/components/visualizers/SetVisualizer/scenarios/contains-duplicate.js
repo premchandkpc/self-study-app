@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const DEFAULT_NUMS = [1, 2, 3, 1, 4, 2];
 const DEFAULT_K = 2;

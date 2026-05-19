@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 // List: 1→2→3→4→5→3 (cycle back to index 2)
 const VALUES   = [1, 2, 3, 4, 5];

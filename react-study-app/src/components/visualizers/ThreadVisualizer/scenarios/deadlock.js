@@ -1,4 +1,4 @@
-import { snap, thread, lock, T_STATES } from './shared';
+import { snap, thread, lock, T_STATES } from '@/core/utils/scenarioShared';
 
 function buildDeadlockSteps() {
   const steps = [];

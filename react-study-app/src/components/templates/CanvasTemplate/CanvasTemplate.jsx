@@ -2,32 +2,20 @@ import { useState, useRef, useEffect } from 'react';
 import { ICONS, NODE_COLORS } from '../../visualizers/SystemDesignVisualizer/sd-types';
 import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
 import { useSimulation } from '../../../core/context/SimulationContext';
+import { STATE_COLORS, PKT_COLORS } from '../../../core/constants/colors';
 import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';
 import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
 import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
+import ConceptPanel from '../../shared/ConceptPanel/ConceptPanel';
+import { SvgArrowDefs, SvgEventsList, SvgEdgeTooltip, SvgSharedStyles } from '../../shared/SvgComponents.jsx';
 import styles from './CanvasTemplate.module.css';
 
 const NODE_META = {
   ...Object.fromEntries(
     Object.entries(ICONS).map(([type, icon]) => [type, { color: NODE_COLORS[type] || 'var(--node-default)', icon }])
   ),
-  default: { color: 'var(--node-default)', icon: '●' },
-};
-
-const STATE_COLOR = {
-  active: 'var(--node-active)',
-  ok:     'var(--pod-running)',
-  error:  'var(--pod-crash)',
-  warn:   'var(--node-comparing)',
-};
-
-const PKT_COLOR = {
-  request:     'var(--node-active)',
-  response:    'var(--pod-running)',
-  replication: 'var(--node-comparing)',
-  event:       'var(--kafka-producer)',
-  default:     'var(--node-active)',
+  default: { color: 'var(--node-default)', icon: '\u25CF' },
 };
 
 const NODE_W   = 108;
@@ -55,14 +43,12 @@ export default function CanvasTemplate({ scenarios }) {
 
   useEffect(() => { setAnimKey(k => k + 1); }, [simState.currentStep]);
   useEffect(() => { setPositions({}); needsFitRef.current = true; }, [activeId]);
-  // auto-fit when first viz snapshot loads for a scenario
   useEffect(() => {
     if (!viz || !needsFitRef.current) return;
     needsFitRef.current = false;
     fitFnRef.current?.();
-  }, [viz]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [viz]);
 
-  // non-passive wheel listener so preventDefault works
   useEffect(() => {
     const el = canvasRef.current;
     if (!el) return;
@@ -158,65 +144,71 @@ export default function CanvasTemplate({ scenarios }) {
   const dotSize = 28 * scale;
   const dotX    = ((pan.x % dotSize) + dotSize) % dotSize;
   const dotY    = ((pan.y % dotSize) + dotSize) % dotSize;
-  // packet anim duration = 80% of step interval, clamped [0.08s, 1.5s]
-  const pktDur  = Math.max(0.08, Math.min(simState.speed * 0.0008, 1.5));
+  const pktDur  = Math.max(0.5, Math.min(simState.speed * 0.02, 2.5));
 
-  return (
-    <div className={styles.wrapper}>
-      <ScenarioToolbar scenarios={scenarios} active={activeId} onChange={select} />
-      <NarrationPanel />
-
-      <div
-        ref={canvasRef}
-        className={styles.canvas}
-        style={{
-          backgroundSize:     `${dotSize}px ${dotSize}px`,
-          backgroundPosition: `${dotX}px ${dotY}px`,
-          cursor: panning ? 'grabbing' : dragging ? 'move' : 'grab',
-        }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <svg className={styles.svg}>
-          <defs>
-            <marker id="ct-arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-              <polygon points="0 0,8 3,0 6" fill="var(--border)" />
-            </marker>
-            <marker id="ct-arr-on" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-              <polygon points="0 0,8 3,0 6" fill="var(--node-active)" />
-            </marker>
-            <filter id="pkt-glow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
+  const hasConcepts = !!viz.concepts;
+  const canvasEl = (
+    <div
+      ref={canvasRef}
+      className={styles.canvas}
+      style={{
+        backgroundSize:     `${dotSize}px ${dotSize}px`,
+        backgroundPosition: `${dotX}px ${dotY}px`,
+        cursor: panning ? 'grabbing' : dragging ? 'move' : 'grab',
+      }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      <svg className={styles.svg}>
+        <SvgSharedStyles />
+        <SvgArrowDefs prefix="ct" />
+        <defs>
+          <filter id="pkt-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="ct-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
 
           <g transform={`translate(${pan.x},${pan.y}) scale(${scale})`}>
-            {/* ── Layer bands ── */}
             {active.layers && nodes.length > 0 && (() => {
               const yMin = Math.min(...nodes.map(n => nodePos(n).y)) - NODE_H / 2 - 30;
               const yMax = Math.max(...nodes.map(n => nodePos(n).y)) + NODE_H / 2 + 30;
-              return active.layers.map((lyr, i) => (
-                <g key={`lyr-${i}`} pointerEvents="none">
-                  <rect
-                    x={lyr.x1} y={yMin}
-                    width={lyr.x2 - lyr.x1} height={yMax - yMin}
-                    rx={14} fill={lyr.color}
-                    stroke={lyr.border} strokeWidth={0.8}
-                  />
-                  <text
-                    x={(lyr.x1 + lyr.x2) / 2} y={yMin + 16}
-                    textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
-                    fill={lyr.border} opacity={0.85} letterSpacing="0.8">
-                    {lyr.label.toUpperCase()}
-                  </text>
-                </g>
-              ));
+              const layerH = yMax - yMin;
+              return active.layers.map((lyr, i) => {
+                const lx = lyr.x1;
+                const lw = lyr.x2 - lyr.x1;
+                return (
+                  <g key={`lyr-${i}`} pointerEvents="none">
+                    <rect
+                      x={lx} y={yMin}
+                      width={lw} height={layerH}
+                      rx={14} fill={lyr.color}
+                      stroke={lyr.border} strokeWidth={1.5}
+                      className={styles.layer}
+                    />
+                    <text
+                      x={lx + lw / 2} y={yMin + 16}
+                      textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
+                      fill={lyr.border} opacity={0.85} letterSpacing="1"
+                      className={styles.layerLabel}>
+                      {lyr.label.toUpperCase()}
+                    </text>
+                    <line
+                      x1={lx + lw / 2 - 18} y1={yMin + 22}
+                      x2={lx + lw / 2 + 18} y2={yMin + 22}
+                      stroke={lyr.border} strokeWidth={0.5} opacity={0.3}
+                    />
+                  </g>
+                );
+              });
             })()}
 
-            {/* ── Edges ── */}
             {edges.map((edge, i) => {
               const fn = nodes.find(n => n.id === edge.from);
               const tn = nodes.find(n => n.id === edge.to);
@@ -228,29 +220,30 @@ export default function CanvasTemplate({ scenarios }) {
                      (p.from === edge.to   && p.to === edge.from)
               );
               const isAsync  = !!edge.async;
-              const stroke   = hot ? 'var(--node-active)' : isAsync ? 'var(--kafka-producer)' : 'var(--border)';
+              const stroke   = hot ? 'var(--node-active)' : isAsync ? 'var(--kafka-producer)' : 'var(--edge-default)';
               const dashArr  = hot ? '8 3' : isAsync ? '6 4' : 'none';
               const mx = (fp.x + tp.x) / 2;
               const my = (fp.y + tp.y) / 2;
               return (
-                <g key={i} style={{ cursor: 'pointer' }}
+                <g key={i}
                   onMouseEnter={ev => handleNodeHover('edge', edge, ev)}
                   onMouseLeave={() => handleNodeHover(null, null, null)}
                 >
                   <line x1={fp.x} y1={fp.y} x2={tp.x} y2={tp.y}
                     stroke={stroke}
-                    strokeWidth={hot ? 2 : 1.5}
+                    strokeWidth={hot ? 2.5 : 1.5}
                     strokeDasharray={dashArr}
-                    strokeOpacity={isAsync && !hot ? 0.6 : 1}
-                    markerEnd={hot ? 'url(#ct-arr-on)' : 'url(#ct-arr)'}
+                    strokeOpacity={isAsync && !hot ? 0.55 : hot ? 1 : 0.8}
+                    markerEnd={hot ? 'url(#ct-arrow-active)' : 'url(#ct-arrow)'}
+                    style={{ transition: 'stroke 0.15s, stroke-width 0.15s' }}
                   />
-                  {/* wide hit area */}
                   <line x1={fp.x} y1={fp.y} x2={tp.x} y2={tp.y}
-                    stroke="transparent" strokeWidth={16} />
+                    stroke="transparent" strokeWidth={18} />
                   {(edge.label || edge.protocol) && (
-                    <text x={mx} y={my - 8}
-                      textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
-                      fill={hot ? 'var(--node-active)' : 'var(--text-muted)'}>
+                    <text x={mx} y={my - 9}
+                      textAnchor="middle" fontSize="8" fontFamily="var(--font-mono)"
+                      fill={hot ? 'var(--node-active)' : 'var(--text-muted)'}
+                      fontWeight={hot ? 700 : 400} pointerEvents="none">
                       {edge.protocol || edge.label}
                     </text>
                   )}
@@ -258,16 +251,21 @@ export default function CanvasTemplate({ scenarios }) {
               );
             })}
 
-            {/* ── Nodes ── */}
             {nodes.map(n => {
               const pos  = nodePos(n);
               const meta = NODE_META[n.type] || NODE_META.default;
-              const fill = STATE_COLOR[n.state] || meta.color;
+              const fill = STATE_COLORS[n.state] || meta.color;
               const isDrag = dragging?.nodeId === n.id;
+              const isHover = hovered?.kind === 'node' && hovered?.data?.id === n.id;
               return (
                 <g key={n.id}
                   data-nodeid={n.id}
-                  style={{ cursor: isDrag ? 'move' : 'pointer', userSelect: 'none' }}
+                  className={styles.nodeGroup}
+                  style={{
+                    cursor: isDrag ? 'move' : 'pointer',
+                    userSelect: 'none',
+                    '--node-glow-c': fill,
+                  }}
                   onMouseEnter={ev => handleNodeHover('node', n, ev)}
                   onMouseLeave={() => handleNodeHover(null, null, null)}
                   onMouseDown={e => e.stopPropagation()}
@@ -276,16 +274,14 @@ export default function CanvasTemplate({ scenarios }) {
                     type={n.type} cx={pos.x} cy={pos.y} w={NODE_W} h={NODE_H}
                     fill={`color-mix(in srgb, ${fill} 18%, transparent)`}
                     stroke={fill}
-                    strokeWidth={isDrag || n.state === 'active' ? 2.5 : 1.5}
+                    strokeWidth={isDrag || n.state === 'active' || isHover ? 2.5 : 1.5}
                     opacity={n.healthy === false ? 0.38 : 1}
                   />
-                  {/* icon — large, centered above midline */}
                   <text x={pos.x} y={pos.y - 3}
                     textAnchor="middle" fontSize="18" dominantBaseline="middle"
                     pointerEvents="none">
                     {n.icon ?? meta.icon}
                   </text>
-                  {/* label — below icon */}
                   <text x={pos.x} y={pos.y + 17}
                     textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
                     fill="var(--text-primary)" fontWeight="600" pointerEvents="none">
@@ -294,21 +290,20 @@ export default function CanvasTemplate({ scenarios }) {
                   {n.healthy === false && (
                     <text x={pos.x} y={pos.y - NODE_H / 2 - 6}
                       textAnchor="middle" fontSize="10" fill="var(--pod-crash)" pointerEvents="none">
-                      ✕ DOWN
+                      {'\u2715'} DOWN
                     </text>
                   )}
                   {isDrag && (
                     <rect x={pos.x - NODE_W / 2 - 4} y={pos.y - NODE_H / 2 - 4}
                       width={NODE_W + 8} height={NODE_H + 8} rx={12}
                       fill="none" stroke="var(--node-active)"
-                      strokeWidth={1} strokeDasharray="4 3" opacity={0.6}
+                      strokeWidth={1.5} strokeDasharray="4 3" opacity={0.6}
                     />
                   )}
                 </g>
               );
             })}
 
-            {/* ── Packets ── */}
             {packets.map(pkt => {
               const fn = nodes.find(n => n.id === pkt.from);
               const tn = nodes.find(n => n.id === pkt.to);
@@ -317,7 +312,7 @@ export default function CanvasTemplate({ scenarios }) {
                 <PacketDot
                   key={`${animKey}-${pkt.id}`}
                   from={nodePos(fn)} to={nodePos(tn)}
-                  color={PKT_COLOR[pkt.type] || PKT_COLOR.default}
+                  color={PKT_COLORS[pkt.type] || PKT_COLORS.default}
                   label={pkt.label} dur={pktDur}
                 />
               );
@@ -325,7 +320,6 @@ export default function CanvasTemplate({ scenarios }) {
           </g>
         </svg>
 
-        {/* ── Hover tooltip ── */}
         {hovered && (() => {
           const cw = canvasRef.current?.clientWidth ?? 800;
           const ch = canvasRef.current?.clientHeight ?? 400;
@@ -333,24 +327,22 @@ export default function CanvasTemplate({ scenarios }) {
           const ty = Math.min(hovered.sy + 12, ch - 140);
           return (
             <div className={styles.tooltip} style={{ left: tx, top: ty }}>
-              {hovered.kind === 'node' && <NodeTooltip node={hovered.data} />}
-              {hovered.kind === 'edge' && <EdgeTooltip edge={hovered.data} />}
+              {hovered.kind === 'node' && <CanvasNodeTooltip node={hovered.data} styles={styles} />}
+              {hovered.kind === 'edge' && <SvgEdgeTooltip edge={hovered.data} styles={styles} />}
             </div>
           );
         })()}
 
-        {/* ── Zoom controls ── */}
         <div className={styles.zoomBar}>
           <button className={styles.zBtn} title="Zoom in"
             onClick={() => setScale(s => Math.min(MAX_ZOOM, +(s * 1.3).toFixed(2)))}>+</button>
           <span className={styles.zLabel}>{Math.round(scale * 100)}%</span>
           <button className={styles.zBtn} title="Zoom out"
-            onClick={() => setScale(s => Math.max(MIN_ZOOM, +(s / 1.3).toFixed(2)))}>−</button>
+            onClick={() => setScale(s => Math.max(MIN_ZOOM, +(s / 1.3).toFixed(2)))}>\u2212</button>
           <button className={styles.zBtn} title="Fit to content"
-            onClick={fitToContent}>⊞</button>
+            onClick={fitToContent}>\u229E</button>
         </div>
 
-        {/* ── Legend ── */}
         <div className={styles.legend}>
           <span className={styles.legendItem}>
             <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--border)" strokeWidth="2"/><polygon points="16,1 22,4 16,7" fill="var(--border)"/></svg>
@@ -360,29 +352,23 @@ export default function CanvasTemplate({ scenarios }) {
             <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--kafka-producer)" strokeWidth="2" strokeDasharray="5 3"/><polygon points="16,1 22,4 16,7" fill="var(--kafka-producer)"/></svg>
             Async
           </span>
-          <span className={styles.legendHint}>Drag nodes · Scroll zoom · Pan bg</span>
+          <span className={styles.legendHint}>Drag nodes \u00B7 Scroll zoom \u00B7 Pan bg</span>
         </div>
       </div>
+  );
 
-      {events.length > 0 && (
-        <div className={styles.events}>
-          {events.slice(-5).map((ev, i) => (
-            <div key={i} className={`${styles.event} ${styles['ev_' + ev.type] || ''}`}>
-              <span className={styles.evDot} />
-              {ev.msg}
-            </div>
-          ))}
-        </div>
-      )}
-
+  return (
+    <div className={styles.wrapper}>
+      <ScenarioToolbar scenarios={scenarios} active={activeId} onChange={select} />
+      <NarrationPanel />
+      {canvasEl}
+      {hasConcepts && <ConceptPanel concepts={viz.concepts} />}
+      <SvgEventsList events={events} max={5} styles={styles} />
       {metrics.length > 0 && <MetricsPanel metrics={metrics} />}
       <StepControls />
     </div>
   );
 }
-
-// ── Node shapes — clean unified design ───────────────────────────────────────
-// client → circle, db → cylinder, everything else → rounded rect
 
 function NodeShape({ type, cx, cy, w, h, fill, stroke, strokeWidth, opacity }) {
   const p = { fill, stroke, strokeWidth };
@@ -402,20 +388,18 @@ function NodeShape({ type, cx, cy, w, h, fill, stroke, strokeWidth, opacity }) {
       </g>
     );
   }
-  // all other types → clean rounded rect
   return <rect x={cx - w/2} y={cy - h/2} width={w} height={h} rx={10} opacity={opacity} {...p} />;
 }
-
-// ── Animated packet dot ───────────────────────────────────────────────────────
 
 function PacketDot({ from, to, color, label, dur }) {
   const path = `M${from.x},${from.y} L${to.x},${to.y}`;
   return (
     <g>
-      <animateMotion dur={`${dur}s`} fill="freeze" begin="0s" path={path} />
-      <circle r={8} fill={color} opacity={0.95} filter="url(#pkt-glow)" />
+      <animateMotion dur={`${dur}s`} fill="freeze" begin="0s" path={path}
+        calcMode="spline" keySplines="0.4 0 0.6 1" keyTimes="0;1" />
+      <circle r={6} fill={color} opacity={0.95} filter="url(#pkt-glow)" />
       {label && (
-        <text textAnchor="middle" dy="-13" fontSize="8" fontFamily="var(--font-mono)"
+        <text textAnchor="middle" dy="-12" fontSize="8" fontFamily="var(--font-mono)"
           fill={color} fontWeight="700" pointerEvents="none">
           {label}
         </text>
@@ -424,9 +408,7 @@ function PacketDot({ from, to, color, label, dur }) {
   );
 }
 
-// ── Tooltips ──────────────────────────────────────────────────────────────────
-
-function NodeTooltip({ node }) {
+function CanvasNodeTooltip({ node, styles }) {
   const meta   = NODE_META[node.type] || NODE_META.default;
   const icon   = node.icon || meta.icon;
   const HIDDEN = ['id', 'label', 'type', 'x', 'y', 'state', 'desc', 'healthy', 'icon'];
@@ -439,23 +421,11 @@ function NodeTooltip({ node }) {
       {node.type  && <div className={styles.ttRow}><b>Type</b>  {node.type}</div>}
       {node.state && <div className={styles.ttRow}><b>State</b> {node.state}</div>}
       {node.desc  && <div className={styles.ttDesc}>{node.desc}</div>}
-      {node.healthy === false && <div className={styles.ttWarn}>⚠ Node is DOWN</div>}
+      {node.healthy === false && <div className={styles.ttWarn}>{'\u26A0'} Node is DOWN</div>}
       {extras.map(([k, v]) => (
         <div key={k} className={styles.ttRow}><b>{k}</b> {String(v)}</div>
       ))}
       <div className={styles.ttHint}>Drag to reposition</div>
-    </>
-  );
-}
-
-function EdgeTooltip({ edge }) {
-  return (
-    <>
-      <div className={styles.ttTitle}>{edge.from} → {edge.to}</div>
-      {edge.protocol && <div className={styles.ttRow}><b>Protocol</b> {edge.protocol}</div>}
-      <div className={styles.ttRow}><b>Pattern</b> {edge.async ? '⚡ Async (non-blocking)' : '⇄ Sync (blocking)'}</div>
-      {edge.label    && <div className={styles.ttRow}><b>Label</b>    {edge.label}</div>}
-      {edge.desc     && <div className={styles.ttDesc}>{edge.desc}</div>}
     </>
   );
 }

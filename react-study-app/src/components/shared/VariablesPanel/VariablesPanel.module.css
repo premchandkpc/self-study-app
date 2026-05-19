@@ -42,7 +42,7 @@
   align-items: center;
   gap: var(--space-xs);
   padding: 3px var(--space-sm);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 4%, transparent);
   animation: var-change 0.25s ease;
   min-height: 26px;
 }
@@ -50,7 +50,7 @@
 .row:last-child { border-bottom: none; }
 
 @keyframes var-change {
-  from { background: rgba(245, 158, 11, 0.08); }
+  from { background: color-mix(in srgb, var(--node-active) 8%, transparent); }
   to   { background: transparent; }
 }
 
@@ -84,8 +84,8 @@
 .valDefault { color: var(--text-secondary); font-size: var(--font-size-xs); }
 
 .valBool  { font-size: var(--font-size-xs); font-weight: 700; padding: 1px 6px; border-radius: var(--radius-full); }
-.valTrue  { background: rgba(34, 197, 94, 0.15); color: var(--text-success); border: 1px solid rgba(34,197,94,0.3); }
-.valFalse { background: rgba(239, 68, 68, 0.12); color: var(--text-error);   border: 1px solid rgba(239,68,68,0.25); }
+.valTrue  { background: color-mix(in srgb, var(--text-success) 15%, transparent); color: var(--text-success); border: 1px solid color-mix(in srgb, var(--text-success) 30%, transparent); }
+.valFalse { background: color-mix(in srgb, var(--text-error) 12%, transparent); color: var(--text-error);   border: 1px solid color-mix(in srgb, var(--text-error) 25%, transparent); }
 
 /* === CELLS (array / string) === */
 .cells {
@@ -118,7 +118,7 @@
   width: 16px;
   height: 18px;
   background: var(--bg-elevated);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  border: 1px solid color-mix(in srgb, var(--text-success) 30%, transparent);
   border-radius: 3px;
   font-size: 10px;
   color: var(--text-success);

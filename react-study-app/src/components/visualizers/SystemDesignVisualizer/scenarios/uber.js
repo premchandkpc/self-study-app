@@ -1,4 +1,12 @@
-import { snap, packet, clientNode, gatewayNode, serviceNode, redisNode, brokerNode, dbNode } from './shared.js';
+import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { ICONS } from '../sd-types';
+const _mk = createNodeFactory(ICONS);
+const clientNode = _mk('client');
+const gatewayNode = _mk('gateway');
+const serviceNode = _mk('service');
+const redisNode = _mk('redis');
+const brokerNode = _mk('broker');
+const dbNode = _mk('db');
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Uber System Design — full 14-component architecture

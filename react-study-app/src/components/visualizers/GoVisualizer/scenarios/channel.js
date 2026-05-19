@@ -1,4 +1,4 @@
-import { snap, G_STATES, goroutine, channel } from './shared';
+import { snap, G_STATES, goroutine, channel } from '@/core/utils/scenarioShared';
 
 function buildChannelSteps() {
   const steps = [];

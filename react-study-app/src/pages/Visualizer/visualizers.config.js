@@ -127,6 +127,18 @@ export const VISUALIZERS = {
     component: lazy(() => import('../../components/visualizers/NetworkingVisualizer/NetworkingVisualizer')),
     desc: 'TCP 3-way handshake, HTTP/1 vs HTTP/2 multiplexing, DNS resolution chain, LB algorithms.',
   },
+  microservices: {
+    label: 'Microservices — Circuit Breaker, Discovery, Gateway, Event-Driven',
+    icon: '🔌',
+    component: lazy(() => import('../../components/visualizers/MicroservicesVisualizer/MicroservicesVisualizer')),
+    desc: 'Circuit breaker states (Closed→Open→Half-Open), service discovery with health checks, API gateway routing, event-driven communication with retry and backoff.',
+  },
+  uber: {
+    label: 'Uber System Design — Ride Matching, GPS, Surge, Payments',
+    icon: '🚗',
+    component: lazy(() => import('../../components/visualizers/UberVisualizer/UberVisualizer')),
+    desc: 'Uber ride-hailing architecture: 14 components (Rider/Driver app, API Gateway, Auth, Ride Match, Location, Pricing, Trip, Payment, Redis, Kafka, PostgreSQL, WebSocket).',
+  },
   dp: {
     label: 'Dynamic Programming — Fibonacci, Coin Change, Knapsack, LCS, LIS',
     icon: '🧩',

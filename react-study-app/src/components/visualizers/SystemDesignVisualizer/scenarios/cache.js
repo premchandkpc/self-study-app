@@ -1,4 +1,10 @@
-import { snap, packet, clientNode, serverNode, cacheNode, dbNode } from './shared.js';
+import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { ICONS } from '../sd-types';
+const _mk = createNodeFactory(ICONS);
+const clientNode = _mk('client');
+const serverNode = _mk('server');
+const cacheNode = _mk('cache');
+const dbNode = _mk('db');
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Cache (Redis LRU) — cache-aside pattern

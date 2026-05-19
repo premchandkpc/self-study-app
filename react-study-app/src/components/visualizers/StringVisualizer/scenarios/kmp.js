@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const TEXT = 'ABABCABAB';
 const PATTERN = 'ABAB';

@@ -50,7 +50,7 @@
   background: var(--node-default);
   border: none;
   border-radius: 50%;
-  color: #fff;
+  color: var(--text-primary);
   cursor: pointer;
   font-size: 16px;
   transition: all var(--transition-fast);

@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const DEFAULT_ITEMS = [
   { label: 'A', wt: 2, val: 3 },

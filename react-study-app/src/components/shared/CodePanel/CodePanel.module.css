@@ -51,7 +51,7 @@
 }
 
 .line.activeLine {
-  background: rgba(227, 179, 65, 0.12);
+  background: color-mix(in srgb, var(--text-warn) 12%, transparent);
   border-left: 2px solid var(--text-warn);
 }
 

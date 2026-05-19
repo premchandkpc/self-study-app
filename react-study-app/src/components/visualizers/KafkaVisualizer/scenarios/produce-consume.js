@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildProduceConsumeSteps(producers = 2, partitions = 3, consumers = 2) {
   const steps = [];

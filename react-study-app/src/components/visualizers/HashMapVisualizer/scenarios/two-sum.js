@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const NUMS = [2, 7, 11, 15];
 const TARGET = 9;

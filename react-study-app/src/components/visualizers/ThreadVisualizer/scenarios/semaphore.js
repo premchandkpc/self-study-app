@@ -1,4 +1,4 @@
-import { snap, thread, T_STATES } from './shared';
+import { snap, thread, T_STATES } from '@/core/utils/scenarioShared';
 
 function buildSemaphoreSteps() {
   const CAPACITY = 2;

@@ -1,4 +1,4 @@
-import { snap, G_STATES, goroutine, processor } from './shared';
+import { snap, G_STATES, goroutine, processor } from '@/core/utils/scenarioShared';
 
 function buildGoroutineSteps() {
   const steps = [];

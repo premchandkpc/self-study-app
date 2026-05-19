@@ -1,4 +1,7 @@
-import { snap, packet, raftNode } from './shared.js';
+import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { ICONS } from '../sd-types';
+const _mk = createNodeFactory(ICONS);
+const raftNode = _mk('raft');
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Raft Consensus — leader election + log replication

@@ -1,4 +1,4 @@
-import { snap, INF } from './shared';
+import { snap, INF } from '@/core/utils/scenarioShared';
 
 function buildCoinChangeSteps({ coins = [1, 3, 4], target = 7 } = {}) {
   coins = coins.filter((c) => Number.isInteger(c) && c > 0).slice(0, 6);

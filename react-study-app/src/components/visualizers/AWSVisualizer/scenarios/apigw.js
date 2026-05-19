@@ -1,4 +1,4 @@
-import { snap, svc, pkt } from './shared';
+import { snap, svc, pkt } from '@/core/utils/scenarioShared';
 
 function buildAPIGWSteps() {
   const steps = [];

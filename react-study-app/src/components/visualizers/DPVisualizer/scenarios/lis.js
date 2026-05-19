@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildLISSteps({ arr = [2, 1, 5, 3, 6, 4, 8, 9] } = {}) {
   arr = arr.filter((v) => Number.isFinite(v)).slice(0, 12);

@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildPalinSubseqSteps({ str = 'BBBAB' } = {}) {
   str = str.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8) || 'BBBAB';

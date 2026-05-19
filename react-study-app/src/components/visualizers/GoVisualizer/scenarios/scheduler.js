@@ -1,4 +1,4 @@
-import { snap, G_STATES, goroutine } from './shared';
+import { snap, G_STATES, goroutine } from '@/core/utils/scenarioShared';
 
 function buildSchedulerSteps() {
   const steps = [];

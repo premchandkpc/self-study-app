@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildFibSteps({ n = 10 } = {}) {
   n = Math.max(2, Math.min(n, 20));

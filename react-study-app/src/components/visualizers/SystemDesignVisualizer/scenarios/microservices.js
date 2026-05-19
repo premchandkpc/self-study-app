@@ -1,4 +1,10 @@
-import { snap, packet, clientNode, gatewayNode, serviceNode, dbNode } from './shared.js';
+import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { ICONS } from '../sd-types';
+const _mk = createNodeFactory(ICONS);
+const clientNode = _mk('client');
+const gatewayNode = _mk('gateway');
+const serviceNode = _mk('service');
+const dbNode = _mk('db');
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Microservices + Circuit Breaker

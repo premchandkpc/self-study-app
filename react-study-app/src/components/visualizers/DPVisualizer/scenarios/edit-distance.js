@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 function buildEditDistSteps({ s1 = 'HORSE', s2 = 'ROS' } = {}) {
   s1 = s1.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8) || 'HORSE';

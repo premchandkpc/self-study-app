@@ -1,4 +1,4 @@
-import { makeNode } from './shared';
+import { makeNode } from '@/core/utils/scenarioShared';
 
 function buildServicesSteps() {
   const steps = [];

@@ -45,7 +45,13 @@ export const TOPICS = [
     id: 'system-design',
     label: 'System Design',
     icon: '🏗️',
-    subtopics: ['Load Balancer', 'Cache', 'CDN', 'Microservices', 'Raft'],
+    subtopics: ['Uber'],
+  },
+  {
+    id: 'microservices',
+    label: 'Microservices',
+    icon: '🔌',
+    subtopics: ['Load Balancer', 'Cache', 'CDN', 'Raft', 'Circuit Breaker', 'Service Discovery', 'API Gateway', 'Event-Driven'],
   },
   {
     id: 'sorting',
@@ -76,11 +82,5 @@ export const TOPICS = [
     label: 'Networking',
     icon: '🌐',
     subtopics: ['TCP Handshake', 'HTTP', 'DNS', 'Load Balancer'],
-  },
-  {
-    id: 'dp',
-    label: 'Dynamic Programming',
-    icon: '🧩',
-    subtopics: ['Fibonacci', 'Coin Change', 'Knapsack', 'LCS', 'LIS', 'Edit Distance', 'House Robber', 'Palindrome Subseq'],
   },
 ];

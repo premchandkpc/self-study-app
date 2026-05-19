@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const LEFT_TABLE = [
   { id: 1, name: 'Alice',   deptId: 10 },

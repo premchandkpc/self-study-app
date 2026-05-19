@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const SET_A = [1, 2, 3];
 const SET_B = [2, 3, 4];

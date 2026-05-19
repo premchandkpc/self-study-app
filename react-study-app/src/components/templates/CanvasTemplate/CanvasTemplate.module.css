@@ -1,10 +1,11 @@
-.wrapper { display: flex; flex-direction: column; gap: 12px; }
+.wrapper { display: flex; flex-direction: column; gap: var(--space-md); }
 
-/* ── infinite canvas ── */
 .canvas {
   position: relative;
+  min-height: 400px;
   height: 480px;
-  border-radius: 14px;
+
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   overflow: hidden;
   background-color: var(--bg-card);
@@ -14,6 +15,34 @@
 }
 
 .svg { width: 100%; height: 100%; display: block; }
+
+/* ── layer bands ── */
+.layer {
+  transition: opacity 0.35s ease, fill 0.35s ease;
+}
+.layer:hover {
+  opacity: 0.92 !important;
+}
+.layerLabel {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+
+/* ── nodes ── */
+.nodeGroup {
+  transition: filter 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+.nodeGroup:hover {
+  filter: drop-shadow(0 0 6px var(--node-glow-c, var(--node-default)));
+}
+.nodeGroup:active {
+  cursor: move;
+}
 
 /* ── zoom bar ── */
 .zoomBar {
@@ -25,9 +54,9 @@
   gap: 2px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 4px 6px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  box-shadow: var(--shadow-sm);
 }
 
 .zBtn {
@@ -37,9 +66,9 @@
   cursor: pointer;
   font-size: 16px;
   padding: 2px 7px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   line-height: 1;
-  transition: background 0.12s;
+  transition: background var(--transition-fast);
 }
 .zBtn:hover { background: var(--bg-hover); }
 
@@ -80,18 +109,25 @@
 /* ── hover tooltip ── */
 .tooltip {
   position: absolute;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
   padding: 10px 14px;
   min-width: 180px;
   max-width: 260px;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   font-family: var(--font-mono);
   color: var(--text-primary);
-  box-shadow: 0 4px 24px rgba(0,0,0,.4);
+  box-shadow: var(--shadow-lg);
   pointer-events: none;
-  z-index: 20;
+  z-index: var(--z-tooltip);
+  animation: tt-fade-in 0.15s ease;
+}
+@keyframes tt-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .ttTitle { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
 .ttRow   { display: flex; gap: 6px; margin: 3px 0; color: var(--text-muted); }
@@ -104,9 +140,14 @@
 .events { display: flex; flex-direction: column; gap: 4px; }
 .event  {
   display: flex; align-items: center; gap: 8px;
-  padding: 5px 10px; border-radius: 6px; font-size: 12px;
+  padding: 5px 10px; border-radius: var(--radius-xs); font-size: var(--font-size-sm);
   font-family: var(--font-mono); background: var(--bg-card);
+  border-left: 2px solid transparent;
 }
+.event.ok { border-left-color: var(--pod-running); }
+.event.warn { border-left-color: var(--node-comparing); }
+.event.error { border-left-color: var(--pod-crash); }
+.event.info { border-left-color: var(--text-muted); }
 .evDot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .ev_ok    { color: var(--pod-running); }
 .ev_warn  { color: var(--node-comparing); }

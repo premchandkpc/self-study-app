@@ -1,4 +1,4 @@
-import { snap, makeList } from './shared';
+import { snap, makeList } from '@/core/utils/scenarioShared';
 
 const DEFAULT_VALUES = [1, 2, 3, 4, 5];
 

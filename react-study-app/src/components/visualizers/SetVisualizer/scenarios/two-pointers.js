@@ -1,4 +1,4 @@
-import { snap } from './shared';
+import { snap } from '@/core/utils/scenarioShared';
 
 const DEFAULT_ARR1 = [1, 3, 5, 7];
 const DEFAULT_ARR2 = [2, 3, 6, 7];

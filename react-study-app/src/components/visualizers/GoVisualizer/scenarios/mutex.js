@@ -1,4 +1,4 @@
-import { G_STATES, goroutine } from './shared';
+import { G_STATES, goroutine } from '@/core/utils/scenarioShared';
 
 function buildMutexSteps() {
   const steps = [];

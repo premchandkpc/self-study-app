@@ -1,4 +1,4 @@
-import { snap, makeMatrix, cloneMatrix } from './shared';
+import { snap, makeMatrix, cloneMatrix } from '@/core/utils/scenarioShared';
 
 const VALUES = [
   [ 1,  2,  3,  4],

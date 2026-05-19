@@ -1,4 +1,4 @@
-import { snap, makePod, makeNode } from './shared';
+import { snap, makePod, makeNode } from '@/core/utils/scenarioShared';
 
 function buildRollingSteps() {
   const steps = [];

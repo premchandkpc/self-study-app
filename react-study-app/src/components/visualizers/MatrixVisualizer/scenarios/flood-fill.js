@@ -1,4 +1,4 @@
-import { snap, makeMatrix, cloneMatrix } from './shared';
+import { snap, makeMatrix, cloneMatrix } from '@/core/utils/scenarioShared';
 
 // 0=empty, 1=target color, 2=new color
 const VALUES = [

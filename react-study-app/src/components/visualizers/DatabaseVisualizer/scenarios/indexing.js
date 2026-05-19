@@ -1,4 +1,4 @@
-import { snap, makeRow } from './shared';
+import { snap, makeRow } from '@/core/utils/scenarioShared';
 
 const SAMPLE_ROWS = [
   makeRow(1, 'Alice',   28, 'CA'),
