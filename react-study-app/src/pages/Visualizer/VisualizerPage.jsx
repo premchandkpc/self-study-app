@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import { VISUALIZERS } from './visualizers.config';
 import Button from '../../components/shared/Button/Button';
+import Loading from '../../components/shared/Loading/Loading';
 import styles from './VisualizerPage.module.css';
 
 export default function VisualizerPage() {
@@ -35,7 +37,9 @@ export default function VisualizerPage() {
 
       <div className={styles.vizWrapper}>
         <SimulationProvider>
-          <Comp />
+          <Suspense fallback={<Loading label="Loading visualizer…" />}>
+            <Comp />
+          </Suspense>
         </SimulationProvider>
       </div>
     </div>

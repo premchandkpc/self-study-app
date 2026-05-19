@@ -14,8 +14,11 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'SET_STEPS':
-      return { ...state, steps: action.payload, currentStep: 0, isPlaying: false };
+    case 'SET_STEPS': {
+      const steps = action.payload;
+      if (!steps.length) return { ...state, steps, currentStep: 0, isPlaying: false };
+      return applyStep({ ...state, steps, isPlaying: false }, 0);
+    }
 
     case 'STEP_FORWARD': {
       if (state.currentStep >= state.steps.length - 1) return { ...state, isPlaying: false };
@@ -44,8 +47,11 @@ function reducer(state, action) {
     case 'SET_SPEED':
       return { ...state, speed: action.payload };
 
-    case 'RESET':
-      return { ...initialState, steps: state.steps, speed: state.speed };
+    case 'RESET': {
+      const steps = state.steps;
+      if (!steps.length) return { ...initialState, speed: state.speed };
+      return applyStep({ ...initialState, steps, speed: state.speed }, 0);
+    }
 
     default:
       return state;

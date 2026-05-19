@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card, { CardHeader, CardBody } from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
-import ArrayVisualizer from '../../components/visualizers/ArrayVisualizer/ArrayVisualizer';
-import GraphVisualizer from '../../components/visualizers/GraphVisualizer/GraphVisualizer';
-import KafkaVisualizer from '../../components/visualizers/KafkaVisualizer/KafkaVisualizer';
+import Loading from '../../components/shared/Loading/Loading';
 import { SimulationProvider } from '../../core/context/SimulationContext';
+
+const ArrayVisualizer = lazy(() => import('../../components/visualizers/ArrayVisualizer/ArrayVisualizer'));
+const GraphVisualizer = lazy(() => import('../../components/visualizers/GraphVisualizer/GraphVisualizer'));
+const KafkaVisualizer = lazy(() => import('../../components/visualizers/KafkaVisualizer/KafkaVisualizer'));
 import { TOPICS } from '../../core/constants/topics';
 import styles from './Home.module.css';
 
@@ -95,19 +97,25 @@ export default function Home({ onSelectTopic }) {
 
         {activeDemo === 'array' && (
           <SimulationProvider>
-            <ArrayVisualizer arr={[2, 1, 5, 1, 3, 2]} k={3} />
+            <Suspense fallback={<Loading />}>
+              <ArrayVisualizer arr={[2, 1, 5, 1, 3, 2]} k={3} />
+            </Suspense>
           </SimulationProvider>
         )}
 
         {activeDemo === 'graph' && (
           <SimulationProvider>
-            <GraphVisualizer />
+            <Suspense fallback={<Loading />}>
+              <GraphVisualizer />
+            </Suspense>
           </SimulationProvider>
         )}
 
         {activeDemo === 'kafka' && (
           <SimulationProvider>
-            <KafkaVisualizer />
+            <Suspense fallback={<Loading />}>
+              <KafkaVisualizer />
+            </Suspense>
           </SimulationProvider>
         )}
       </section>

@@ -41,7 +41,12 @@ export function useVisualizerScenario(scenarios) {
     _load(active, params);
   }
 
-  useEffect(() => { select(scenarios[0].id); }, []);
+  useEffect(() => {
+    const first = scenarios[0];
+    dispatch({ type: 'RESET' });
+    dispatch({ type: 'SET_STEPS', payload: first.build({}) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentional mount-only: scenarios ref is stable, dispatch is stable
 
   useEffect(() => {
     const step = state.steps[state.currentStep];
