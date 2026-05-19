@@ -1,21 +1,22 @@
 import { snap, node, packet } from './shared.js';
 
-/* ────────────────────────────────────────────
-   SCENARIO 3 — CDN
-   ──────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   CDN — Edge caching with TTL and cache invalidation
+   Layout: Clients (x≈60) · CDN Edge (x≈280) · Origin (x≈500)
+───────────────────────────────────────────────────────────────────────────── */
 function buildCDNSteps() {
   const steps = [];
   const s = {
     nodes: [
-      node('c1', 'Client (NYC)', 'client', 60, 100),
-      node('c2', 'Client (LON)', 'client', 60, 220),
-      node('edge', 'CDN Edge\n(Cloudflare)', 'cdn', 280, 160, { cached: false, ttl: 0, hit: 0, miss: 0 }),
-      node('origin', 'Origin Server', 'server', 500, 160, { load: 0 }),
+      node('c1',     'Client (NYC)', 'client', 60,  100, { icon: '💻', desc: 'NYC user — geographically close to CDN edge node' }),
+      node('c2',     'Client (LON)', 'client', 60,  220, { icon: '💻', desc: 'London user — same CDN edge, different origin region' }),
+      node('edge',   'CDN Edge\n(Cloudflare)', 'cdn', 280, 160, { icon: '🌐', desc: 'Cloudflare PoP · TTL-based cache · serves nearest edge · MISS→fetch origin', cached: false, ttl: 0, hit: 0, miss: 0 }),
+      node('origin', 'Origin Server', 'server', 500, 160, { icon: '🖥',  desc: 'Origin — authoritative content source · ~120ms round-trip from edge', load: 0 }),
     ],
     edges: [
-      { from: 'c1', to: 'edge' },
-      { from: 'c2', to: 'edge' },
-      { from: 'edge', to: 'origin' },
+      { from: 'c1',   to: 'edge',   protocol: 'HTTPS' },
+      { from: 'c2',   to: 'edge',   protocol: 'HTTPS' },
+      { from: 'edge', to: 'origin', protocol: 'HTTPS' },
     ],
     packets: [],
     events: [],
@@ -23,9 +24,8 @@ function buildCDNSteps() {
     activeEdge: null,
   };
 
-  snap(steps, s, 'CDN edge node sits geographically close to users. Origin server is far.', 1);
+  snap(steps, s, 'CDN edge node sits geographically close to users. Origin server is far away (~120ms round-trip).', 1);
 
-  // Cold request — cache miss at edge
   s.nodes[0].state = 'active';
   s.packets = [packet('c1', 'edge', 'GET /hero.jpg', 'request')];
   s.metrics.requests = 1;
@@ -45,13 +45,12 @@ function buildCDNSteps() {
   s.packets = [packet('origin', 'c1', '/hero.jpg (4MB)', 'response')];
   s.nodes[3].load = 0;
   s.events.push({ type: 'ok', msg: 'Edge caches /hero.jpg (TTL 3600s)' });
-  snap(steps, s, 'Edge caches content with TTL=1hr. Future requests served locally.', 4);
+  snap(steps, s, 'Edge caches content with TTL=1hr. Future requests served locally — no origin hit.', 4);
 
-  // Second request — cache HIT at edge
   s.nodes[1].state = 'active';
   s.packets = [packet('c2', 'edge', 'GET /hero.jpg', 'request')];
   s.metrics.requests = 2;
-  snap(steps, s, 'London client requests same asset. Edge checks cache…', 2);
+  snap(steps, s, 'London client requests same asset. Edge checks cache…', 3);
 
   s.nodes[2].state = 'ok';
   s.nodes[2].hit = 1;
@@ -61,7 +60,6 @@ function buildCDNSteps() {
   s.metrics.savedMs = 112;
   snap(steps, s, 'EDGE CACHE HIT! Served in 8ms. Origin not contacted. 112ms saved.', 5);
 
-  // Multiple requests cached
   s.metrics.requests = 10;
   s.metrics.edgeHits = 9;
   s.metrics.originHits = 1;
@@ -69,20 +67,19 @@ function buildCDNSteps() {
   s.events.push({ type: 'ok', msg: '10 requests: 9 cache hits (90% hit rate)' });
   snap(steps, s, '90% cache hit rate. Origin handles only 10% of traffic. Massive cost saving.', 6);
 
-  // Cache invalidation
   s.nodes[2].cached = false;
   s.nodes[2].ttl = 0;
   s.nodes[2].state = 'warn';
   s.events.push({ type: 'warn', msg: 'Cache purge: /hero.jpg invalidated (new deploy)' });
-  snap(steps, s, 'Deploy new version: CDN cache purged. Next request fetches fresh from origin.', 7);
+  snap(steps, s, 'Deploy new version: CDN cache purged via API. Next request fetches fresh from origin.', 7);
 
   return steps;
 }
 
 const CODE = [
-  '# CDN cache control',
+  '# CDN cache control headers',
   'Cache-Control: public, max-age=3600',
-  '# Invalidation',
+  '# Invalidation via API',
   'curl -X POST cdn/purge \\',
   '  -d "url=/hero.jpg"',
   '# Edge config (Cloudflare)',
@@ -91,13 +88,20 @@ const CODE = [
   'cache_key: host+url',
 ];
 
+const LAYERS = [
+  { label: 'Clients',  x1: 5,   x2: 165, color: 'rgba(100,140,255,0.06)', border: 'rgba(100,140,255,0.30)' },
+  { label: 'CDN Edge', x1: 175, x2: 385, color: 'rgba(255,160,50,0.06)',  border: 'rgba(255,160,50,0.35)'  },
+  { label: 'Origin',   x1: 395, x2: 580, color: 'rgba(60,200,120,0.06)',  border: 'rgba(60,200,120,0.28)'  },
+];
+
 export default {
   id: 'cdn',
   label: 'CDN',
   icon: '🌐',
+  layers: LAYERS,
   build: buildCDNSteps,
   code: CODE,
-  language: 'nginx/JS/shell',
+  language: 'HTTP/nginx',
   metrics: [
     { key: 'requests', label: 'Requests',  max: 10,   color: 'var(--node-default)' },
     { key: 'edgeHits', label: 'Edge Hits', max: 10,   color: 'var(--pod-running)' },

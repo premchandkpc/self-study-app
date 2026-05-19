@@ -1,21 +1,22 @@
 import { snap, node, packet } from './shared.js';
 
-/* ────────────────────────────────────────────
-   SCENARIO 2 — Cache (Redis LRU)
-   ──────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   Cache (Redis LRU) — cache-aside pattern
+   Layout: Client (x≈60) · App Server (x≈220) · Redis + DB (x≈400)
+───────────────────────────────────────────────────────────────────────────── */
 function buildCacheSteps() {
   const steps = [];
   const s = {
     nodes: [
-      node('client', 'Client', 'client', 60, 150),
-      node('app', 'App Server', 'server', 220, 150),
-      node('cache', 'Redis Cache', 'cache', 400, 60, { capacity: 3, entries: [] }),
-      node('db', 'PostgreSQL', 'db', 400, 240, {}),
+      node('client', 'Client',      'client', 60,  150, { icon: '💻', desc: 'Requests user data via app server' }),
+      node('app',    'App Server',  'server', 220, 150, { icon: '🖥',  desc: 'Cache-aside: check Redis first, fall back to DB on miss' }),
+      node('cache',  'Redis Cache', 'cache',  400, 60,  { icon: '⚡', desc: 'Redis LRU · capacity=3 · allkeys-lru eviction · ~1ms latency', capacity: 3, entries: [] }),
+      node('db',     'PostgreSQL',  'db',     400, 240, { icon: '🐘', desc: 'PostgreSQL — source of truth · ~20ms read latency' }),
     ],
     edges: [
-      { from: 'client', to: 'app' },
-      { from: 'app', to: 'cache' },
-      { from: 'app', to: 'db' },
+      { from: 'client', to: 'app',   protocol: 'HTTP' },
+      { from: 'app',    to: 'cache', protocol: 'Redis' },
+      { from: 'app',    to: 'db',    protocol: 'SQL' },
     ],
     packets: [],
     events: [],
@@ -23,9 +24,8 @@ function buildCacheSteps() {
     activeEdge: null,
   };
 
-  snap(steps, s, 'Cache-aside pattern: app checks Redis first, falls back to PostgreSQL.', 1);
+  snap(steps, s, 'Cache-aside pattern: app checks Redis first, falls back to PostgreSQL on miss.', 1);
 
-  // Request user:1 — cache miss
   s.nodes[0].state = 'active';
   s.nodes[1].state = 'active';
   s.packets = [packet('client', 'app', 'GET user:1', 'request')];
@@ -50,7 +50,6 @@ function buildCacheSteps() {
   s.packets = [packet('db', 'app', '{id:1, name:"Alice"}', 'response')];
   snap(steps, s, 'DB returns data. App stores in Redis with TTL=300s for future requests.', 5);
 
-  // Request user:1 again — cache HIT
   s.nodes[0].state = 'active';
   s.packets = [packet('app', 'cache', 'GET user:1', 'request')];
   s.activeEdge = 'app-cache';
@@ -63,7 +62,6 @@ function buildCacheSteps() {
   s.events.push({ type: 'ok', msg: 'Cache HIT user:1 — served from Redis in ~1ms' });
   snap(steps, s, 'CACHE HIT! Served from Redis. No DB query. Latency: ~1ms vs 20ms.', 6);
 
-  // Fill cache — LRU eviction
   s.nodes[2].entries = [{ key: 'user:1', ttl: 290 }, { key: 'user:2', ttl: 300 }, { key: 'user:3', ttl: 300 }];
   s.metrics.requests = 4; s.metrics.hits = 3; s.metrics.hitRate = 75;
   s.events.push({ type: 'info', msg: 'Cache full (capacity=3)' });
@@ -85,17 +83,24 @@ const CODE = [
   '  await redis.set(key, val, { EX: 300 });',
   '  return val;',
   '}',
-  '// LRU eviction: maxmemory-policy',
+  '// LRU: maxmemory-policy',
   '// allkeys-lru',
+];
+
+const LAYERS = [
+  { label: 'Client',     x1: 5,   x2: 132, color: 'rgba(100,140,255,0.06)', border: 'rgba(100,140,255,0.30)' },
+  { label: 'App Server', x1: 142, x2: 308, color: 'rgba(255,160,50,0.06)',  border: 'rgba(255,160,50,0.35)'  },
+  { label: 'Data Layer', x1: 318, x2: 480, color: 'rgba(60,200,120,0.06)',  border: 'rgba(60,200,120,0.28)'  },
 ];
 
 export default {
   id: 'cache',
   label: 'Caching',
   icon: '💾',
+  layers: LAYERS,
   build: buildCacheSteps,
   code: CODE,
-  language: 'nginx/JS/shell',
+  language: 'JavaScript',
   metrics: [
     { key: 'requests', label: 'Requests', max: 10,  color: 'var(--node-default)' },
     { key: 'hitRate',  label: 'Hit Rate', max: 100, unit: '%', color: 'var(--pod-running)' },

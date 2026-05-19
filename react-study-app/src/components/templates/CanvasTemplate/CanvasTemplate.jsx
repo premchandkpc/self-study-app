@@ -21,6 +21,7 @@ const NODE_META = {
   broker:  { color: 'var(--kafka-producer)', icon: '📬',   shape: 'rect'     },
   gateway: { color: 'var(--node-active)',    icon: '🛡️',  shape: 'hexagon'  },
   service: { color: 'var(--node-visited)',   icon: '⚙️',  shape: 'rect'     },
+  raft:    { color: 'var(--node-visited)',   icon: '⬡',    shape: 'circle'   },
   default: { color: 'var(--node-default)',   icon: '●',    shape: 'rect'     },
 };
 
@@ -394,7 +395,7 @@ export default function CanvasTemplate({ scenarios }) {
 
 function NodeShape({ type, cx, cy, w, h, fill, stroke, strokeWidth, opacity }) {
   const p = { fill, stroke, strokeWidth };
-  if (type === 'client') {
+  if (type === 'client' || type === 'raft') {
     const r = Math.min(w, h) / 2 + 2;
     return <circle cx={cx} cy={cy} r={r} opacity={opacity} {...p} />;
   }
