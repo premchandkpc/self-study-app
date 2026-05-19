@@ -28,12 +28,14 @@ export default function DynamicViz({ viz }) {
 function detectType(viz) {
   if (viz.cells)                               return 'array';
   if (viz.arr && viz.arr[0]?.state !== undefined) return 'sort';
-  if (viz.nodes && 'origNext' in viz)          return 'linkedlist';
+  // linkedlist: reverse (nodes+origNext), cycle (nodes+cycleTarget), merge (list1)
+  if (viz.nodes && Array.isArray(viz.nodes))   return 'linkedlist';
+  if (viz.list1 !== undefined)                 return 'linkedlist';
   if (viz.tree)                                return 'tree';
   if (viz.nodeStates)                          return 'graph';
   if (viz.matrix)                              return 'matrix';
   if (viz.buckets)                             return 'hashmap';
-  if (viz.dp)                                  return 'dp';
+  if (viz.dp || viz.table)                     return 'dp';
   if (viz.chars || viz.str !== undefined || viz.text)  return 'string';
   if (viz.setA || viz.arr1 || (viz.nums && viz.k !== undefined)) return 'set';
   return null;
@@ -67,6 +69,10 @@ const NODE_COLOR = {
   prev:      'var(--node-comparing)',
   next:      'var(--kafka-producer)',
   idle:      'var(--node-default)',
+  // cycle detect
+  slow:      'var(--node-comparing)',
+  fast:      'var(--pod-crash)',
+  meet:      'var(--node-visited)',
 };
 
 // ─── Array cells ─────────────────────────────────────────────────────────────
@@ -123,28 +129,71 @@ function SortViz({ viz }) {
 
 // ─── Linked list ──────────────────────────────────────────────────────────────
 
+// State → pointer label for debug display
+const LL_PTR_LABEL = {
+  prev: 'prev', curr: 'curr', next: 'next',
+  slow: 'slow', fast: 'fast', meet: 'slow=fast',
+  active: '●', done: '✓',
+};
+
+function LLNode({ n }) {
+  const color = NODE_COLOR[n.state] || NODE_COLOR.idle;
+  const lbl   = LL_PTR_LABEL[n.state];
+  return (
+    <div className={styles.llNode} style={{ '--nc': color }}>
+      <div className={styles.llVal}>{n.val}</div>
+      {lbl && <div className={styles.llPtr}>{lbl}</div>}
+    </div>
+  );
+}
+
+function LLRow({ nodes, label, cycleTarget = -1 }) {
+  const isCyclic = cycleTarget >= 0;
+  return (
+    <div className={styles.llSection}>
+      {label && <span className={styles.llSectionLbl}>{label}</span>}
+      <div className={styles.llWrap}>
+        {nodes.map((n, i) => {
+          const isLast = i === nodes.length - 1;
+          return (
+            <div key={n.id ?? i} className={styles.llItem}>
+              <LLNode n={n} />
+              {isLast
+                ? isCyclic
+                  ? <span className={styles.llCycleArrow}>↩ [{cycleTarget}]</span>
+                  : <span className={styles.llNull}>→ ∅</span>
+                : <span className={styles.llArrow}>→</span>
+              }
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function LinkedListViz({ viz }) {
-  const { nodes = [], pointers = {} } = viz;
+  // ── Merge sorted: list1 + list2 + mergedNodes ──
+  if (viz.list1 !== undefined) {
+    const list1  = viz.list1  || [];
+    const list2  = viz.list2  || [];
+    const merged = viz.mergedNodes || [];
+    return (
+      <div className={styles.llMultiWrap}>
+        <LLRow nodes={list1}  label="L1" />
+        <LLRow nodes={list2}  label="L2" />
+        {merged.length > 0 && <LLRow nodes={merged} label="Merged" />}
+      </div>
+    );
+  }
+
+  // ── Single list: reverse (origNext) or cycle (cycleTarget) ──
+  const nodes      = viz.nodes || [];
+  const cycleTarget = viz.cycleTarget ?? -1;
 
   return (
-    <div className={styles.llWrap}>
-      {nodes.map((n, i) => {
-        const color = NODE_COLOR[n.state] || NODE_COLOR.default;
-        const ptrs = Object.entries(pointers)
-          .filter(([, v]) => v === n.val || v === i)
-          .map(([k]) => k);
-
-        return (
-          <div key={i} className={styles.llItem}>
-            <div className={styles.llNode} style={{ '--nc': color }}>
-              <span className={styles.llVal}>{n.val}</span>
-              {ptrs.length > 0 && <span className={styles.llPtr}>{ptrs.join('/')}</span>}
-            </div>
-            {i < nodes.length - 1 && <span className={styles.llArrow}>→</span>}
-          </div>
-        );
-      })}
-      <div className={styles.llNull}>∅</div>
+    <div className={styles.llMultiWrap}>
+      <LLRow nodes={nodes} cycleTarget={cycleTarget} />
     </div>
   );
 }
@@ -271,18 +320,26 @@ function MatrixViz({ viz }) {
 // ─── HashMap ─────────────────────────────────────────────────────────────────
 
 function HashMapViz({ viz }) {
-  const { buckets = [], activeIndex = -1, resultIndices = [] } = viz;
+  const { buckets = [], activeBucket = -1, resultIndices = [] } = viz;
 
   return (
     <div className={styles.hmWrap}>
-      {buckets.map((bucket, i) => (
-        <div key={i} className={styles.hmBucket}>
-          <span className={styles.hmIdx}>[{i}]</span>
-          {bucket.map((entry, j) => (
-            <span key={j} className={styles.hmEntry}>{entry.key}:{entry.value}</span>
-          ))}
-        </div>
-      ))}
+      {buckets.map((bucket, i) => {
+        const isActive = i === activeBucket;
+        return (
+          <div key={i} className={styles.hmBucket}
+            style={{ border: isActive ? '1.5px solid var(--node-active)' : undefined, background: isActive ? 'color-mix(in srgb, var(--node-active) 10%, transparent)' : undefined }}>
+            <span className={styles.hmIdx}>[{i}]</span>
+            {bucket.map((entry, j) => (
+              <span key={j} className={styles.hmEntry}
+                style={{ background: isActive ? 'var(--node-active)' : undefined }}>
+                {entry.key}:{entry.value}
+              </span>
+            ))}
+            {bucket.length === 0 && <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>—</span>}
+          </div>
+        );
+      })}
       {resultIndices.length > 0 && (
         <div className={styles.hmResult}>Result: [{resultIndices.join(', ')}]</div>
       )}
@@ -292,35 +349,78 @@ function HashMapViz({ viz }) {
 
 // ─── DP table ────────────────────────────────────────────────────────────────
 
+const INF_VAL = 999;
+
+function dpColor(i, active, base, deps) {
+  if (i === active)       return CELL_COLOR.active;
+  if (deps.includes(i))   return CELL_COLOR.comparing;
+  if (base.includes(i))   return CELL_COLOR.done;
+  return CELL_COLOR.idle;
+}
+
 function DPViz({ viz }) {
-  const { dp = [] } = viz;
-  if (!dp.length) return null;
+  const is2D = viz.kind === '2d' || (viz.table && !viz.dp);
 
-  const is2D = Array.isArray(dp[0]);
+  if (is2D) {
+    const table     = viz.table || [];
+    const aR        = viz.activeRow ?? -1;
+    const aC        = viz.activeCol ?? -1;
+    const deps      = viz.deps    || [];
+    const rowLabels = viz.rowLabels || [];
+    const colLabels = viz.colLabels || [];
+    if (!table.length) return null;
 
-  if (!is2D) {
     return (
-      <div className={styles.dpRow}>
-        {dp.map((cell, i) => (
-          <div key={i} className={styles.dpCell} style={{ '--cc': CELL_COLOR[cell.state] || CELL_COLOR.idle }}>
-            {cell.val ?? cell}
+      <div className={styles.dpGrid} style={{ overflowX: 'auto' }}>
+        {/* col headers */}
+        <div className={styles.dpGridRow}>
+          <div className={styles.dpHdr} style={{ minWidth: 52, background: 'transparent', border: 'none' }} />
+          {colLabels.map((lbl, c) => (
+            <div key={c} className={styles.dpHdr}>{lbl}</div>
+          ))}
+        </div>
+        {table.map((row, r) => (
+          <div key={r} className={styles.dpGridRow}>
+            <div className={styles.dpHdr}>{rowLabels[r] ?? r}</div>
+            {row.map((val, c) => {
+              const isDep    = deps.some((d) => d.r === r && d.c === c);
+              const isActive = r === aR && c === aC;
+              let color = CELL_COLOR.idle;
+              if (isActive) color = CELL_COLOR.active;
+              else if (isDep) color = CELL_COLOR.comparing;
+              return (
+                <div key={c} className={styles.dpCell} style={{ '--cc': color }}>
+                  {val === INF_VAL ? '∞' : val}
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
     );
   }
 
+  // 1D
+  const dp     = viz.dp || [];
+  const active = viz.active ?? -1;
+  const base   = viz.base   || [];
+  const deps   = viz.deps   || [];
+  const labels = viz.labels || dp.map((_, i) => `[${i}]`);
+
+  if (!dp.length) return null;
+
   return (
-    <div className={styles.dpGrid}>
-      {dp.map((row, r) => (
-        <div key={r} className={styles.dpGridRow}>
-          {row.map((cell, c) => (
-            <div key={c} className={styles.dpCell} style={{ '--cc': CELL_COLOR[cell.state] || CELL_COLOR.idle }}>
-              {cell.val ?? cell}
+    <div style={{ padding: 12, overflowX: 'auto' }}>
+      <div className={styles.dpRow}>
+        {dp.map((val, i) => (
+          <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <div className={styles.dpHdr}>{labels[i]}</div>
+            <div className={styles.dpCell} style={{ '--cc': dpColor(i, active, base, deps) }}>
+              {val === INF_VAL ? '∞' : val ?? '?'}
             </div>
-          ))}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

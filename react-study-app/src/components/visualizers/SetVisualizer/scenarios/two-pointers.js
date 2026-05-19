@@ -1,9 +1,16 @@
 import { snap } from './shared';
 
-const ARR1 = [1, 3, 5, 7];
-const ARR2 = [2, 3, 6, 7];
+const DEFAULT_ARR1 = [1, 3, 5, 7];
+const DEFAULT_ARR2 = [2, 3, 6, 7];
 
-function buildTwoPointersSteps() {
+function buildTwoPointersSteps({ arr1: a1In = DEFAULT_ARR1, arr2: a2In = DEFAULT_ARR2 } = {}) {
+  const ARR1 = (Array.isArray(a1In) ? a1In.filter((v) => Number.isFinite(v)) : DEFAULT_ARR1)
+    .slice(0, 8).sort((a, b) => a - b);
+  const ARR2 = (Array.isArray(a2In) ? a2In.filter((v) => Number.isFinite(v)) : DEFAULT_ARR2)
+    .slice(0, 8).sort((a, b) => a - b);
+  if (!ARR1.length) ARR1.push(...DEFAULT_ARR1);
+  if (!ARR2.length) ARR2.push(...DEFAULT_ARR2);
+
   const steps = [];
   const result = [];
   const seen = {};
@@ -28,21 +35,13 @@ function buildTwoPointersSteps() {
     let fromArr;
 
     if (i >= ARR1.length) {
-      picked = ARR2[j];
-      fromArr = 'B';
-      j++;
+      picked = ARR2[j]; fromArr = 'B'; j++;
     } else if (j >= ARR2.length) {
-      picked = ARR1[i];
-      fromArr = 'A';
-      i++;
+      picked = ARR1[i]; fromArr = 'A'; i++;
     } else if (ARR1[i] <= ARR2[j]) {
-      picked = ARR1[i];
-      fromArr = 'A';
-      i++;
+      picked = ARR1[i]; fromArr = 'A'; i++;
     } else {
-      picked = ARR2[j];
-      fromArr = 'B';
-      j++;
+      picked = ARR2[j]; fromArr = 'B'; j++;
     }
 
     state.activeI = i - (fromArr === 'A' ? 1 : 0);
@@ -93,6 +92,10 @@ export default {
   label: 'Sorted Set Merge',
   icon: '↔️',
   build: buildTwoPointersSteps,
+  inputs: [
+    { key: 'arr1', label: 'Array A (comma-sep)', type: 'array-num', default: DEFAULT_ARR1 },
+    { key: 'arr2', label: 'Array B (comma-sep)', type: 'array-num', default: DEFAULT_ARR2 },
+  ],
   code: TWO_PTR_CODE,
   language: 'JavaScript',
   metrics: [

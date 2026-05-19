@@ -12,11 +12,24 @@ import styles from './DSATemplate.module.css';
 
 // Fields used only for rendering — excluded from auto-extracted variables
 const VIZ_STRUCTURAL = new Set([
+  // large render arrays
   'cells','arr','nodes','origNext','tree','nodeStates','edgeStates',
   'matrix','buckets','dp','chars','str','text','setA','setB','arr1','arr2','nums',
+  // meta fields
   'type','narration','codeLine','events','complexity','vars','result',
-  'union','intersect','diff','highlightA','highlightB','visited',
-  'pointers','window',
+  // set viz rendering
+  'union','intersect','diff','highlightA','highlightB','visited','cycleTarget',
+  // sorting/visual-only render state
+  'heapSize','groups','partitionRange','metrics',
+  // LL / string / hashmap render fields
+  'list1','list2','mergedNodes','reversed','charStates','patternStates',
+  'activeBucket','activeIndex','activeOp','resultIndices',
+  // pointer/window render objects (vars has the actual values)
+  'pointers','window','queue','path','prefix','query',
+  // DP render directives (not algo vars — render layout hints)
+  'base','active','deps','kind','rowLabels','colLabels','labels','table',
+  // index highlight arrays (render only)
+  'activeRow','activeCol','activeI','activeJ','windowIndices','foundIndices',
 ]);
 
 function extractVars(viz) {

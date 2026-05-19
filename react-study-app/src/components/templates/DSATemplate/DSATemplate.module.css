@@ -26,19 +26,24 @@
 .barVal   { font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); }
 
 /* ── linked list ── */
-.llWrap  { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 12px; }
-.llItem  { display: flex; align-items: center; gap: 4px; }
+.llWrap       { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 8px 12px; }
+.llMultiWrap  { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
+.llSection    { display: flex; align-items: center; gap: 6px; }
+.llSectionLbl { font-size: 10px; font-family: var(--font-mono); font-weight: 700; color: var(--text-muted); min-width: 52px; }
+.llItem  { display: flex; align-items: center; gap: 3px; }
 .llNode  {
   border: 2px solid var(--nc, var(--border));
   background: color-mix(in srgb, var(--nc, var(--border)) 15%, transparent);
-  border-radius: 8px; padding: 6px 12px; font-family: var(--font-mono);
+  border-radius: 8px; padding: 5px 10px; font-family: var(--font-mono);
   font-size: 14px; font-weight: 700; color: var(--text-primary);
-  position: relative; display: flex; flex-direction: column; align-items: center;
+  position: relative; display: flex; flex-direction: column; align-items: center; min-width: 36px;
+  transition: background 0.2s, border-color 0.2s;
 }
-.llVal   { font-size: 14px; }
-.llPtr   { font-size: 9px; color: var(--nc, var(--node-active)); }
-.llArrow { font-size: 18px; color: var(--text-muted); }
-.llNull  { font-size: 16px; color: var(--text-muted); padding: 4px 8px; }
+.llVal       { font-size: 14px; line-height: 1; }
+.llPtr       { font-size: 9px; color: var(--nc, var(--node-active)); font-weight: 700; margin-top: 2px; white-space: nowrap; }
+.llArrow     { font-size: 16px; color: var(--text-muted); user-select: none; }
+.llCycleArrow{ font-size: 12px; color: var(--pod-crash); font-family: var(--font-mono); font-weight: 700; padding: 2px 4px; border: 1px dashed var(--pod-crash); border-radius: 4px; }
+.llNull      { font-size: 14px; color: var(--text-muted); padding: 4px 8px; }
 
 /* ── tree ── */
 .treeWrap     { padding: 12px; }
@@ -79,15 +84,22 @@
 .hmResult { margin-top: 8px; font-size: 13px; color: var(--node-visited); font-weight: 700; }
 
 /* ── DP ── */
-.dpRow     { display: flex; gap: 4px; padding: 12px; flex-wrap: wrap; }
-.dpGrid    { display: flex; flex-direction: column; gap: 4px; padding: 12px; }
-.dpGridRow { display: flex; gap: 4px; }
+.dpRow     { display: flex; gap: 4px; flex-wrap: wrap; }
+.dpGrid    { display: flex; flex-direction: column; gap: 3px; padding: 8px; }
+.dpGridRow { display: flex; gap: 3px; align-items: center; }
 .dpCell    {
-  min-width: 36px; height: 36px;
+  min-width: 34px; height: 34px;
   border: 1.5px solid var(--cc, var(--border));
   background: color-mix(in srgb, var(--cc, var(--border)) 15%, transparent);
   border-radius: 4px; display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--text-primary);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-primary);
+  transition: background 0.2s, border-color 0.2s;
+}
+.dpHdr {
+  min-width: 34px; height: 22px; padding: 0 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 600; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 /* ── string ── */

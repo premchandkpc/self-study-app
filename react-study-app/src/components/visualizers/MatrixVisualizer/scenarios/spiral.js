@@ -50,7 +50,7 @@ function build() {
     order.slice(0, -1).forEach(([pr, pc]) => { s.matrix[pr][pc].state = 'visited'; });
     s.matrix[r][c].state = 'active';
     s.path = [...order];
-    s.vars = { top, bottom: bot, left, right, direction, result: [...result] };
+    s.vars = { r, c, top, bottom: bot, left, right, direction, 'cell value': VALUES[r][c], result: [...result] };
     s.complexity = { ops: result.length, label: 'O(m·n)', space: 'O(m·n)' };
     snap(steps, s, `${direction}: visit [${r}][${c}]=${VALUES[r][c]}. result=[${result.join(',')}]`, direction === 'right' ? 4 : direction === 'down' ? 6 : direction === 'left' ? 8 : 9);
   }

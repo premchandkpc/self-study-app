@@ -55,7 +55,7 @@ function buildQuickSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
         if (idx < lo || idx > hi) return { val: v, state: 'sorted' };
         return { val: v, state: 'idle' };
       });
-      s.vars = { pivot, lo, hi, partitionIdx: i + 1 };
+      s.vars = { pivot, lo, hi, i, j, 'arr[j]': arr[j], partitionIdx: i + 1 };
       snap(steps, s, `Compare arr[${j}]=${arr[j]} ≤ pivot=${pivot}? ${arr[j] <= pivot ? 'Yes → move left' : 'No → leave right'}.`, 6, 'O(n log n) avg');
 
       if (arr[j] <= pivot) {
@@ -69,6 +69,7 @@ function buildQuickSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
           if (idx < lo || idx > hi) return { val: v, state: 'sorted' };
           return { val: v, state: 'idle' };
         });
+        s.vars = { pivot, lo, hi, i, j, 'arr[i]': arr[i], 'arr[j]': arr[j], partitionIdx: i + 1 };
         snap(steps, s, `Swap arr[${i}] ↔ arr[${j}]. Left partition grows.`, 7, 'O(n log n) avg');
       }
     }

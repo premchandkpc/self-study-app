@@ -15,10 +15,11 @@ export function buildBFSSteps(nodes, edges, startId) {
   const queue = [startId];
   visited.add(startId);
 
-  function snapshot(nodeStates, edgeStates, narration, codeLine) {
+  function snapshot(nodeStates, edgeStates, narration, codeLine, vars = {}) {
     steps.push({
       nodeStates: { ...nodeStates },
       edgeStates: { ...edgeStates },
+      vars,
       narration,
       codeLine,
       complexity: { ops: steps.length + 1, label: 'O(V+E)', space: 'O(V)' },
@@ -31,12 +32,14 @@ export function buildBFSSteps(nodes, edges, startId) {
   );
 
   nodeStates[startId] = 'active';
-  snapshot(nodeStates, edgeStates, `BFS starts at node ${startId}. Push to queue.`, 2);
+  snapshot(nodeStates, edgeStates, `BFS starts at node ${startId}. Push to queue.`, 2,
+    { curr: null, queue: [...queue], visited: [...visited], neighbor: null });
 
   while (queue.length) {
     const curr = queue.shift();
     nodeStates[curr] = 'visiting';
-    snapshot(nodeStates, edgeStates, `Dequeue ${curr}. Visit neighbors.`, 5);
+    snapshot(nodeStates, edgeStates, `Dequeue ${curr}. Visit neighbors.`, 5,
+      { curr, queue: [...queue], visited: [...visited], neighbor: null });
 
     for (const neighbor of adj[curr]) {
       const edgeKey = `${curr}-${neighbor}`;
@@ -46,31 +49,25 @@ export function buildBFSSteps(nodes, edges, startId) {
         queue.push(neighbor);
         edgeStates[edgeKey] = edgeStates[edgeKeyRev] = 'active';
         nodeStates[neighbor] = 'active';
-        snapshot(
-          nodeStates,
-          edgeStates,
-          `${curr} → ${neighbor}: unvisited. Enqueue ${neighbor}.`,
-          7
-        );
+        snapshot(nodeStates, edgeStates, `${curr} → ${neighbor}: unvisited. Enqueue ${neighbor}.`, 7,
+          { curr, neighbor, queue: [...queue], visited: [...visited] });
       } else {
         edgeStates[edgeKey] = edgeStates[edgeKeyRev] = 'visited';
-        snapshot(
-          nodeStates,
-          edgeStates,
-          `${curr} → ${neighbor}: already visited. Skip.`,
-          8
-        );
+        snapshot(nodeStates, edgeStates, `${curr} → ${neighbor}: already visited. Skip.`, 8,
+          { curr, neighbor, queue: [...queue], visited: [...visited] });
       }
     }
     nodeStates[curr] = 'visited';
-    snapshot(nodeStates, edgeStates, `${curr} fully processed. Mark visited.`, 10);
+    snapshot(nodeStates, edgeStates, `${curr} fully processed. Mark visited.`, 10,
+      { curr, queue: [...queue], visited: [...visited], neighbor: null });
   }
 
   Object.keys(nodeStates).forEach((id) => {
     if (nodeStates[id] !== 'visited') nodeStates[id] = 'done';
     else nodeStates[id] = 'done';
   });
-  snapshot(nodeStates, edgeStates, `BFS complete. All reachable nodes visited.`, 12);
+  snapshot(nodeStates, edgeStates, `BFS complete. All reachable nodes visited.`, 12,
+    { curr: null, queue: [], visited: [...visited], neighbor: null });
   return steps;
 }
 
@@ -84,10 +81,11 @@ export function buildDFSSteps(nodes, edges, startId) {
     edges.map((e) => [`${e.from}-${e.to}`, 'default'])
   );
 
-  function snapshot(narration, codeLine) {
+  function snapshot(narration, codeLine, vars = {}) {
     steps.push({
       nodeStates: { ...nodeStates },
       edgeStates: { ...edgeStates },
+      vars,
       narration,
       codeLine,
       complexity: { ops: steps.length + 1, label: 'O(V+E)', space: 'O(V)' },
@@ -97,27 +95,32 @@ export function buildDFSSteps(nodes, edges, startId) {
   function dfs(node) {
     visited.add(node);
     nodeStates[node] = 'active';
-    snapshot(`DFS enters ${node}. Mark active.`, 3);
+    snapshot(`DFS enters ${node}. Mark active.`, 3,
+      { node, neighbor: null, visited: [...visited], stack: node });
 
     for (const neighbor of adj[node]) {
       const ek = `${node}-${neighbor}`;
       const ekr = `${neighbor}-${node}`;
       if (!visited.has(neighbor)) {
         edgeStates[ek] = edgeStates[ekr] = 'active';
-        snapshot(`${node} → ${neighbor}: recurse deeper.`, 6);
+        snapshot(`${node} → ${neighbor}: recurse deeper.`, 6,
+          { node, neighbor, visited: [...visited], action: 'recurse' });
         dfs(neighbor);
         edgeStates[ek] = edgeStates[ekr] = 'visited';
       } else {
-        snapshot(`${node} → ${neighbor}: already visited. Back-edge.`, 8);
+        snapshot(`${node} → ${neighbor}: already visited. Back-edge.`, 8,
+          { node, neighbor, visited: [...visited], action: 'back-edge' });
       }
     }
     nodeStates[node] = 'visited';
-    snapshot(`${node} backtrack. Mark done.`, 10);
+    snapshot(`${node} backtrack. Mark done.`, 10,
+      { node, neighbor: null, visited: [...visited], action: 'backtrack' });
   }
 
   dfs(startId);
   Object.keys(nodeStates).forEach((id) => (nodeStates[id] = 'done'));
-  snapshot('DFS complete.', 12);
+  snapshot('DFS complete.', 12,
+    { node: null, neighbor: null, visited: [...visited], action: 'done' });
   return steps;
 }
 
@@ -160,7 +163,26 @@ const _NODES = [
 ];
 const _EDGES = [['A','B'],['A','C'],['B','D'],['B','E'],['C','F'],['C','G']].map(([from, to]) => ({ from, to }));
 
+const _VALID_IDS = new Set(_NODES.map((n) => n.id));
+const _ID_LIST = _NODES.map((n) => n.id).join(', ');
+
 export const SCENARIOS = [
-  { id: 'bfs', label: 'BFS', icon: '🌊', build: () => buildBFSSteps(_NODES, _EDGES, 'A'), code: BFS_CODE, language: 'JavaScript' },
-  { id: 'dfs', label: 'DFS', icon: '🌀', build: () => buildDFSSteps(_NODES, _EDGES, 'A'), code: DFS_CODE, language: 'JavaScript' },
+  {
+    id: 'bfs', label: 'BFS', icon: '🌊',
+    build: ({ start = 'A' } = {}) => {
+      const s = _VALID_IDS.has(String(start).toUpperCase()) ? String(start).toUpperCase() : 'A';
+      return buildBFSSteps(_NODES, _EDGES, s);
+    },
+    inputs: [{ key: 'start', label: `Start node (${_ID_LIST})`, type: 'string', default: 'A', maxLen: 1 }],
+    code: BFS_CODE, language: 'JavaScript', metrics: [],
+  },
+  {
+    id: 'dfs', label: 'DFS', icon: '🌀',
+    build: ({ start = 'A' } = {}) => {
+      const s = _VALID_IDS.has(String(start).toUpperCase()) ? String(start).toUpperCase() : 'A';
+      return buildDFSSteps(_NODES, _EDGES, s);
+    },
+    inputs: [{ key: 'start', label: `Start node (${_ID_LIST})`, type: 'string', default: 'A', maxLen: 1 }],
+    code: DFS_CODE, language: 'JavaScript', metrics: [],
+  },
 ];

@@ -1,16 +1,20 @@
 import { snap } from './shared';
 
-const NUMS = [1, 2, 3, 1, 4, 2];
-const K = 2;
+const DEFAULT_NUMS = [1, 2, 3, 1, 4, 2];
+const DEFAULT_K = 2;
 
-function buildContainsDuplicateSteps() {
+function buildContainsDuplicateSteps({ nums: numsIn = DEFAULT_NUMS, k: kIn = DEFAULT_K } = {}) {
+  const NUMS = Array.isArray(numsIn) ? numsIn.filter((v) => Number.isFinite(v)).slice(0, 10) : DEFAULT_NUMS;
+  const K = Math.max(1, Math.floor(Number(kIn) || DEFAULT_K));
+  const validNums = NUMS.length >= 2 ? NUMS : DEFAULT_NUMS;
+
   const steps = [];
-  const window = {};  // value → last index seen
+  const window = {};
   let found = false;
   let foundPair = null;
 
   const state = {
-    nums: [...NUMS],
+    nums: [...validNums],
     k: K,
     activeIndex: -1,
     windowIndices: [],
@@ -21,10 +25,9 @@ function buildContainsDuplicateSteps() {
 
   snap(steps, state, `Contains Duplicate: find nums[i]==nums[j] where |i-j|<=${K}. Sliding set window.`, 1);
 
-  for (let i = 0; i < NUMS.length; i++) {
-    const num = NUMS[i];
+  for (let i = 0; i < validNums.length; i++) {
+    const num = validNums[i];
 
-    // Remove elements outside window
     const expiredKey = Object.entries(window).find(([, idx]) => i - idx > K);
     if (expiredKey) {
       delete window[expiredKey[0]];
@@ -53,11 +56,11 @@ function buildContainsDuplicateSteps() {
   }
 
   if (!found) {
-    state.vars = { i: NUMS.length, k: K, window: { ...window }, found: false };
+    state.vars = { i: validNums.length, k: K, window: { ...window }, found: false };
     snap(steps, state, `No duplicate within distance k=${K} found.`, 7);
   } else {
     state.activeIndex = -1;
-    snap(steps, state, `Done. Duplicate pair: nums[${foundPair[0]}]=nums[${foundPair[1]}]=${NUMS[foundPair[0]]}. Distance=${foundPair[1] - foundPair[0]}.`, 7);
+    snap(steps, state, `Done. Duplicate pair: nums[${foundPair[0]}]=nums[${foundPair[1]}]=${validNums[foundPair[0]]}. Distance=${foundPair[1] - foundPair[0]}.`, 7);
   }
 
   return steps;
@@ -81,6 +84,10 @@ export default {
   label: 'Contains Duplicate',
   icon: '🔁',
   build: buildContainsDuplicateSteps,
+  inputs: [
+    { key: 'nums', label: 'Numbers (comma-sep)', type: 'array-num', default: DEFAULT_NUMS },
+    { key: 'k',    label: 'Max distance k',      type: 'number',    default: DEFAULT_K, min: 1, max: 8 },
+  ],
   code: DUP_CODE,
   language: 'JavaScript',
   metrics: [

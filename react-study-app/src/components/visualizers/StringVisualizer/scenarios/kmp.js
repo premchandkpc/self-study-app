@@ -22,11 +22,13 @@ function buildLPS(pattern) {
   return lps;
 }
 
-function buildKMPSteps() {
+function buildKMPSteps({ text: tInput = TEXT, pattern: pInput = PATTERN } = {}) {
+  const rawText = String(tInput).toUpperCase().replace(/[^A-Z]/g, '').slice(0, 20) || TEXT;
+  const rawPat  = String(pInput).toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8)  || PATTERN;
   const steps = [];
-  const text = TEXT.split('');
-  const pattern = PATTERN.split('');
-  const lps = buildLPS(PATTERN);
+  const text = rawText.split('');
+  const pattern = rawPat.split('');
+  const lps = buildLPS(rawPat);
   const n = text.length;
   const m = pattern.length;
 
@@ -39,7 +41,7 @@ function buildKMPSteps() {
     metrics: { comparisons: 0, matches: 0 },
   };
 
-  snap(steps, s, `KMP: text="${TEXT}", pattern="${PATTERN}". Build LPS table: [${lps.join(',')}].`, 1);
+  snap(steps, s, `KMP: text="${rawText}", pattern="${rawPat}". Build LPS table: [${lps.join(',')}].`, 1);
 
   let i = 0;
   let j = 0;
@@ -59,7 +61,7 @@ function buildKMPSteps() {
     s.charStates[i] = 'active';
     s.patternStates[j] = 'active';
 
-    s.vars = { i, j, lps, match: text[i] === pattern[j], found };
+    s.vars = { i, j, 'text[i]': text[i], 'pattern[j]': pattern[j], match: text[i] === pattern[j], found, comparisons, lps };
     s.metrics.comparisons = comparisons;
 
     if (text[i] === pattern[j]) {
@@ -69,7 +71,7 @@ function buildKMPSteps() {
     } else {
       s.charStates[i] = 'mismatch';
       s.patternStates[j] = 'mismatch';
-      s.vars = { i, j, lps, match: false, found };
+      s.vars = { i, j, 'text[i]': text[i], 'pattern[j]': pattern[j], match: false, found, comparisons, lps };
       snap(steps, s, `text[${i}]='${text[i]}' != pattern[${j}]='${pattern[j]}' ✗ — use LPS to skip.`, 7);
       if (j !== 0) {
         j = lps[j - 1];
@@ -87,8 +89,8 @@ function buildKMPSteps() {
       for (let k = 0; k < m; k++) {
         s.patternStates[k] = 'match';
       }
-      s.vars = { i, j, lps, match: true, found };
-      snap(steps, s, `Match found at index ${found}! Pattern "${PATTERN}" in "${TEXT.slice(found, found + m)}".`, 9);
+      s.vars = { i, j, match: true, found, matchStart: found, matchStr: rawText.slice(found, found + m), comparisons, lps };
+      snap(steps, s, `Match found at index ${found}! Pattern "${rawPat}" in "${rawText.slice(found, found + m)}".`, 9);
       j = lps[j - 1];
     }
   }
@@ -98,7 +100,7 @@ function buildKMPSteps() {
     for (let k = found; k < found + m; k++) s.charStates[k] = 'match';
   }
   s.vars = { i: n, j: 0, lps, match: found >= 0, found };
-  snap(steps, s, found >= 0 ? `KMP complete. Pattern found at index ${found}.` : 'KMP complete. Pattern not found.', 11);
+  snap(steps, s, found >= 0 ? `KMP complete. "${rawPat}" found at index ${found}.` : `KMP complete. "${rawPat}" not found.`, 11);
 
   return steps;
 }
@@ -125,6 +127,10 @@ export default {
   label: 'KMP Pattern Match',
   icon: '🔍',
   build: buildKMPSteps,
+  inputs: [
+    { key: 'text',    label: 'Text (A-Z only)',    type: 'string', default: TEXT,    maxLen: 20 },
+    { key: 'pattern', label: 'Pattern (A-Z only)', type: 'string', default: PATTERN, maxLen: 8  },
+  ],
   code: KMP_CODE,
   language: 'JavaScript',
   metrics: [

@@ -48,7 +48,7 @@ export function useVisualizerScenario(scenarios) {
     if (step) setViz(step);
   }, [state.currentStep, state.steps]);
 
-  const metrics = active.metrics.map((m) => ({
+  const metrics = (active.metrics || []).map((m) => ({
     label:    m.label,
     value:    viz?.metrics?.[m.key] ?? 0,
     max:      m.max,

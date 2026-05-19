@@ -37,7 +37,7 @@ function buildHeapSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
       val: v,
       state: idx >= size ? 'sorted' : idx === rootIdx ? 'pivot' : idx === largest ? 'comparing' : 'idle',
     }));
-    s.vars = { size, root: arr[rootIdx], i: rootIdx, largest: arr[largest] };
+    s.vars = { size, rootIdx, 'arr[root]': arr[rootIdx], leftIdx: left, rightIdx: right, largestIdx: largest, 'arr[largest]': arr[largest] };
     s.heapSize = size;
     snap(steps, s, `Heapify at ${rootIdx}: root=${arr[rootIdx]}, largest=${arr[largest]} at idx ${largest}.`, 5, 'O(n log n)');
 

@@ -34,7 +34,7 @@ function buildMergeSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
       state: idx >= lo && idx < hi ? 'window' : 'idle',
       group: idx >= lo && idx < mid ? 0 : idx >= mid && idx < hi ? 1 : -1,
     }));
-    s.vars = { left: a.slice(lo, mid), right: a.slice(mid, hi), merged: [], depth };
+    s.vars = { lo, hi, mid, left: a.slice(lo, mid), right: a.slice(mid, hi), merged: [], depth };
     s.metrics.passes = depth;
     snap(steps, s, `Depth ${depth}: Split [${a.slice(lo, hi)}] → [${a.slice(lo, mid)}] | [${a.slice(mid, hi)}]`, 4, 'O(n log n)');
 
@@ -47,6 +47,7 @@ function buildMergeSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
     while (li < left.length && ri < right.length) {
       s.comparisons += 1;
       s.metrics.comparisons = s.comparisons;
+      s.vars = { lo, hi, li, ri, left, right, merged: [...merged], depth, comparing: [left[li], right[ri]] };
       if (left[li] <= right[ri]) {
         merged.push(left[li++]);
       } else {
@@ -68,7 +69,7 @@ function buildMergeSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
       state: idx >= lo && idx < hi ? 'sorted' : 'idle',
       group: idx >= lo && idx < hi ? depth : -1,
     }));
-    s.vars = { left, right, merged, depth };
+    s.vars = { lo, hi, left, right, merged, depth };
     snap(steps, s, `Merge → [${merged}] placed at positions ${lo}..${hi - 1}.`, 10, 'O(n log n)');
 
     return merged;

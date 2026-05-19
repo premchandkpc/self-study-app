@@ -2,9 +2,10 @@ import { snap } from './shared';
 
 const INPUT = 'babad';
 
-function buildPalindromeSteps() {
+function buildPalindromeSteps({ str = INPUT } = {}) {
+  const raw = String(str).toLowerCase().replace(/[^a-z]/g, '').slice(0, 16) || INPUT;
   const steps = [];
-  const chars = INPUT.split('');
+  const chars = raw.split('');
   const n = chars.length;
 
   const state = {
@@ -14,7 +15,7 @@ function buildPalindromeSteps() {
     metrics: { expansions: 0, maxLen: 0 },
   };
 
-  snap(steps, state, `Expand-around-center palindrome on "${INPUT}". Check each center.`, 1);
+  snap(steps, state, `Expand-around-center palindrome on "${raw}". Check each center.`, 1);
 
   let longest = '';
   let maxLen = 0;
@@ -24,10 +25,10 @@ function buildPalindromeSteps() {
     let r = center2;
 
     while (l >= 0 && r < n && chars[l] === chars[r]) {
-      const substr = INPUT.slice(l, r + 1);
+      const substr = raw.slice(l, r + 1);
       state.charStates = new Array(n).fill('default');
       for (let k = l; k <= r; k++) state.charStates[k] = 'window';
-      state.vars = { center: center1, left: l, right: r, longest, maxLen };
+      state.vars = { center: center1, left: l, right: r, substr, 'chars[l]': chars[l], 'chars[r]': chars[r], longest, maxLen };
       state.metrics.expansions++;
 
       snap(steps, state, `Expand center=${center1}: [${l}..${r}] = "${substr}" is palindrome (len=${r - l + 1}).`, 4);
@@ -55,7 +56,7 @@ function buildPalindromeSteps() {
         state.charStates = new Array(n).fill('default');
         state.charStates[safeL] = 'mismatch';
         state.charStates[safeR] = 'mismatch';
-        state.vars = { center: center1, left: safeL, right: safeR, longest, maxLen };
+        state.vars = { center: center1, left: safeL, right: safeR, 'chars[l]': chars[safeL], 'chars[r]': chars[safeR], match: false, longest, maxLen };
         snap(steps, state, `Mismatch at [${safeL}]='${chars[safeL]}' vs [${safeR}]='${chars[safeR]}'. Stop expanding.`, 6);
       }
     }
@@ -69,7 +70,7 @@ function buildPalindromeSteps() {
   }
 
   state.charStates = new Array(n).fill('default');
-  const start = INPUT.indexOf(longest);
+  const start = raw.indexOf(longest);
   for (let k = start; k < start + longest.length; k++) state.charStates[k] = 'match';
   state.vars = { center: -1, left: start, right: start + longest.length - 1, longest, maxLen };
   snap(steps, state, `Done. Longest palindrome: "${longest}" (length ${maxLen}).`, 8);
@@ -98,6 +99,9 @@ export default {
   label: 'Palindrome Expand',
   icon: '🔄',
   build: buildPalindromeSteps,
+  inputs: [
+    { key: 'str', label: 'String (a-z only)', type: 'string', default: INPUT, maxLen: 16 },
+  ],
   code: PALINDROME_CODE,
   language: 'JavaScript',
   metrics: [

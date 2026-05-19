@@ -89,7 +89,9 @@ function build() {
     s.matrix = mat;
     s.queue = queue.map(([qr, qc]) => `[${qr},${qc}]`);
     s.vars = {
+      r, c,
       queue: queue.slice(0, 5).map(([qr, qc]) => `[${qr},${qc}]`),
+      queueSize: queue.length,
       visited: visitedCount,
       color: OLD_COLOR,
       newColor: NEW_COLOR,

@@ -31,19 +31,20 @@ function buildHashInsertSteps() {
   for (const { key, value } of ENTRIES) {
     const h = hashFn(key, SIZE);
     state.activeBucket = h;
-    state.vars = { key, hash: h, bucket: h, size: SIZE, loadFactor: (state.metrics.inserted / SIZE).toFixed(2) };
+    state.vars = { key, value, hash: h, bucket: h, size: SIZE, collision: false, loadFactor: (state.metrics.inserted / SIZE).toFixed(2) };
     snap(steps, state, `hash("${key}") = ${h}. Check bucket ${h}.`, 3);
 
     const collision = buckets[h].length > 0;
     if (collision) {
       state.metrics.collisions++;
+      state.vars = { key, value, hash: h, bucket: h, size: SIZE, collision: true, chainLength: buckets[h].length, loadFactor: (state.metrics.inserted / SIZE).toFixed(2) };
       snap(steps, state, `Bucket ${h} already has ${buckets[h].length} entry. Collision! Chain it.`, 5);
     }
 
     buckets[h].push({ key, value });
     state.buckets = buckets.map((b) => [...b]);
     state.metrics.inserted++;
-    state.vars.loadFactor = (state.metrics.inserted / SIZE).toFixed(2);
+    state.vars = { key, value, hash: h, bucket: h, size: SIZE, collision, loadFactor: (state.metrics.inserted / SIZE).toFixed(2) };
     snap(steps, state, `Inserted "${key}:${value}" at bucket ${h}${collision ? ' (chained)' : ''}.`, 6);
   }
 

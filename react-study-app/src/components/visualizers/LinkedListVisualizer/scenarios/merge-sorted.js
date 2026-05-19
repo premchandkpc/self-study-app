@@ -1,7 +1,7 @@
 import { snap } from './shared';
 
-const LIST1 = [1, 3, 5, 7];
-const LIST2 = [2, 4, 6];
+const DEFAULT_LIST1 = [1, 3, 5, 7];
+const DEFAULT_LIST2 = [2, 4, 6];
 
 const CODE = [
   'function mergeTwoLists(l1, l2) {',
@@ -20,37 +20,31 @@ const CODE = [
   '}',
 ];
 
-function mkNodes(list, states, label) {
-  return list.map((val, i) => ({
-    id: `${label}${i}`,
-    val,
-    state: states[i] || 'idle',
-    nextIdx: i < list.length - 1 ? i + 1 : -1,
-    label,
-  }));
-}
+function build({ list1 = DEFAULT_LIST1, list2 = DEFAULT_LIST2 } = {}) {
+  const LIST1 = (Array.isArray(list1) ? list1.filter((v) => Number.isFinite(v)) : DEFAULT_LIST1)
+    .slice(0, 8).sort((a, b) => a - b);
+  const LIST2 = (Array.isArray(list2) ? list2.filter((v) => Number.isFinite(v)) : DEFAULT_LIST2)
+    .slice(0, 8).sort((a, b) => a - b);
+  if (LIST1.length === 0) LIST1.push(...DEFAULT_LIST1);
+  if (LIST2.length === 0) LIST2.push(...DEFAULT_LIST2);
 
-function build() {
   const steps = [];
   let p1 = 0, p2 = 0;
   const merged = [];
 
   function mkState(p1Idx, p2Idx, mergedArr) {
     const l1Nodes = LIST1.map((val, i) => ({
-      id: `l1-${i}`,
-      val,
+      id: `l1-${i}`, val,
       state: i === p1Idx ? 'curr' : i < p1Idx ? 'visited' : 'idle',
       nextIdx: i < LIST1.length - 1 ? i + 1 : -1,
     }));
     const l2Nodes = LIST2.map((val, i) => ({
-      id: `l2-${i}`,
-      val,
+      id: `l2-${i}`, val,
       state: i === p2Idx ? 'curr' : i < p2Idx ? 'visited' : 'idle',
       nextIdx: i < LIST2.length - 1 ? i + 1 : -1,
     }));
     const mergedNodes = mergedArr.map((val, i) => ({
-      id: `m-${i}`,
-      val,
+      id: `m-${i}`, val,
       state: i === mergedArr.length - 1 ? 'active' : 'done',
       nextIdx: i < mergedArr.length - 1 ? i + 1 : -1,
     }));
@@ -81,7 +75,6 @@ function build() {
     s = { ...mkState(p1, p2, merged), vars: { p1: LIST1[p1] ?? null, p2: LIST2[p2] ?? null, merged: [...merged] }, complexity: { ops, label: 'O(m+n)', space: 'O(1)' } };
   }
 
-  // Drain remaining
   while (p1 < LIST1.length) { merged.push(LIST1[p1]); p1++; ops++; }
   while (p2 < LIST2.length) { merged.push(LIST2[p2]); p2++; ops++; }
 
@@ -96,6 +89,10 @@ export default {
   label: 'Merge Sorted Lists',
   icon: '🔗',
   build,
+  inputs: [
+    { key: 'list1', label: 'List 1 (comma-sep)', type: 'array-num', default: DEFAULT_LIST1 },
+    { key: 'list2', label: 'List 2 (comma-sep)', type: 'array-num', default: DEFAULT_LIST2 },
+  ],
   code: CODE,
   language: 'javascript',
   metrics: [],

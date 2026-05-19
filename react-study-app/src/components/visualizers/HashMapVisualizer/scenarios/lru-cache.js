@@ -31,40 +31,39 @@ function buildLRUSteps() {
 
   for (const { op, key, value } of OPERATIONS) {
     if (op === 'get') {
-      state.vars = { capacity: CAPACITY, size: dll.length, key, evicted: null };
+      state.vars = { op: 'GET', key, value: null, capacity: CAPACITY, size: dll.length, hit: cacheMap[key] !== undefined, evicted: null };
 
       if (cacheMap[key] !== undefined) {
         state.metrics.hits++;
-        // Move to front (MRU)
         dll = [key, ...dll.filter((k) => k !== key)];
         state.dll = [...dll];
-        state.vars = { capacity: CAPACITY, size: dll.length, key, evicted: null };
+        state.vars = { op: 'GET', key, value: cacheMap[key], capacity: CAPACITY, size: dll.length, hit: true, evicted: null };
         snap(steps, state, `GET ${key}: HIT! value=${cacheMap[key]}. Move key ${key} to MRU (head).`, 4);
       } else {
         state.metrics.misses++;
+        state.vars = { op: 'GET', key, value: null, capacity: CAPACITY, size: dll.length, hit: false, evicted: null };
         snap(steps, state, `GET ${key}: MISS. Key not in cache.`, 5);
       }
     } else {
       // PUT
-      state.vars = { capacity: CAPACITY, size: dll.length, key, evicted: null };
+      state.vars = { op: 'PUT', key, value, capacity: CAPACITY, size: dll.length, evicted: null };
       let evicted = null;
 
       if (cacheMap[key] !== undefined) {
-        // Update existing
         cacheMap[key] = value;
         dll = [key, ...dll.filter((k) => k !== key)];
         state.dll = [...dll];
         state.cacheMap = { ...cacheMap };
+        state.vars = { op: 'PUT', key, value, capacity: CAPACITY, size: dll.length, evicted: null, updated: true };
         snap(steps, state, `PUT ${key}=${value}: already exists. Update & move to MRU.`, 8);
       } else {
         if (dll.length >= CAPACITY) {
-          // Evict LRU (tail)
           evicted = dll[dll.length - 1];
           dll.pop();
           const evictBucket = evicted % buckets.length;
           buckets[evictBucket] = buckets[evictBucket].filter((e) => e.key !== String(evicted));
           delete cacheMap[evicted];
-          state.vars = { capacity: CAPACITY, size: dll.length, key, evicted };
+          state.vars = { op: 'PUT', key, value, capacity: CAPACITY, size: dll.length, evicted, reason: 'cache full' };
           state.dll = [...dll];
           state.cacheMap = { ...cacheMap };
           state.buckets = buckets.map((b) => [...b]);
@@ -72,7 +71,6 @@ function buildLRUSteps() {
           snap(steps, state, `Cache full (size=${CAPACITY}). Evict LRU key ${evicted} from tail.`, 10);
         }
 
-        // Insert new
         dll.unshift(key);
         cacheMap[key] = value;
         const bucket = key % buckets.length;
@@ -81,7 +79,7 @@ function buildLRUSteps() {
         state.dll = [...dll];
         state.cacheMap = { ...cacheMap };
         state.buckets = buckets.map((b) => [...b]);
-        state.vars = { capacity: CAPACITY, size: dll.length, key, evicted };
+        state.vars = { op: 'PUT', key, value, capacity: CAPACITY, size: dll.length, evicted, bucket };
         snap(steps, state, `PUT ${key}=${value}: insert at MRU (head). Cache: [${dll.join(' → ')}].`, 11);
       }
     }

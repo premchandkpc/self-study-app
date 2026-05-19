@@ -3,10 +3,12 @@ import { snap } from './shared';
 const TEXT = 'cbaebabacd';
 const PATTERN = 'abc';
 
-function buildSlidingWindowSteps() {
+function buildSlidingWindowSteps({ text: tIn = TEXT, pattern: pIn = PATTERN } = {}) {
+  const rawText = String(tIn).toLowerCase().replace(/[^a-z]/g, '').slice(0, 20) || TEXT;
+  const rawPat  = String(pIn).toLowerCase().replace(/[^a-z]/g, '').slice(0, 8)  || PATTERN;
   const steps = [];
-  const s = TEXT.split('');
-  const p = PATTERN.split('');
+  const s = rawText.split('');
+  const p = rawPat.split('');
   const n = s.length;
   const m = p.length;
 
@@ -24,7 +26,7 @@ function buildSlidingWindowSteps() {
     metrics: { window: 0, matches: 0, steps: 0 },
   };
 
-  snap(steps, state, `Sliding window anagram: find all starts of anagram of "${PATTERN}" in "${TEXT}".`, 1);
+  snap(steps, state, `Sliding window anagram: find all starts of anagram of "${rawPat}" in "${rawText}".`, 1);
 
   // Initialize first window
   for (let i = 0; i < m; i++) {
@@ -33,7 +35,7 @@ function buildSlidingWindowSteps() {
   }
   state.vars = { left: 0, right: m - 1, pCount: { ...pCount }, wCount: { ...wCount }, matches: matches.length };
   state.metrics.window = m;
-  snap(steps, state, `Init window [0..${m - 1}]: "${TEXT.slice(0, m)}". Count: ${JSON.stringify(wCount)}.`, 3);
+  snap(steps, state, `Init window [0..${m - 1}]: "${rawText.slice(0, m)}". Count: ${JSON.stringify(wCount)}.`, 3);
 
   function countsMatch(a, b) {
     const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
@@ -76,10 +78,10 @@ function buildSlidingWindowSteps() {
       state.metrics.matches = matches.length;
       for (let i = left; i <= right; i++) newStates[i] = 'match';
       state.charStates = newStates;
-      snap(steps, state, `Window [${left}..${right}] = "${TEXT.slice(left, right + 1)}" is anagram! Match at index ${left}.`, 6);
+      snap(steps, state, `Window [${left}..${right}] = "${rawText.slice(left, right + 1)}" is anagram! Match at index ${left}.`, 6);
     } else {
       state.charStates = newStates;
-      snap(steps, state, `Slide window to [${left}..${right}]: "${TEXT.slice(left, right + 1)}". Not anagram.`, 5);
+      snap(steps, state, `Slide window to [${left}..${right}]: "${rawText.slice(left, right + 1)}". Not anagram.`, 5);
     }
   }
 
@@ -88,7 +90,7 @@ function buildSlidingWindowSteps() {
     for (let i = idx; i < idx + m; i++) state.charStates[i] = 'match';
   }
   state.vars = { left: n - m, right: n - 1, pCount: { ...pCount }, wCount: { ...wCount }, matches: matches.length };
-  snap(steps, state, `Done. Found ${matches.length} anagram(s) of "${PATTERN}" at indices: [${matches.join(', ')}].`, 8);
+  snap(steps, state, `Done. Found ${matches.length} anagram(s) of "${rawPat}" at indices: [${matches.join(', ')}].`, 8);
 
   return steps;
 }
@@ -113,6 +115,10 @@ export default {
   label: 'Sliding Window Anagram',
   icon: '🪟',
   build: buildSlidingWindowSteps,
+  inputs: [
+    { key: 'text',    label: 'Text (a-z only)',    type: 'string', default: TEXT,    maxLen: 20 },
+    { key: 'pattern', label: 'Pattern (a-z only)', type: 'string', default: PATTERN, maxLen: 8  },
+  ],
   code: SLIDING_CODE,
   language: 'JavaScript',
   metrics: [

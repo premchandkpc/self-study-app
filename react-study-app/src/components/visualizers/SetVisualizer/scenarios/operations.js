@@ -3,59 +3,59 @@ import { snap } from './shared';
 const SET_A = [1, 2, 3];
 const SET_B = [2, 3, 4];
 
-function buildOperationsSteps() {
+function buildOperationsSteps({ setA: aIn = SET_A, setB: bIn = SET_B } = {}) {
+  const A = Array.isArray(aIn) ? aIn.filter((v) => Number.isFinite(v)).slice(0, 8) : SET_A;
+  const B = Array.isArray(bIn) ? bIn.filter((v) => Number.isFinite(v)).slice(0, 8) : SET_B;
+  const SA = A.length ? A : SET_A;
+  const SB = B.length ? B : SET_B;
   const steps = [];
 
   const state = {
-    setA: [...SET_A],
-    setB: [...SET_B],
+    setA: [...SA],
+    setB: [...SB],
     union: [],
     intersect: [],
     diff: [],
     activeOp: 'none',
     highlightA: [],
     highlightB: [],
-    vars: { A: [...SET_A], B: [...SET_B], union: [], intersect: [], diff: [] },
+    vars: { A: [...SA], B: [...SB], union: [], intersect: [], diff: [] },
     metrics: { union: 0, intersect: 0, diff: 0 },
   };
 
-  snap(steps, state, `Set operations: A={${SET_A.join(',')}} and B={${SET_B.join(',')}}.`, 1);
+  snap(steps, state, `Set operations: A={${SA.join(',')}} and B={${SB.join(',')}}.`, 1);
 
-  // Union
-  const union = [...new Set([...SET_A, ...SET_B])];
+  const union = [...new Set([...SA, ...SB])];
   state.activeOp = 'union';
   state.union = union;
-  state.highlightA = [...SET_A];
-  state.highlightB = [...SET_B];
-  state.vars = { A: [...SET_A], B: [...SET_B], union, intersect: [], diff: [] };
+  state.highlightA = [...SA];
+  state.highlightB = [...SB];
+  state.vars = { A: [...SA], B: [...SB], union, intersect: [], diff: [] };
   state.metrics.union = union.length;
   snap(steps, state, `Union A∪B: all elements from both. {${union.join(',')}}.`, 2);
 
-  // Intersection
-  const intersect = SET_A.filter((x) => SET_B.includes(x));
+  const intersect = SA.filter((x) => SB.includes(x));
   state.activeOp = 'intersect';
   state.intersect = intersect;
   state.highlightA = intersect;
   state.highlightB = intersect;
-  state.vars = { A: [...SET_A], B: [...SET_B], union, intersect, diff: [] };
+  state.vars = { A: [...SA], B: [...SB], union, intersect, diff: [] };
   state.metrics.intersect = intersect.length;
   snap(steps, state, `Intersection A∩B: elements in both. {${intersect.join(',')}}.`, 4);
 
-  // Difference A - B
-  const diff = SET_A.filter((x) => !SET_B.includes(x));
+  const diff = SA.filter((x) => !SB.includes(x));
   state.activeOp = 'diff';
   state.diff = diff;
   state.highlightA = diff;
   state.highlightB = [];
-  state.vars = { A: [...SET_A], B: [...SET_B], union, intersect, diff };
+  state.vars = { A: [...SA], B: [...SB], union, intersect, diff };
   state.metrics.diff = diff.length;
   snap(steps, state, `Difference A-B: in A but not B. {${diff.join(',')}}.`, 6);
 
-  // All
   state.activeOp = 'all';
-  state.highlightA = [...SET_A];
-  state.highlightB = [...SET_B];
-  state.vars = { A: [...SET_A], B: [...SET_B], union, intersect, diff };
+  state.highlightA = [...SA];
+  state.highlightB = [...SB];
+  state.vars = { A: [...SA], B: [...SB], union, intersect, diff };
   snap(steps, state, `Complete: A∪B={${union.join(',')}}, A∩B={${intersect.join(',')}}, A-B={${diff.join(',')}}.`, 8);
 
   return steps;
@@ -77,6 +77,10 @@ export default {
   label: 'Set Operations',
   icon: '∪',
   build: buildOperationsSteps,
+  inputs: [
+    { key: 'setA', label: 'Set A (comma-sep)', type: 'array-num', default: SET_A },
+    { key: 'setB', label: 'Set B (comma-sep)', type: 'array-num', default: SET_B },
+  ],
   code: OPS_CODE,
   language: 'JavaScript',
   metrics: [
