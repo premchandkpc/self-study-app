@@ -1,5 +1,17 @@
 .wrapper { display: flex; flex-direction: column; gap: 12px; }
 
+/* ── DynamicViz outer wrap ── */
+.dynWrap { display: flex; flex-direction: column; gap: 10px; }
+
+/* ── live variable section (inside viz area) ── */
+.varsSection      { display: flex; flex-direction: column; gap: 6px; padding: 8px 12px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+.varsSectionLabel { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+.varsRow          { display: flex; flex-wrap: wrap; gap: 6px; }
+.varChip          { display: flex; align-items: center; gap: 4px; background: var(--bg-hover); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-family: var(--font-mono); transition: background .15s; }
+.varChipResult    { border-color: var(--node-visited); background: color-mix(in srgb, var(--node-visited) 12%, transparent); }
+.varChipName      { font-size: 11px; color: var(--text-muted); }
+.varChipVal       { font-size: 12px; color: var(--node-active); font-weight: 700; }
+
 /* ── body ── */
 .body { display: grid; grid-template-columns: 1fr 320px; gap: 12px; }
 .vizArea { display: flex; flex-direction: column; gap: 10px; min-height: 240px; }
@@ -77,11 +89,14 @@
 }
 
 /* ── hash map ── */
-.hmWrap   { display: flex; flex-direction: column; gap: 4px; padding: 12px; font-family: var(--font-mono); }
-.hmBucket { display: flex; gap: 8px; align-items: center; padding: 4px 8px; background: var(--bg-card); border-radius: 6px; }
-.hmIdx    { font-size: 11px; color: var(--text-muted); min-width: 28px; }
-.hmEntry  { font-size: 12px; background: var(--node-active); color: white; border-radius: 4px; padding: 2px 6px; }
-.hmResult { margin-top: 8px; font-size: 13px; color: var(--node-visited); font-weight: 700; }
+.hmWrap       { display: flex; flex-direction: column; gap: 4px; padding: 12px; font-family: var(--font-mono); }
+.hmInputRow   { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.hmRowLabel   { font-size: 10px; color: var(--text-muted); min-width: 36px; text-transform: uppercase; letter-spacing: .5px; }
+.hmTableLabel { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+.hmBucket     { display: flex; gap: 8px; align-items: center; padding: 4px 8px; background: var(--bg-card); border-radius: 6px; }
+.hmIdx        { font-size: 11px; color: var(--text-muted); min-width: 28px; }
+.hmEntry      { font-size: 12px; background: var(--node-active); color: white; border-radius: 4px; padding: 2px 6px; }
+.hmResult     { margin-top: 8px; font-size: 13px; color: var(--node-visited); font-weight: 700; }
 
 /* ── DP ── */
 .dpRow     { display: flex; gap: 4px; flex-wrap: wrap; }

@@ -10,19 +10,76 @@ export default function DynamicViz({ viz }) {
   // Explicit type hint wins
   const type = viz.type || detectType(viz);
 
+  let structure = null;
   switch (type) {
-    case 'array':      return <ArrayViz viz={viz} />;
-    case 'sort':       return <SortViz viz={viz} />;
-    case 'linkedlist': return <LinkedListViz viz={viz} />;
-    case 'tree':       return <TreeViz viz={viz} />;
-    case 'graph':      return <GraphViz viz={viz} />;
-    case 'matrix':     return <MatrixViz viz={viz} />;
-    case 'hashmap':    return <HashMapViz viz={viz} />;
-    case 'dp':         return <DPViz viz={viz} />;
-    case 'string':     return <StringViz viz={viz} />;
-    case 'set':        return <SetViz viz={viz} />;
-    default:           return null;
+    case 'array':      structure = <ArrayViz viz={viz} />;      break;
+    case 'sort':       structure = <SortViz viz={viz} />;       break;
+    case 'linkedlist': structure = <LinkedListViz viz={viz} />; break;
+    case 'tree':       structure = <TreeViz viz={viz} />;       break;
+    case 'graph':      structure = <GraphViz viz={viz} />;      break;
+    case 'matrix':     structure = <MatrixViz viz={viz} />;     break;
+    case 'hashmap':    structure = <HashMapViz viz={viz} />;    break;
+    case 'dp':         structure = <DPViz viz={viz} />;         break;
+    case 'string':     structure = <StringViz viz={viz} />;     break;
+    case 'set':        structure = <SetViz viz={viz} />;        break;
+    default: break;
   }
+
+  const vars = viz.vars && Object.keys(viz.vars).length > 0 ? viz.vars : null;
+
+  return (
+    <div className={styles.dynWrap}>
+      {structure}
+      {vars && <VarsSection vars={vars} result={viz.result} />}
+    </div>
+  );
+}
+
+// ─── Live variable state ──────────────────────────────────────────────────────
+
+function VarsSection({ vars, result }) {
+  const entries = Object.entries(vars);
+  if (!entries.length) return null;
+  return (
+    <div className={styles.varsSection}>
+      <span className={styles.varsSectionLabel}>variables</span>
+      <div className={styles.varsRow}>
+        {entries.map(([k, v]) => (
+          <VarChip key={k} name={k} value={v} />
+        ))}
+        {result !== undefined && result !== null && (
+          <VarChip name="result" value={result} highlight />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function VarChip({ name, value, highlight }) {
+  const display = formatVarValue(value);
+  return (
+    <div className={`${styles.varChip} ${highlight ? styles.varChipResult : ''}`}>
+      <span className={styles.varChipName}>{name}</span>
+      <span className={styles.varChipVal}>{display}</span>
+    </div>
+  );
+}
+
+function formatVarValue(v) {
+  if (v === null || v === undefined) return 'null';
+  if (typeof v === 'boolean') return String(v);
+  if (typeof v === 'number') return String(v);
+  if (typeof v === 'string') return v.length > 12 ? `"${v.slice(0, 10)}…"` : `"${v}"`;
+  if (Array.isArray(v)) {
+    const inner = v.slice(0, 6).map((x) => (x === null ? '∅' : String(x))).join(', ');
+    return `[${inner}${v.length > 6 ? ', …' : ''}]`;
+  }
+  if (typeof v === 'object') {
+    const entries = Object.entries(v).slice(0, 4);
+    if (!entries.length) return '{}';
+    return `{${entries.map(([k, val]) => `${k}:${val}`).join(', ')}${Object.keys(v).length > 4 ? ',…' : ''}}`;
+  }
+  return String(v);
 }
 
 function detectType(viz) {
@@ -320,15 +377,42 @@ function MatrixViz({ viz }) {
 // ─── HashMap ─────────────────────────────────────────────────────────────────
 
 function HashMapViz({ viz }) {
-  const { buckets = [], activeBucket = -1, resultIndices = [] } = viz;
+  const { buckets = [], activeBucket = -1, resultIndices = [], nums, activeIndex = -1 } = viz;
 
   return (
     <div className={styles.hmWrap}>
+      {/* Input array row — shown when scenario provides nums (e.g. two-sum) */}
+      {nums && nums.length > 0 && (
+        <div className={styles.hmInputRow}>
+          <span className={styles.hmRowLabel}>input</span>
+          {nums.map((n, i) => {
+            const isActive  = i === activeIndex;
+            const isResult  = resultIndices.includes(i);
+            const cc = isResult
+              ? 'var(--node-visited)'
+              : isActive
+              ? 'var(--node-active)'
+              : 'var(--node-default)';
+            return (
+              <div key={i} className={styles.cell} style={{ '--cc': cc }}>
+                <div className={styles.cellVal}>{n}</div>
+                <div className={styles.cellIdx}>{i}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Hash table */}
+      <div className={styles.hmTableLabel}>hash table</div>
       {buckets.map((bucket, i) => {
         const isActive = i === activeBucket;
         return (
           <div key={i} className={styles.hmBucket}
-            style={{ border: isActive ? '1.5px solid var(--node-active)' : undefined, background: isActive ? 'color-mix(in srgb, var(--node-active) 10%, transparent)' : undefined }}>
+            style={{
+              border:     isActive ? '1.5px solid var(--node-active)' : undefined,
+              background: isActive ? 'color-mix(in srgb, var(--node-active) 10%, transparent)' : undefined,
+            }}>
             <span className={styles.hmIdx}>[{i}]</span>
             {bucket.map((entry, j) => (
               <span key={j} className={styles.hmEntry}
