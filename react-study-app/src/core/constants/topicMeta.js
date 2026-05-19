@@ -12,6 +12,7 @@ export const TOPIC_META = {
   redis:          { color: 'red',    desc: 'Data types, pub/sub channels, cluster hash slots, pipelining.' },
   docker:         { color: 'blue',   desc: 'Image layers, container lifecycle, bridge networking, docker-compose.' },
   networking:     { color: 'green',  desc: 'TCP handshake, HTTP/1 vs HTTP/2, DNS resolution, load balancer algorithms.' },
+  dp:             { color: 'purple', desc: 'Fibonacci, Coin Change, 0/1 Knapsack, LCS, LIS with animated DP tables.' },
 };
 
 export const VISUALIZER_MAP = {
@@ -76,4 +77,9 @@ export const VISUALIZER_MAP = {
   'networking:HTTP':             'networking',
   'networking:DNS':              'networking',
   'networking:Load Balancer':    'networking',
+  'dp:Fibonacci':                'dp',
+  'dp:Coin Change':              'dp',
+  'dp:Knapsack':                 'dp',
+  'dp:LCS':                      'dp',
+  'dp:LIS':                      'dp',
 };

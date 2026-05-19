@@ -68,4 +68,9 @@ export const SUBTOPIC_ROUTES = {
   'networking:HTTP':             '/visualizer/networking',
   'networking:DNS':              '/visualizer/networking',
   'networking:Load Balancer':    '/visualizer/networking',
+  'dp:Fibonacci':                '/visualizer/dp',
+  'dp:Coin Change':              '/visualizer/dp',
+  'dp:Knapsack':                 '/visualizer/dp',
+  'dp:LCS':                      '/visualizer/dp',
+  'dp:LIS':                      '/visualizer/dp',
 };

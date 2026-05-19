@@ -1,0 +1,239 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+}
+
+.vizArea {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mainViz {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+  overflow: auto;
+}
+
+.sidePanel {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.narration {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  min-height: 36px;
+}
+
+.bottomPanels {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 220px;
+  flex-shrink: 0;
+}
+
+/* === 1D LAYOUT === */
+.dpLayout1d {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.arrRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.rowLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  min-width: 48px;
+  padding-top: 8px;
+}
+
+.cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+  border-radius: var(--radius-md);
+  background: var(--bg-hover);
+  border: 1.5px solid var(--border);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.cellVal {
+  padding: 6px 4px 2px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cellIdx {
+  padding: 2px 4px 4px;
+  font-size: 10px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+}
+
+.cellBase {
+  background: color-mix(in srgb, var(--pod-running) 15%, transparent);
+  border-color: var(--pod-running);
+}
+
+.cellDone {
+  background: color-mix(in srgb, var(--node-default) 12%, transparent);
+  border-color: var(--node-default);
+}
+
+.cellDone .cellVal {
+  color: var(--node-default);
+}
+
+.cellActive {
+  background: color-mix(in srgb, var(--node-active) 20%, transparent);
+  border-color: var(--node-active);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--node-active) 40%, transparent);
+  transform: translateY(-2px);
+}
+
+.cellActive .cellVal {
+  color: var(--node-active);
+}
+
+.cellDep {
+  background: color-mix(in srgb, var(--node-comparing) 20%, transparent);
+  border-color: var(--node-comparing);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node-comparing) 30%, transparent);
+}
+
+.cellDep .cellVal {
+  color: var(--node-comparing);
+}
+
+.cellChecking {
+  background: color-mix(in srgb, var(--kafka-producer) 15%, transparent);
+  border-color: var(--kafka-producer);
+}
+
+/* === 2D LAYOUT === */
+.dpLayout2d {
+  padding: var(--space-md);
+  overflow: auto;
+}
+
+.tableWrap {
+  overflow: auto;
+  max-height: 340px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.dpTable {
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+.thCorner {
+  width: 80px;
+  background: var(--bg-secondary);
+}
+
+.th {
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tdLabel {
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.td {
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  text-align: center;
+  transition: all 0.15s ease;
+  min-width: 36px;
+}
+
+.tdFilled {
+  color: var(--node-default);
+  background: color-mix(in srgb, var(--node-default) 8%, transparent);
+}
+
+.tdActive {
+  background: color-mix(in srgb, var(--node-active) 25%, transparent) !important;
+  border-color: var(--node-active) !important;
+  color: var(--node-active) !important;
+  font-weight: 700;
+  box-shadow: inset 0 0 8px color-mix(in srgb, var(--node-active) 20%, transparent);
+}
+
+.tdDep {
+  background: color-mix(in srgb, var(--node-comparing) 20%, transparent) !important;
+  border-color: var(--node-comparing) !important;
+  color: var(--node-comparing) !important;
+}
+
+.tdRowHighlight {
+  background: color-mix(in srgb, var(--node-active) 5%, transparent);
+}
+
+.tdColHighlight {
+  background: color-mix(in srgb, var(--node-active) 5%, transparent);
+}

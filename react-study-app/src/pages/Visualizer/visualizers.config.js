@@ -19,6 +19,7 @@ import DatabaseVisualizer from '../../components/visualizers/DatabaseVisualizer/
 import RedisVisualizer from '../../components/visualizers/RedisVisualizer/RedisVisualizer';
 import DockerVisualizer from '../../components/visualizers/DockerVisualizer/DockerVisualizer';
 import NetworkingVisualizer from '../../components/visualizers/NetworkingVisualizer/NetworkingVisualizer';
+import DPVisualizer from '../../components/visualizers/DPVisualizer/DPVisualizer';
 
 export const VISUALIZERS = {
   array: {
@@ -146,5 +147,11 @@ export const VISUALIZERS = {
     icon: '🌐',
     component: NetworkingVisualizer,
     desc: 'TCP 3-way handshake, HTTP/1 vs HTTP/2 multiplexing, DNS resolution chain, LB algorithms.',
+  },
+  dp: {
+    label: 'Dynamic Programming — Fibonacci, Coin Change, Knapsack, LCS, LIS',
+    icon: '🧩',
+    component: DPVisualizer,
+    desc: 'Tabulation step-by-step: Fibonacci, Coin Change, 0/1 Knapsack, LCS, LIS with full DP table animation.',
   },
 };
