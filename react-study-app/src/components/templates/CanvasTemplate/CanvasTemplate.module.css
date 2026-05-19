@@ -1,0 +1,100 @@
+.wrapper { display: flex; flex-direction: column; gap: 12px; }
+
+/* ── infinite canvas ── */
+.canvas {
+  position: relative;
+  height: 480px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background-color: var(--bg-card);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 35%, transparent) 1.2px, transparent 1.2px);
+  user-select: none;
+  touch-action: none;
+}
+
+.svg { width: 100%; height: 100%; display: block; }
+
+/* ── zoom bar ── */
+.zoomBar {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+
+.zBtn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.12s;
+}
+.zBtn:hover { background: var(--bg-hover); }
+
+.zLabel {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  min-width: 36px;
+  text-align: center;
+}
+
+/* ── hint ── */
+.hint {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ── hover tooltip ── */
+.tooltip {
+  position: absolute;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 180px;
+  max-width: 260px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  box-shadow: 0 4px 24px rgba(0,0,0,.4);
+  pointer-events: none;
+  z-index: 20;
+}
+.ttTitle { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+.ttRow   { display: flex; gap: 6px; margin: 3px 0; color: var(--text-muted); }
+.ttRow b { color: var(--text-primary); min-width: 52px; }
+.ttDesc  { margin-top: 6px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.ttWarn  { color: var(--pod-crash); margin-top: 6px; font-weight: 700; }
+.ttHint  { margin-top: 8px; font-size: 10px; color: var(--text-muted); opacity: 0.6; }
+
+/* ── event log ── */
+.events { display: flex; flex-direction: column; gap: 4px; }
+.event  {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 10px; border-radius: 6px; font-size: 12px;
+  font-family: var(--font-mono); background: var(--bg-card);
+}
+.evDot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.ev_ok    { color: var(--pod-running); }
+.ev_warn  { color: var(--node-comparing); }
+.ev_error { color: var(--pod-crash); }
+.ev_info  { color: var(--text-muted); }

@@ -1,6 +1,6 @@
-import { SystemTemplate } from '../../templates';
+import { CanvasTemplate } from '../../templates';
 import { SCENARIOS } from './sd-engine';
 
 export default function SystemDesignVisualizer() {
-  return <SystemTemplate scenarios={SCENARIOS} />;
+  return <CanvasTemplate scenarios={SCENARIOS} />;
 }
