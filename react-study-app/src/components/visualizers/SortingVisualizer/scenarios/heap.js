@@ -1,8 +1,11 @@
 import { snap } from './shared';
 
-function buildHeapSteps() {
+const DEFAULT_ARR = [3, 6, 8, 5, 2, 9, 1, 7];
+
+function buildHeapSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
   const steps = [];
-  const initial = [3, 6, 8, 5, 2, 9, 1, 7];
+  const raw = Array.isArray(inputArr) ? inputArr.filter((v) => Number.isFinite(v)).slice(0, 12) : [];
+  const initial = raw.length >= 2 ? raw : DEFAULT_ARR;
 
   const s = {
     arr: initial.map((v) => ({ val: v, state: 'idle' })),
@@ -114,6 +117,9 @@ export default {
   label: 'Heap Sort',
   icon: '🏔️',
   build: buildHeapSteps,
+  inputs: [
+    { key: 'arr', label: 'Array (comma-sep, max 12)', type: 'array-num', default: DEFAULT_ARR },
+  ],
   code: HEAP_CODE,
   language: 'Java',
   metrics: [

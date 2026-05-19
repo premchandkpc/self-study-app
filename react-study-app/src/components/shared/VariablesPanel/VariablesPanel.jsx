@@ -3,22 +3,21 @@ import styles from './VariablesPanel.module.css';
 
 export default function VariablesPanel({ vars = {}, result }) {
   const entries = Object.entries(vars);
-  if (!entries.length && !result) return null;
 
   return (
     <div className={styles.panel}>
-      {entries.length > 0 && (
-        <>
-          <div className={styles.header}>
-            <span className={styles.title}>Variables</span>
-            <span className={styles.count}>{entries.length}</span>
-          </div>
-          <div className={styles.table}>
-            {entries.map(([name, value]) => (
-              <VarRow key={name} name={name} value={value} />
-            ))}
-          </div>
-        </>
+      <div className={styles.header}>
+        <span className={styles.title}>Variables</span>
+        <span className={styles.count}>{entries.length}</span>
+      </div>
+      {entries.length > 0 ? (
+        <div className={styles.table}>
+          {entries.map(([name, value]) => (
+            <VarRow key={name} name={name} value={value} />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.empty}>—</div>
       )}
       {result && <ResultPanel result={result} />}
     </div>

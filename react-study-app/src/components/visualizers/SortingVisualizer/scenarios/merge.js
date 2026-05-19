@@ -1,8 +1,11 @@
 import { snap } from './shared';
 
-function buildMergeSteps() {
+const DEFAULT_ARR = [5, 3, 8, 1, 9, 2];
+
+function buildMergeSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
   const steps = [];
-  const initial = [5, 3, 8, 1, 9, 2];
+  const raw = Array.isArray(inputArr) ? inputArr.filter((v) => Number.isFinite(v)).slice(0, 12) : [];
+  const initial = raw.length >= 2 ? raw : DEFAULT_ARR;
 
   const s = {
     arr: initial.map((v) => ({ val: v, state: 'idle', group: -1 })),
@@ -105,6 +108,9 @@ export default {
   label: 'Merge Sort',
   icon: '🔀',
   build: buildMergeSteps,
+  inputs: [
+    { key: 'arr', label: 'Array (comma-sep, max 12)', type: 'array-num', default: DEFAULT_ARR },
+  ],
   code: MERGE_CODE,
   language: 'Java',
   metrics: [

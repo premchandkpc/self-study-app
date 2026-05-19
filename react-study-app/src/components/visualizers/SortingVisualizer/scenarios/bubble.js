@@ -1,8 +1,11 @@
 import { snap } from './shared';
 
-function buildBubbleSteps() {
+const DEFAULT_ARR = [5, 3, 8, 1, 9, 2, 7, 4];
+
+function buildBubbleSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
   const steps = [];
-  const initial = [5, 3, 8, 1, 9, 2, 7, 4];
+  const raw = Array.isArray(inputArr) ? inputArr.filter((v) => Number.isFinite(v)).slice(0, 12) : [];
+  const initial = raw.length >= 2 ? raw : DEFAULT_ARR;
 
   const s = {
     arr: initial.map((v) => ({ val: v, state: 'idle' })),
@@ -86,6 +89,9 @@ export default {
   label: 'Bubble Sort',
   icon: '🫧',
   build: buildBubbleSteps,
+  inputs: [
+    { key: 'arr', label: 'Array (comma-sep, max 12)', type: 'array-num', default: DEFAULT_ARR },
+  ],
   code: BUBBLE_CODE,
   language: 'Java',
   metrics: [

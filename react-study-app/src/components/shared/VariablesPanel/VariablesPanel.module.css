@@ -151,3 +151,5 @@
 .mapKey  { color: var(--node-default); font-weight: 700; }
 .mapSep  { color: var(--text-faint); }
 .mapVal  { color: var(--node-active); }
+
+.empty { padding: 6px 12px; font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }

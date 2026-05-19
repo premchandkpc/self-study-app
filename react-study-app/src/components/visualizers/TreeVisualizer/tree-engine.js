@@ -151,3 +151,17 @@ export const TRAVERSAL_CODE = {
   preorder:  ['function preorder(node) {', '  if (!node) return;', '  visit(node);', '  preorder(node.left);', '  preorder(node.right);', '}'],
   postorder: ['function postorder(node) {', '  if (!node) return;', '  postorder(node.left);', '  postorder(node.right);', '  visit(node);', '}'],
 };
+
+const _DEFAULT = [50, 30, 70, 20, 40, 60, 80];
+function _buildBST(values) {
+  let root = null;
+  for (const v of values) root = insert(root, v);
+  return root;
+}
+
+export const SCENARIOS = [
+  { id: 'insert',   label: 'BST Insert',  icon: '➕', build: () => buildInsertSteps(_DEFAULT),                       code: INSERT_CODE,             language: 'JavaScript' },
+  { id: 'inorder',  label: 'Inorder',     icon: '↙',  build: () => buildTraversalSteps(_buildBST(_DEFAULT), 'inorder'),   code: TRAVERSAL_CODE.inorder,  language: 'JavaScript' },
+  { id: 'preorder', label: 'Preorder',    icon: '↖',  build: () => buildTraversalSteps(_buildBST(_DEFAULT), 'preorder'),  code: TRAVERSAL_CODE.preorder, language: 'JavaScript' },
+  { id: 'postorder',label: 'Postorder',   icon: '↘',  build: () => buildTraversalSteps(_buildBST(_DEFAULT), 'postorder'), code: TRAVERSAL_CODE.postorder,language: 'JavaScript' },
+];

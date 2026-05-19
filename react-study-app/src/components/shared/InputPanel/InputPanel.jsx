@@ -10,6 +10,7 @@ import styles from './InputPanel.module.css';
  * onApply(parsedInputs) called when user clicks Run or presses Enter.
  */
 export default function InputPanel({ schema, current = {}, onApply }) {
+  if (!schema?.length) return null;
   const initial = Object.fromEntries(
     schema.map((f) => {
       const val = current[f.key] ?? f.default;

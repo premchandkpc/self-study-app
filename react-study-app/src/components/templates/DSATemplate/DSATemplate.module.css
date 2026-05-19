@@ -1,0 +1,114 @@
+.wrapper { display: flex; flex-direction: column; gap: 12px; }
+
+/* ── body ── */
+.body { display: grid; grid-template-columns: 1fr 320px; gap: 12px; }
+.vizArea { display: flex; flex-direction: column; gap: 10px; min-height: 240px; }
+.panels  { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── array cells ── */
+.arrayWrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; padding: 12px; }
+.cell {
+  display: flex; flex-direction: column; align-items: center;
+  border: 1.5px solid var(--cc, var(--border));
+  background: color-mix(in srgb, var(--cc, var(--border)) 12%, transparent);
+  border-radius: 6px; padding: 6px 10px; min-width: 36px; position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.inWin { outline: 2px solid var(--node-comparing); outline-offset: 2px; }
+.cellVal { font-size: 14px; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); }
+.cellIdx { font-size: 10px; color: var(--text-muted); }
+.ptr { font-size: 9px; color: var(--cc, var(--node-active)); font-weight: 700; margin-top: 2px; }
+
+/* ── sort bars ── */
+.sortWrap { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 12px; }
+.barCol   { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; height: 100%; justify-content: flex-end; }
+.bar      { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.25s, background 0.2s; }
+.barVal   { font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); }
+
+/* ── linked list ── */
+.llWrap  { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 12px; }
+.llItem  { display: flex; align-items: center; gap: 4px; }
+.llNode  {
+  border: 2px solid var(--nc, var(--border));
+  background: color-mix(in srgb, var(--nc, var(--border)) 15%, transparent);
+  border-radius: 8px; padding: 6px 12px; font-family: var(--font-mono);
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+  position: relative; display: flex; flex-direction: column; align-items: center;
+}
+.llVal   { font-size: 14px; }
+.llPtr   { font-size: 9px; color: var(--nc, var(--node-active)); }
+.llArrow { font-size: 18px; color: var(--text-muted); }
+.llNull  { font-size: 16px; color: var(--text-muted); padding: 4px 8px; }
+
+/* ── tree ── */
+.treeWrap     { padding: 12px; }
+.treeNode     { display: flex; flex-direction: column; align-items: center; }
+.treeRow      { display: flex; align-items: center; gap: 4px; }
+.treeCircle   {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--nc, var(--border));
+  background: color-mix(in srgb, var(--nc, var(--border)) 18%, transparent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: 14px; color: var(--text-primary);
+}
+.treeChildren { display: flex; gap: 24px; margin-top: 8px; }
+.treeChild    { display: flex; flex-direction: column; align-items: center; }
+.treeConnL, .treeConnR { width: 20px; height: 2px; background: var(--border); }
+.visitedRow   { display: flex; gap: 6px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.visitedLabel { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+.visitedVal   { font-size: 12px; color: var(--node-visited); font-family: var(--font-mono); font-weight: 700; }
+
+/* ── graph ── */
+.graphSvg { width: 100%; height: 240px; }
+
+/* ── matrix ── */
+.matrixWrap { display: flex; flex-direction: column; gap: 4px; padding: 12px; }
+.matrixRow  { display: flex; gap: 4px; }
+.matCell    {
+  width: 40px; height: 40px; border: 1.5px solid var(--cc, var(--border));
+  background: color-mix(in srgb, var(--cc, var(--border)) 12%, transparent);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--text-primary);
+}
+
+/* ── hash map ── */
+.hmWrap   { display: flex; flex-direction: column; gap: 4px; padding: 12px; font-family: var(--font-mono); }
+.hmBucket { display: flex; gap: 8px; align-items: center; padding: 4px 8px; background: var(--bg-card); border-radius: 6px; }
+.hmIdx    { font-size: 11px; color: var(--text-muted); min-width: 28px; }
+.hmEntry  { font-size: 12px; background: var(--node-active); color: white; border-radius: 4px; padding: 2px 6px; }
+.hmResult { margin-top: 8px; font-size: 13px; color: var(--node-visited); font-weight: 700; }
+
+/* ── DP ── */
+.dpRow     { display: flex; gap: 4px; padding: 12px; flex-wrap: wrap; }
+.dpGrid    { display: flex; flex-direction: column; gap: 4px; padding: 12px; }
+.dpGridRow { display: flex; gap: 4px; }
+.dpCell    {
+  min-width: 36px; height: 36px;
+  border: 1.5px solid var(--cc, var(--border));
+  background: color-mix(in srgb, var(--cc, var(--border)) 15%, transparent);
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--text-primary);
+}
+
+/* ── string ── */
+/* ── set ── */
+.setWrap       { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+.setRow        { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.setRowLabel   { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); min-width: 40px; }
+.vennRow       { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.setCircle     { border: 2px solid var(--ec, var(--border)); border-radius: 50%; padding: 16px; min-width: 120px; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: color-mix(in srgb, var(--ec, var(--border)) 8%, transparent); }
+.setCircleLabel{ font-size: 16px; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); }
+.setElems      { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.setElem       { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: var(--font-mono); font-weight: 700; background: color-mix(in srgb, var(--ec, var(--node-default)) 20%, transparent); border: 1px solid var(--ec, var(--node-default)); color: var(--text-primary); }
+.setBadge      { padding: 4px 12px; border-radius: 20px; background: var(--bg-elevated); border: 1px solid var(--border); font-size: 13px; font-family: var(--font-mono); font-weight: 700; color: var(--text-primary); align-self: flex-start; }
+.setResultRow  { display: flex; gap: 12px; flex-wrap: wrap; }
+.setResult     { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+.setResultLabel{ font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+.strWrap { display: flex; flex-wrap: wrap; gap: 4px; padding: 12px; }
+.strCell {
+  width: 36px; height: 36px; border: 1.5px solid var(--cc, var(--border));
+  background: color-mix(in srgb, var(--cc, var(--border)) 15%, transparent);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text-primary);
+}

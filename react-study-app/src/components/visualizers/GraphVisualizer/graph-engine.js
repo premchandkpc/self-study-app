@@ -153,3 +153,14 @@ const DFS_CODE = [
 ];
 
 export const ALGO_CODE = { bfs: BFS_CODE, dfs: DFS_CODE };
+
+const _NODES = [
+  { id: 'A', x: 260, y: 60  }, { id: 'B', x: 120, y: 180 }, { id: 'C', x: 400, y: 180 },
+  { id: 'D', x: 60,  y: 300 }, { id: 'E', x: 200, y: 300 }, { id: 'F', x: 340, y: 300 }, { id: 'G', x: 460, y: 300 },
+];
+const _EDGES = [['A','B'],['A','C'],['B','D'],['B','E'],['C','F'],['C','G']].map(([from, to]) => ({ from, to }));
+
+export const SCENARIOS = [
+  { id: 'bfs', label: 'BFS', icon: '🌊', build: () => buildBFSSteps(_NODES, _EDGES, 'A'), code: BFS_CODE, language: 'JavaScript' },
+  { id: 'dfs', label: 'DFS', icon: '🌀', build: () => buildDFSSteps(_NODES, _EDGES, 'A'), code: DFS_CODE, language: 'JavaScript' },
+];
