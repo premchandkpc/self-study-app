@@ -1,6 +1,7 @@
 import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './array-engine';
 import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
+import InputPanel from '../../shared/InputPanel/InputPanel';
 import StepControls from '../../shared/StepControls/StepControls';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
 import CodePanel from '../../shared/CodePanel/CodePanel';
@@ -34,7 +35,7 @@ const STATE_CLASS = {
 };
 
 export default function ArrayVisualizer() {
-  const { activeId, active, viz, select } = useVisualizerScenario(SCENARIOS);
+  const { activeId, active, viz, select, customInputs, rebuild } = useVisualizerScenario(SCENARIOS);
 
   if (!viz) return null;
 
@@ -46,6 +47,10 @@ export default function ArrayVisualizer() {
   return (
     <div className={styles.wrapper}>
       <ScenarioToolbar scenarios={SCENARIOS} active={activeId} onChange={select} />
+
+      {active.inputs?.length > 0 && (
+        <InputPanel key={activeId} schema={active.inputs} current={customInputs} onApply={rebuild} />
+      )}
 
       <div className={styles.vizArea}>
         {/* Main array display */}

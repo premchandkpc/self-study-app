@@ -54,6 +54,7 @@ export const VISUALIZER_MAP = {
   'python:Async':                'python',
   'python:Decorators':           'python',
   'python:ML Pipelines':         'python',
+  'dsa:DP':                      'dp',
   'dsa:Strings':                 'string',
   'dsa:HashMaps':                'hashmap',
   'dsa:Sets':                    'set',
@@ -82,4 +83,7 @@ export const VISUALIZER_MAP = {
   'dp:Knapsack':                 'dp',
   'dp:LCS':                      'dp',
   'dp:LIS':                      'dp',
+  'dp:Edit Distance':            'dp',
+  'dp:House Robber':             'dp',
+  'dp:Palindrome Subseq':        'dp',
 };

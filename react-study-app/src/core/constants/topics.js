@@ -47,4 +47,40 @@ export const TOPICS = [
     icon: '🏗️',
     subtopics: ['Load Balancer', 'Cache', 'CDN', 'Microservices', 'Raft'],
   },
+  {
+    id: 'sorting',
+    label: 'Sorting',
+    icon: '📶',
+    subtopics: ['Bubble Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort'],
+  },
+  {
+    id: 'database',
+    label: 'Database',
+    icon: '🗄️',
+    subtopics: ['B-Tree', 'Query Planning', 'Transactions', 'Joins'],
+  },
+  {
+    id: 'redis',
+    label: 'Redis',
+    icon: '🔴',
+    subtopics: ['Data Types', 'Pub/Sub', 'Cluster', 'Pipelining'],
+  },
+  {
+    id: 'docker',
+    label: 'Docker',
+    icon: '🐳',
+    subtopics: ['Image Layers', 'Container Lifecycle', 'Networking', 'Compose'],
+  },
+  {
+    id: 'networking',
+    label: 'Networking',
+    icon: '🌐',
+    subtopics: ['TCP Handshake', 'HTTP', 'DNS', 'Load Balancer'],
+  },
+  {
+    id: 'dp',
+    label: 'Dynamic Programming',
+    icon: '🧩',
+    subtopics: ['Fibonacci', 'Coin Change', 'Knapsack', 'LCS', 'LIS', 'Edit Distance', 'House Robber', 'Palindrome Subseq'],
+  },
 ];

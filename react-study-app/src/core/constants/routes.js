@@ -45,6 +45,7 @@ export const SUBTOPIC_ROUTES = {
   'python:Async':                '/visualizer/python',
   'python:Decorators':           '/visualizer/python',
   'python:ML Pipelines':         '/visualizer/python',
+  'dsa:DP':                      '/visualizer/dp',
   'dsa:Strings':                 '/visualizer/string',
   'dsa:HashMaps':                '/visualizer/hashmap',
   'dsa:Sets':                    '/visualizer/set',
@@ -73,4 +74,7 @@ export const SUBTOPIC_ROUTES = {
   'dp:Knapsack':                 '/visualizer/dp',
   'dp:LCS':                      '/visualizer/dp',
   'dp:LIS':                      '/visualizer/dp',
+  'dp:Edit Distance':            '/visualizer/dp',
+  'dp:House Robber':             '/visualizer/dp',
+  'dp:Palindrome Subseq':        '/visualizer/dp',
 };

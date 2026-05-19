@@ -3,25 +3,42 @@ import { useSimulation } from '../context/SimulationContext';
 
 /**
  * Drives any scenario-based visualizer.
- * Accepts a SCENARIOS array from the engine file, owns all
- * scenario/step/viz state, and returns only what the component needs.
  *
  * SCENARIOS item shape:
- *   { id, label, icon, build, code, language, metrics: [{ key, label, max, unit, color, warn?, critical? }] }
+ *   { id, label, icon, build, code, language,
+ *     metrics: [{ key, label, max, unit, color, warn?, critical? }],
+ *     inputs?: [{ key, label, type, default, min?, max?, maxLen? }]  // optional
+ *   }
+ *
+ * Returns:
+ *   activeId, active, viz, select, metrics,
+ *   customInputs,   — current parsed inputs for active scenario
+ *   rebuild(params) — re-run build with new params and reset steps
  */
 export function useVisualizerScenario(scenarios) {
   const { state, dispatch } = useSimulation();
-  const [activeId, setActiveId] = useState(scenarios[0].id);
-  const [viz, setViz]           = useState(null);
+  const [activeId, setActiveId]       = useState(scenarios[0].id);
+  const [viz, setViz]                 = useState(null);
+  const [inputsMap, setInputsMap]     = useState({});  // persists inputs per scenario id
 
   const active = scenarios.find((s) => s.id === activeId) ?? scenarios[0];
+  const customInputs = inputsMap[activeId] ?? {};
+
+  function _load(scenario, params = {}) {
+    dispatch({ type: 'RESET' });
+    dispatch({ type: 'SET_STEPS', payload: scenario.build(params) });
+  }
 
   function select(id) {
     const found = scenarios.find((s) => s.id === id);
     if (!found) return;
     setActiveId(id);
-    dispatch({ type: 'RESET' });
-    dispatch({ type: 'SET_STEPS', payload: found.build() });
+    _load(found, inputsMap[id] ?? {});
+  }
+
+  function rebuild(params) {
+    setInputsMap((prev) => ({ ...prev, [activeId]: params }));
+    _load(active, params);
   }
 
   useEffect(() => { select(scenarios[0].id); }, []);
@@ -41,5 +58,5 @@ export function useVisualizerScenario(scenarios) {
     critical: m.critical,
   }));
 
-  return { activeId, active, viz, select, metrics };
+  return { activeId, active, viz, select, metrics, customInputs, rebuild };
 }
