@@ -1,4 +1,4 @@
-import { snap, node, packet } from './shared.js';
+import { snap, packet, clientNode, gatewayNode, serviceNode, redisNode, brokerNode, dbNode } from './shared.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Uber System Design — full 14-component architecture
@@ -16,20 +16,20 @@ function buildUberSteps() {
 
   /* ── baseline nodes ─────────────────────────────────────────────────────── */
   const BASE_NODES = [
-    node('rider',    'Rider App',       'client',  75,  190, { icon: '📱', desc: 'iOS/Android — REST + WebSocket client' }),
-    node('driver',   'Driver App',      'client',  75,  365, { icon: '🚗', desc: 'Background GPS ping every 4s' }),
-    node('gw',       'API Gateway',     'gateway', 215, 278, { icon: '🛡️', desc: 'Rate limit · Auth delegation · Routing' }),
-    node('auth',     'Auth Service',    'service', 360, 118, { icon: '🔐', desc: 'JWT validation, OAuth2, rate-limit' }),
-    node('match',    'Ride Matching',   'service', 360, 248, { icon: '🎯', desc: 'Geospatial match, ETA calc, surge check' }),
-    node('location', 'Location Svc',   'service', 360, 378, { icon: '📍', desc: 'Ingests driver GPS, writes to Redis' }),
-    node('pricing',  'Pricing Svc',     'service', 500, 148, { icon: '💰', desc: 'Surge multiplier, base fare, ETA fare' }),
-    node('trip',     'Trip Service',    'service', 500, 268, { icon: '🗺️', desc: 'Trip lifecycle: CREATED→ACTIVE→DONE' }),
-    node('payment',  'Payment Svc',     'service', 500, 388, { icon: '💳', desc: 'Stripe, retry logic, idempotency keys' }),
-    node('redis',    'Redis Cluster',   'redis',   645, 198, { icon: '⚡', desc: 'Driver locations · TTL 5s · GEORADIUS' }),
-    node('kafka',    'Kafka',           'broker',  645, 308, { icon: '📨', desc: '3 brokers · 7-day retention · 3 partitions' }),
-    node('notif',    'Notification',    'service', 645, 415, { icon: '🔔', desc: 'FCM/APNs push, SMS fallback via Twilio' }),
-    node('pg',       'PostgreSQL',      'db',      790, 248, { icon: '🐘', desc: 'Sharded by city_id · 2 read replicas' }),
-    node('ws',       'WebSocket Svc',   'service', 790, 388, { icon: '🔌', desc: 'Persistent conn · 3s location push' }),
+    clientNode ('rider',    'Rider App',      75,  190, { icon: '📱', desc: 'iOS/Android — REST + WebSocket client' }),
+    clientNode ('driver',   'Driver App',     75,  365, { icon: '🚗', desc: 'Background GPS ping every 4s' }),
+    gatewayNode('gw',       'API Gateway',    215, 278, { desc: 'Rate limit · Auth delegation · Routing' }),
+    serviceNode('auth',     'Auth Service',   360, 118, { icon: '🔐', desc: 'JWT validation, OAuth2, rate-limit' }),
+    serviceNode('match',    'Ride Matching',  360, 248, { icon: '🎯', desc: 'Geospatial match, ETA calc, surge check' }),
+    serviceNode('location', 'Location Svc',  360, 378, { icon: '📍', desc: 'Ingests driver GPS, writes to Redis' }),
+    serviceNode('pricing',  'Pricing Svc',   500, 148, { icon: '💰', desc: 'Surge multiplier, base fare, ETA fare' }),
+    serviceNode('trip',     'Trip Service',  500, 268, { icon: '🗺️', desc: 'Trip lifecycle: CREATED→ACTIVE→DONE' }),
+    serviceNode('payment',  'Payment Svc',   500, 388, { icon: '💳', desc: 'Stripe, retry logic, idempotency keys' }),
+    redisNode  ('redis',    'Redis Cluster', 645, 198, { desc: 'Driver locations · TTL 5s · GEORADIUS' }),
+    brokerNode ('kafka',    'Kafka',         645, 308, { desc: '3 brokers · 7-day retention · 3 partitions' }),
+    serviceNode('notif',    'Notification',  645, 415, { icon: '🔔', desc: 'FCM/APNs push, SMS fallback via Twilio' }),
+    dbNode     ('pg',       'PostgreSQL',    790, 248, { desc: 'Sharded by city_id · 2 read replicas' }),
+    serviceNode('ws',       'WebSocket Svc', 790, 388, { icon: '🔌', desc: 'Persistent conn · 3s location push' }),
   ];
 
   /* ── edges (async flagged separately) ──────────────────────────────────── */

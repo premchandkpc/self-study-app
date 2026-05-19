@@ -1,4 +1,4 @@
-import { snap, node, packet } from './shared.js';
+import { snap, packet, clientNode, lbNode, serverNode } from './shared.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Load Balancer — Round-Robin with health checks
@@ -8,11 +8,11 @@ function buildLBSteps() {
   const steps = [];
   const s = {
     nodes: [
-      node('client', 'Client',        'client',  80,  160, { icon: '💻', desc: 'HTTP client — sends requests to the load balancer' }),
-      node('lb',     'Load Balancer', 'lb',      270, 160, { icon: '⚖️', desc: 'Round-robin · Health check every 5s · Removes unhealthy backends' }),
-      node('s1',     'Server 1',      'server',  470, 60,  { icon: '🖥',  desc: 'Stateless app server · handles GET /api', load: 0, healthy: true }),
-      node('s2',     'Server 2',      'server',  470, 160, { icon: '🖥',  desc: 'Stateless app server · handles GET /api', load: 0, healthy: true }),
-      node('s3',     'Server 3',      'server',  470, 260, { icon: '🖥',  desc: 'Stateless app server · handles GET /api', load: 0, healthy: true }),
+      clientNode('client', 'Client',        80,  160, { desc: 'HTTP client — sends requests to the load balancer' }),
+      lbNode    ('lb',     'Load Balancer', 270, 160, { desc: 'Round-robin · Health check every 5s · Removes unhealthy backends' }),
+      serverNode('s1',     'Server 1',      470, 60,  { desc: 'Stateless app server · handles GET /api', load: 0, healthy: true }),
+      serverNode('s2',     'Server 2',      470, 160, { desc: 'Stateless app server · handles GET /api', load: 0, healthy: true }),
+      serverNode('s3',     'Server 3',      470, 260, { desc: 'Stateless app server · handles GET /api', load: 0, healthy: true }),
     ],
     edges: [
       { from: 'client', to: 'lb', protocol: 'HTTP/2' },
@@ -23,8 +23,6 @@ function buildLBSteps() {
     packets: [],
     events: [],
     metrics: { requests: 0, s1: 0, s2: 0, s3: 0, failed: 0 },
-    activeEdge: null,
-    algo: 'Round-Robin',
   };
 
   snap(steps, s, 'Load balancer sits in front of 3 servers. Round-robin distributes requests evenly. Health checks run every 5s.', 1);
@@ -36,7 +34,6 @@ function buildLBSteps() {
   snap(steps, s, 'Request arrives at Load Balancer. Round-robin: next = Server 1.', 2);
 
   s.packets = [packet('lb', 's1', 'GET /api', 'request')];
-  s.activeEdge = 'lb-s1';
   s.nodes[2].state = 'active';
   s.nodes[2].load = 1;
   s.metrics.requests = 1; s.metrics.s1 = 1;
@@ -49,7 +46,6 @@ function buildLBSteps() {
   snap(steps, s, 'Server 1 responds 200 OK. Round-robin counter advances.', 4);
 
   s.packets = [packet('lb', 's2', 'GET /api', 'request')];
-  s.activeEdge = 'lb-s2';
   s.nodes[3].state = 'active';
   s.nodes[3].load = 1;
   s.metrics.requests = 2; s.metrics.s2 = 1;
@@ -57,7 +53,7 @@ function buildLBSteps() {
   snap(steps, s, 'Request 2 → Server 2. Even distribution across all servers.', 5);
 
   s.packets = [packet('lb', 's3', 'GET /api', 'request')];
-  s.activeEdge = 'lb-s3';
+  void('lb-s3';
   s.nodes[4].state = 'active';
   s.nodes[4].load = 1;
   s.metrics.requests = 3; s.metrics.s3 = 1;
@@ -67,12 +63,12 @@ function buildLBSteps() {
   s.packets = [];
   s.nodes[3].state = 'error';
   s.nodes[3].healthy = false;
-  s.activeEdge = null;
+  void(null;
   s.events.push({ type: 'error', msg: 'Server 2 health check FAIL — marking unhealthy' });
   snap(steps, s, 'Server 2 fails health check. LB marks it UNHEALTHY. Removes from rotation.', 7);
 
   s.packets = [packet('lb', 's1', 'GET /api', 'request')];
-  s.activeEdge = 'lb-s1';
+  void('lb-s1';
   s.nodes[2].load = 1;
   s.metrics.requests = 4; s.metrics.s1 = 2;
   s.events.push({ type: 'warn', msg: 'Skipping Server 2 (unhealthy). Routing to Server 1.' });

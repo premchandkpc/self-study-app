@@ -1,4 +1,4 @@
-import { snap, node, packet } from './shared.js';
+import { snap, packet, clientNode, serverNode, cacheNode, dbNode } from './shared.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Cache (Redis LRU) — cache-aside pattern
@@ -8,10 +8,10 @@ function buildCacheSteps() {
   const steps = [];
   const s = {
     nodes: [
-      node('client', 'Client',      'client', 60,  150, { icon: '💻', desc: 'Requests user data via app server' }),
-      node('app',    'App Server',  'server', 220, 150, { icon: '🖥',  desc: 'Cache-aside: check Redis first, fall back to DB on miss' }),
-      node('cache',  'Redis Cache', 'cache',  400, 60,  { icon: '⚡', desc: 'Redis LRU · capacity=3 · allkeys-lru eviction · ~1ms latency', capacity: 3, entries: [] }),
-      node('db',     'PostgreSQL',  'db',     400, 240, { icon: '🐘', desc: 'PostgreSQL — source of truth · ~20ms read latency' }),
+      clientNode('client', 'Client',      60,  150, { desc: 'Requests user data via app server' }),
+      serverNode('app',    'App Server',  220, 150, { desc: 'Cache-aside: check Redis first, fall back to DB on miss' }),
+      cacheNode ('cache',  'Redis Cache', 400, 60,  { desc: 'Redis LRU · capacity=3 · allkeys-lru eviction · ~1ms latency', capacity: 3, entries: [] }),
+      dbNode    ('db',     'PostgreSQL',  400, 240, { desc: 'PostgreSQL — source of truth · ~20ms read latency' }),
     ],
     edges: [
       { from: 'client', to: 'app',   protocol: 'HTTP' },

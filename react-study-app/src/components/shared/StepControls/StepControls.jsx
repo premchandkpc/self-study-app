@@ -1,6 +1,9 @@
 import { useSimulation } from '../../../core/context/SimulationContext';
 import styles from './StepControls.module.css';
 
+const SPEED_MIN = 100;
+const SPEED_MAX = 2000;
+
 export default function StepControls() {
   const { state, dispatch, togglePlay } = useSimulation();
   const { currentStep, steps, isPlaying, speed } = state;
@@ -83,13 +86,13 @@ export default function StepControls() {
           <input
             type="range"
             className={styles.speedRange}
-            min={100}
-            max={2000}
+            min={SPEED_MIN}
+            max={SPEED_MAX}
             step={100}
-            value={speed}
-            onChange={(e) => dispatch({ type: 'SET_SPEED', payload: Number(e.target.value) })}
+            value={SPEED_MIN + SPEED_MAX - speed}
+            onChange={(e) => dispatch({ type: 'SET_SPEED', payload: SPEED_MIN + SPEED_MAX - Number(e.target.value) })}
           />
-          <span className={styles.speedValue}>{speed}ms</span>
+          <span className={styles.speedValue}>{(1000 / speed).toFixed(1)}×</span>
         </div>
       </div>
     </div>

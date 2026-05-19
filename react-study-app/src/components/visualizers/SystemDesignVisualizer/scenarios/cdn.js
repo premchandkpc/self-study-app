@@ -1,4 +1,4 @@
-import { snap, node, packet } from './shared.js';
+import { snap, packet, clientNode, serverNode, cdnNode } from './shared.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    CDN — Edge caching with TTL and cache invalidation
@@ -8,10 +8,10 @@ function buildCDNSteps() {
   const steps = [];
   const s = {
     nodes: [
-      node('c1',     'Client (NYC)', 'client', 60,  100, { icon: '💻', desc: 'NYC user — geographically close to CDN edge node' }),
-      node('c2',     'Client (LON)', 'client', 60,  220, { icon: '💻', desc: 'London user — same CDN edge, different origin region' }),
-      node('edge',   'CDN Edge\n(Cloudflare)', 'cdn', 280, 160, { icon: '🌐', desc: 'Cloudflare PoP · TTL-based cache · serves nearest edge · MISS→fetch origin', cached: false, ttl: 0, hit: 0, miss: 0 }),
-      node('origin', 'Origin Server', 'server', 500, 160, { icon: '🖥',  desc: 'Origin — authoritative content source · ~120ms round-trip from edge', load: 0 }),
+      clientNode('c1',     'Client (NYC)',          60,  100, { desc: 'NYC user — geographically close to CDN edge node' }),
+      clientNode('c2',     'Client (LON)',          60,  220, { desc: 'London user — same CDN edge, different origin region' }),
+      cdnNode   ('edge',   'CDN Edge\n(Cloudflare)', 280, 160, { desc: 'Cloudflare PoP · TTL-based cache · MISS→fetch origin', cached: false, ttl: 0, hit: 0, miss: 0 }),
+      serverNode('origin', 'Origin Server',         500, 160, { desc: 'Origin — authoritative content source · ~120ms round-trip from edge', load: 0 }),
     ],
     edges: [
       { from: 'c1',   to: 'edge',   protocol: 'HTTPS' },
@@ -50,7 +50,7 @@ function buildCDNSteps() {
   s.nodes[1].state = 'active';
   s.packets = [packet('c2', 'edge', 'GET /hero.jpg', 'request')];
   s.metrics.requests = 2;
-  snap(steps, s, 'London client requests same asset. Edge checks cache…', 3);
+  snap(steps, s, 'London client requests same asset. Edge checks cache…', 5);
 
   s.nodes[2].state = 'ok';
   s.nodes[2].hit = 1;

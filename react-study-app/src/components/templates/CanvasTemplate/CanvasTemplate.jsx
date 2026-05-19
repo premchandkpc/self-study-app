@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { ICONS, NODE_COLORS } from '../../visualizers/SystemDesignVisualizer/sd-types';
 import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
 import { useSimulation } from '../../../core/context/SimulationContext';
 import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
@@ -8,21 +9,10 @@ import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
 import styles from './CanvasTemplate.module.css';
 
 const NODE_META = {
-  client:  { color: 'var(--node-default)',    icon: '📱',  shape: 'circle'   },
-  server:  { color: 'var(--node-visited)',    icon: '🖥',   shape: 'rect'     },
-  lb:      { color: 'var(--node-comparing)', icon: '⚖️',  shape: 'diamond'  },
-  cache:   { color: 'var(--node-blocked)',   icon: '⚡',   shape: 'hexagon'  },
-  redis:   { color: 'var(--node-blocked)',   icon: '⚡',   shape: 'hexagon'  },
-  db:      { color: 'var(--pod-crash)',      icon: '🗃️',  shape: 'cylinder' },
-  cdn:     { color: 'var(--kafka-producer)', icon: '🌐',   shape: 'cloud'    },
-  queue:   { color: 'var(--node-comparing)', icon: '📬',   shape: 'rect'     },
-  worker:  { color: 'var(--node-visited)',   icon: '⚙️',  shape: 'rect'     },
-  pod:     { color: 'var(--pod-running)',    icon: '📦',   shape: 'rect'     },
-  broker:  { color: 'var(--kafka-producer)', icon: '📬',   shape: 'rect'     },
-  gateway: { color: 'var(--node-active)',    icon: '🛡️',  shape: 'hexagon'  },
-  service: { color: 'var(--node-visited)',   icon: '⚙️',  shape: 'rect'     },
-  raft:    { color: 'var(--node-visited)',   icon: '⬡',    shape: 'circle'   },
-  default: { color: 'var(--node-default)',   icon: '●',    shape: 'rect'     },
+  ...Object.fromEntries(
+    Object.entries(ICONS).map(([type, icon]) => [type, { color: NODE_COLORS[type] || 'var(--node-default)', icon }])
+  ),
+  default: { color: 'var(--node-default)', icon: '●' },
 };
 
 const STATE_COLOR = {
@@ -168,7 +158,8 @@ export default function CanvasTemplate({ scenarios }) {
   const dotSize = 28 * scale;
   const dotX    = ((pan.x % dotSize) + dotSize) % dotSize;
   const dotY    = ((pan.y % dotSize) + dotSize) % dotSize;
-  const pktDur  = Math.max(0.35, (simState.speed || 800) * 0.0009);
+  // packet anim duration = 80% of step interval, clamped [0.08s, 1.5s]
+  const pktDur  = Math.max(0.08, Math.min(simState.speed * 0.0008, 1.5));
 
   return (
     <div className={styles.wrapper}>

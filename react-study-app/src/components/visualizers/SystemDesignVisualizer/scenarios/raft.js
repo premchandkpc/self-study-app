@@ -1,18 +1,19 @@
-import { snap, packet } from './shared.js';
+import { snap, packet, raftNode } from './shared.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Raft Consensus — leader election + log replication
    Pentagon layout (P2P cluster — no horizontal layers)
 ───────────────────────────────────────────────────────────────────────────── */
+const ROLE_ICON = { follower: '⬡', candidate: '🔵', leader: '⭐', crashed: '💥' };
+
 function buildRaftSteps() {
   const steps = [];
 
-  const makeNode = (id, label, role, x, y) => ({
-    id, label, type: 'raft', role, x, y,
-    state: 'idle', term: 0, voted: false, log: [],
-    icon: '⬡',
-    desc: 'Raft node — starts as follower, can become candidate or leader via election',
-  });
+  const makeNode = (id, label, role, x, y) =>
+    raftNode(id, label, x, y, {
+      role, term: 0, voted: false, log: [],
+      desc: 'Raft node — starts as follower, can become candidate or leader via election',
+    });
 
   const s = {
     nodes: [
@@ -40,7 +41,7 @@ function buildRaftSteps() {
   s.nodes[0].role = 'candidate';
   s.nodes[0].state = 'active';
   s.nodes[0].term = 1;
-  s.nodes[0].icon = '🔵';
+  s.nodes[0].icon = ROLE_ICON.candidate;
   s.nodes[0].desc = 'Candidate — election timeout fired, incremented term to 1, requesting votes';
   s.metrics.term = 1;
   s.events.push({ type: 'info', msg: 'Node 0 election timeout → becomes Candidate (term 1)' });
@@ -61,7 +62,7 @@ function buildRaftSteps() {
 
   s.nodes[0].role = 'leader';
   s.nodes[0].state = 'ok';
-  s.nodes[0].icon = '⭐';
+  s.nodes[0].icon = ROLE_ICON.leader;
   s.nodes[0].desc = 'Leader — sends heartbeats every 50ms, replicates all writes to followers';
   ['n1','n2','n3','n4'].forEach((_, i) => { s.nodes[i + 1].state = 'idle'; });
   s.packets = [];
@@ -89,7 +90,7 @@ function buildRaftSteps() {
 
   s.nodes[0].role = 'follower';
   s.nodes[0].state = 'error';
-  s.nodes[0].icon = '💥';
+  s.nodes[0].icon = ROLE_ICON.crashed;
   s.nodes[0].desc = 'CRASHED — leader unreachable, followers detect missing heartbeat';
   s.metrics.leader = 'none';
   s.events.push({ type: 'error', msg: 'Node 0 crashes! New election triggered.' });
@@ -97,7 +98,7 @@ function buildRaftSteps() {
 
   s.nodes[1].role = 'candidate';
   s.nodes[1].state = 'active';
-  s.nodes[1].icon = '🔵';
+  s.nodes[1].icon = ROLE_ICON.candidate;
   s.nodes[1].term = 2;
   s.metrics.term = 2;
   s.events.push({ type: 'ok', msg: 'Node 1 wins election (term 2). Cluster recovers.' });
