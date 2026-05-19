@@ -45,15 +45,22 @@ const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 3.5;
 const INIT_PAN = { x: 60, y: 50 };
 
-export default function CanvasTemplate({ scenarios }) {
+export default function CanvasTemplate({
+  scenarios,
+  panByScenario   = {},
+  scaleByScenario = {},
+}) {
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios);
   const { state: simState } = useSimulation();
 
   const canvasRef    = useRef(null);
   const wheelHandler = useRef(null);
 
-  const [pan,       setPan]       = useState(INIT_PAN);
-  const [scale,     setScale]     = useState(1);
+  function scenarioPan()   { return panByScenario[activeId]   ?? INIT_PAN; }
+  function scenarioScale() { return scaleByScenario[activeId] ?? 1; }
+
+  const [pan,       setPan]       = useState(scenarioPan);
+  const [scale,     setScale]     = useState(scenarioScale);
   const [positions, setPositions] = useState({});
   const [dragging,  setDragging]  = useState(null);
   const [panning,   setPanning]   = useState(null);
@@ -61,7 +68,11 @@ export default function CanvasTemplate({ scenarios }) {
   const [animKey,   setAnimKey]   = useState(0);
 
   useEffect(() => { setAnimKey(k => k + 1); }, [simState.currentStep]);
-  useEffect(() => { setPositions({}); setPan(INIT_PAN); setScale(1); }, [activeId]);
+  useEffect(() => {
+    setPositions({});
+    setPan(panByScenario[activeId]   ?? INIT_PAN);
+    setScale(scaleByScenario[activeId] ?? 1);
+  }, [activeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // non-passive wheel listener so preventDefault works
   useEffect(() => {
@@ -189,6 +200,9 @@ export default function CanvasTemplate({ scenarios }) {
                 p => (p.from === edge.from && p.to === edge.to) ||
                      (p.from === edge.to   && p.to === edge.from)
               );
+              const isAsync  = !!edge.async;
+              const stroke   = hot ? 'var(--node-active)' : isAsync ? 'var(--kafka-producer)' : 'var(--border)';
+              const dashArr  = hot ? '8 3' : isAsync ? '6 4' : 'none';
               const mx = (fp.x + tp.x) / 2;
               const my = (fp.y + tp.y) / 2;
               return (
@@ -197,9 +211,10 @@ export default function CanvasTemplate({ scenarios }) {
                   onMouseLeave={() => handleNodeHover(null, null, null)}
                 >
                   <line x1={fp.x} y1={fp.y} x2={tp.x} y2={tp.y}
-                    stroke={hot ? 'var(--node-active)' : 'var(--border)'}
+                    stroke={stroke}
                     strokeWidth={hot ? 2 : 1.5}
-                    strokeDasharray={hot ? '7 3' : 'none'}
+                    strokeDasharray={dashArr}
+                    strokeOpacity={isAsync && !hot ? 0.6 : 1}
                     markerEnd={hot ? 'url(#ct-arr-on)' : 'url(#ct-arr)'}
                   />
                   {/* wide hit area */}
@@ -303,11 +318,21 @@ export default function CanvasTemplate({ scenarios }) {
           <button className={styles.zBtn} title="Zoom out"
             onClick={() => setScale(s => Math.max(MIN_ZOOM, +(s / 1.3).toFixed(2)))}>−</button>
           <button className={styles.zBtn} title="Reset view"
-            onClick={() => { setScale(1); setPan(INIT_PAN); }}>⌂</button>
+            onClick={() => { setScale(scenarioScale()); setPan(scenarioPan()); }}>⌂</button>
         </div>
 
-        {/* ── Drag hint ── */}
-        <div className={styles.hint}>Drag nodes • Scroll to zoom • Pan background</div>
+        {/* ── Legend ── */}
+        <div className={styles.legend}>
+          <span className={styles.legendItem}>
+            <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--border)" strokeWidth="2"/><polygon points="16,1 22,4 16,7" fill="var(--border)"/></svg>
+            Sync
+          </span>
+          <span className={styles.legendItem}>
+            <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--kafka-producer)" strokeWidth="2" strokeDasharray="5 3"/><polygon points="16,1 22,4 16,7" fill="var(--kafka-producer)"/></svg>
+            Async
+          </span>
+          <span className={styles.legendHint}>Drag nodes · Scroll zoom · Pan bg</span>
+        </div>
       </div>
 
       {events.length > 0 && (
@@ -425,6 +450,7 @@ function EdgeTooltip({ edge }) {
     <>
       <div className={styles.ttTitle}>{edge.from} → {edge.to}</div>
       {edge.protocol && <div className={styles.ttRow}><b>Protocol</b> {edge.protocol}</div>}
+      <div className={styles.ttRow}><b>Pattern</b> {edge.async ? '⚡ Async (non-blocking)' : '⇄ Sync (blocking)'}</div>
       {edge.label    && <div className={styles.ttRow}><b>Label</b>    {edge.label}</div>}
       {edge.desc     && <div className={styles.ttDesc}>{edge.desc}</div>}
     </>
