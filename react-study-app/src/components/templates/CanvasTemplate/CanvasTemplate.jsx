@@ -8,20 +8,20 @@ import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
 import styles from './CanvasTemplate.module.css';
 
 const NODE_META = {
-  client:  { color: 'var(--node-default)',    icon: '👤', shape: 'circle'   },
-  server:  { color: 'var(--node-visited)',    icon: '🖥',  shape: 'rect'     },
-  lb:      { color: 'var(--node-comparing)', icon: '⚖',  shape: 'diamond'  },
-  cache:   { color: 'var(--node-blocked)',   icon: '💾',  shape: 'hexagon'  },
-  redis:   { color: 'var(--node-blocked)',   icon: '🔴',  shape: 'hexagon'  },
-  db:      { color: 'var(--pod-crash)',      icon: '🗄',  shape: 'cylinder' },
-  cdn:     { color: 'var(--kafka-producer)', icon: '🌐',  shape: 'cloud'    },
-  queue:   { color: 'var(--node-comparing)', icon: '📨',  shape: 'rect'     },
-  worker:  { color: 'var(--node-visited)',   icon: '⚙',  shape: 'rect'     },
-  pod:     { color: 'var(--pod-running)',    icon: '📦',  shape: 'rect'     },
-  broker:  { color: 'var(--kafka-producer)', icon: '📡',  shape: 'rect'     },
-  gateway: { color: 'var(--node-active)',    icon: '🚪',  shape: 'hexagon'  },
-  service: { color: 'var(--node-visited)',   icon: '⚙',  shape: 'rect'     },
-  default: { color: 'var(--node-default)',   icon: '●',   shape: 'rect'     },
+  client:  { color: 'var(--node-default)',    icon: '📱',  shape: 'circle'   },
+  server:  { color: 'var(--node-visited)',    icon: '🖥',   shape: 'rect'     },
+  lb:      { color: 'var(--node-comparing)', icon: '⚖️',  shape: 'diamond'  },
+  cache:   { color: 'var(--node-blocked)',   icon: '⚡',   shape: 'hexagon'  },
+  redis:   { color: 'var(--node-blocked)',   icon: '⚡',   shape: 'hexagon'  },
+  db:      { color: 'var(--pod-crash)',      icon: '🗃️',  shape: 'cylinder' },
+  cdn:     { color: 'var(--kafka-producer)', icon: '🌐',   shape: 'cloud'    },
+  queue:   { color: 'var(--node-comparing)', icon: '📬',   shape: 'rect'     },
+  worker:  { color: 'var(--node-visited)',   icon: '⚙️',  shape: 'rect'     },
+  pod:     { color: 'var(--pod-running)',    icon: '📦',   shape: 'rect'     },
+  broker:  { color: 'var(--kafka-producer)', icon: '📬',   shape: 'rect'     },
+  gateway: { color: 'var(--node-active)',    icon: '🛡️',  shape: 'hexagon'  },
+  service: { color: 'var(--node-visited)',   icon: '⚙️',  shape: 'rect'     },
+  default: { color: 'var(--node-default)',   icon: '●',    shape: 'rect'     },
 };
 
 const STATE_COLOR = {
@@ -40,27 +40,22 @@ const PKT_COLOR = {
 };
 
 const NODE_W   = 108;
-const NODE_H   = 46;
-const MIN_ZOOM = 0.2;
+const NODE_H   = 54;
+const MIN_ZOOM = 0.15;
 const MAX_ZOOM = 3.5;
 const INIT_PAN = { x: 60, y: 50 };
 
-export default function CanvasTemplate({
-  scenarios,
-  panByScenario   = {},
-  scaleByScenario = {},
-}) {
+export default function CanvasTemplate({ scenarios }) {
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios);
   const { state: simState } = useSimulation();
 
   const canvasRef    = useRef(null);
   const wheelHandler = useRef(null);
+  const needsFitRef  = useRef(true);
+  const fitFnRef     = useRef(null);
 
-  function scenarioPan()   { return panByScenario[activeId]   ?? INIT_PAN; }
-  function scenarioScale() { return scaleByScenario[activeId] ?? 1; }
-
-  const [pan,       setPan]       = useState(scenarioPan);
-  const [scale,     setScale]     = useState(scenarioScale);
+  const [pan,       setPan]       = useState(INIT_PAN);
+  const [scale,     setScale]     = useState(1);
   const [positions, setPositions] = useState({});
   const [dragging,  setDragging]  = useState(null);
   const [panning,   setPanning]   = useState(null);
@@ -68,11 +63,13 @@ export default function CanvasTemplate({
   const [animKey,   setAnimKey]   = useState(0);
 
   useEffect(() => { setAnimKey(k => k + 1); }, [simState.currentStep]);
+  useEffect(() => { setPositions({}); needsFitRef.current = true; }, [activeId]);
+  // auto-fit when first viz snapshot loads for a scenario
   useEffect(() => {
-    setPositions({});
-    setPan(panByScenario[activeId]   ?? INIT_PAN);
-    setScale(scaleByScenario[activeId] ?? 1);
-  }, [activeId]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!viz || !needsFitRef.current) return;
+    needsFitRef.current = false;
+    fitFnRef.current?.();
+  }, [viz]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // non-passive wheel listener so preventDefault works
   useEffect(() => {
@@ -93,6 +90,22 @@ export default function CanvasTemplate({
   function nodePos(n) {
     return positions[n.id] ?? { x: n.x, y: n.y };
   }
+
+  function fitToContent() {
+    if (!nodes.length || !canvasRef.current) return;
+    const { width: cw, height: ch } = canvasRef.current.getBoundingClientRect();
+    const pad = 52;
+    const xs  = nodes.map(n => nodePos(n).x);
+    const ys  = nodes.map(n => nodePos(n).y);
+    const x0  = Math.min(...xs) - NODE_W / 2 - 10;
+    const y0  = Math.min(...ys) - NODE_H / 2 - 10;
+    const fw  = Math.max(...xs) + NODE_W / 2 + 10 - x0;
+    const fh  = Math.max(...ys) + NODE_H / 2 + 10 - y0;
+    const s   = Math.min((cw - pad * 2) / fw, (ch - pad * 2) / fh, 1.6);
+    setPan({ x: (cw - fw * s) / 2 - x0 * s, y: (ch - fh * s) / 2 - y0 * s });
+    setScale(s);
+  }
+  fitFnRef.current = fitToContent;
 
   function handleWheel(e) {
     e.preventDefault();
@@ -252,15 +265,17 @@ export default function CanvasTemplate({
                     strokeWidth={isDrag || n.state === 'active' ? 2.5 : 1.5}
                     opacity={n.healthy === false ? 0.38 : 1}
                   />
-                  <text x={pos.x} y={pos.y - 6}
-                    textAnchor="middle" fontSize="11" fontFamily="var(--font-mono)"
-                    fill="var(--text-primary)" fontWeight="700" pointerEvents="none">
-                    {meta.icon} {(n.label || '').split('\n')[0]}
+                  {/* icon — large, centered above midline */}
+                  <text x={pos.x} y={pos.y - 3}
+                    textAnchor="middle" fontSize="18" dominantBaseline="middle"
+                    pointerEvents="none">
+                    {n.icon ?? meta.icon}
                   </text>
-                  <text x={pos.x} y={pos.y + 10}
+                  {/* label — below icon */}
+                  <text x={pos.x} y={pos.y + 17}
                     textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
-                    fill="var(--text-muted)" pointerEvents="none">
-                    {(n.type || '').toUpperCase()}
+                    fill="var(--text-primary)" fontWeight="600" pointerEvents="none">
+                    {(n.label || '').split('\n')[0]}
                   </text>
                   {n.healthy === false && (
                     <text x={pos.x} y={pos.y - NODE_H / 2 - 6}
@@ -317,8 +332,8 @@ export default function CanvasTemplate({
           <span className={styles.zLabel}>{Math.round(scale * 100)}%</span>
           <button className={styles.zBtn} title="Zoom out"
             onClick={() => setScale(s => Math.max(MIN_ZOOM, +(s / 1.3).toFixed(2)))}>−</button>
-          <button className={styles.zBtn} title="Reset view"
-            onClick={() => { setScale(scenarioScale()); setPan(scenarioPan()); }}>⌂</button>
+          <button className={styles.zBtn} title="Fit to content"
+            onClick={fitToContent}>⊞</button>
         </div>
 
         {/* ── Legend ── */}
