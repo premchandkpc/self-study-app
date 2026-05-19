@@ -89,7 +89,7 @@ export default function HashMapVisualizer() {
           )}
         </div>
 
-        <VariablesPanel vars={viz?.vars} />
+        <VariablesPanel vars={viz?.vars} result={viz?.result} />
       </div>
 
       <div className={styles.bottom}>

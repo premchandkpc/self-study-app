@@ -37,7 +37,7 @@ export default function DPVisualizer() {
         </div>
 
         <div className={styles.sidePanel}>
-          <VariablesPanel vars={viz?.vars} />
+          <VariablesPanel vars={viz?.vars} result={viz?.result} />
         </div>
       </div>
 

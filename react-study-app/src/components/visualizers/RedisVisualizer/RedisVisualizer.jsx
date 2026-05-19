@@ -34,7 +34,7 @@ export default function RedisVisualizer() {
         </div>
 
         <div className={styles.sidePanel}>
-          <VariablesPanel vars={viz?.vars} />
+          <VariablesPanel vars={viz?.vars} result={viz?.result} />
 
           {viz.events?.length > 0 && (
             <div className={styles.events}>

@@ -24,6 +24,7 @@ function buildKnapsackSteps({ items = DEFAULT_ITEMS, capacity = 8 } = {}) {
     activeRow: null, activeCol: null, deps: [], items, capacity: W,
     metrics: { cells: 0, maxVal: 0 },
     vars: { i: null, w: null, item: null, include: null, exclude: null, best: null },
+    result: null,
   };
 
   snap(steps, s, `0/1 Knapsack: ${n} items, capacity ${W}. table[i][w] = max value using first i items with cap w.`, 1, 'O(n·W)', 'O(n·W)');
@@ -51,12 +52,14 @@ function buildKnapsackSteps({ items = DEFAULT_ITEMS, capacity = 8 } = {}) {
       s.metrics.cells++;
       if (table[i][w] > s.metrics.maxVal) s.metrics.maxVal = table[i][w];
       s.vars.best = table[i][w];
+      s.result = { label: `Max value (cap=${W})`, value: table[n][W] };
       snap(steps, s, `table[${i}][${w}] = ${table[i][w]}.`, 6, 'O(n·W)', 'O(n·W)');
     }
   }
 
   s.activeRow = null; s.activeCol = null; s.deps = [];
   s.metrics.maxVal = table[n][W];
+  s.result = { label: `Max value (cap=${W})`, value: table[n][W] };
   snap(steps, s, `Done! Max value with capacity ${W} = ${table[n][W]}.`, 9, 'O(n·W)', 'O(n·W)');
   return steps;
 }

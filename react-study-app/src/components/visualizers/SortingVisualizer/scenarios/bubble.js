@@ -11,6 +11,7 @@ function buildBubbleSteps() {
     pass: 0,
     metrics: { comparisons: 0, swaps: 0, passes: 0 },
     vars: { i: 0, j: 0, comparing: [], swaps: 0, pass: 0 },
+    result: null,
   };
 
   snap(steps, s, 'Array ready for Bubble Sort. Each pass bubbles the largest element to the end.', 1, 'O(n²)');

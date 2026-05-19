@@ -107,7 +107,7 @@ export default function ArrayVisualizer() {
         <div className={styles.panels}>
           <CodePanel code={active.code} language={active.language} />
           <div className={styles.rightPanels}>
-            <VariablesPanel vars={viz?.vars} />
+            <VariablesPanel vars={viz?.vars} result={viz?.result} />
             <ComplexityPanel />
           </div>
         </div>

@@ -6,6 +6,7 @@ import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
 import CodePanel from '../../shared/CodePanel/CodePanel';
 import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
+import ResultPanel from '../../shared/ResultPanel/ResultPanel';
 import styles from './JVMVisualizer.module.css';
 
 export default function JVMVisualizer() {
@@ -70,6 +71,7 @@ export default function JVMVisualizer() {
         <div className={styles.rightSide}>
           <ThreadStack frames={viz.stack} />
           <MetricsPanel metrics={metrics} />
+          <ResultPanel result={viz?.result} />
           <ComplexityPanel />
         </div>
       </div>

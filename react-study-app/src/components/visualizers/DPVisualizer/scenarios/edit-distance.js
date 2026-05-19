@@ -18,6 +18,7 @@ function buildEditDistSteps({ s1 = 'HORSE', s2 = 'ROS' } = {}) {
     activeRow: null, activeCol: null, deps: [], s1, s2,
     metrics: { cells: 0, distance: 0 },
     vars: { i: null, j: null, s1char: null, s2char: null, match: null, 'dp[i][j]': null },
+    result: null,
   };
 
   snap(steps, s, `Edit Distance: min ops to convert "${s1}" → "${s2}". Base: dp[i][0]=i, dp[0][j]=j.`, 1, 'O(m·n)', 'O(m·n)');
@@ -43,12 +44,14 @@ function buildEditDistSteps({ s1 = 'HORSE', s2 = 'ROS' } = {}) {
       s.table = table.map((r) => r.slice());
       s.metrics.cells++; s.metrics.distance = table[i][j];
       s.vars['dp[i][j]'] = table[i][j];
+      if (i === m || j === n) s.result = { label: 'Edit distance', value: table[m][n] };
       snap(steps, s, `dp[${i}][${j}] = ${table[i][j]}.`, 7, 'O(m·n)', 'O(m·n)');
     }
   }
 
   s.activeRow = null; s.activeCol = null; s.deps = [];
   s.metrics.distance = table[m][n];
+  s.result = { label: 'Edit distance', value: table[m][n] };
   snap(steps, s, `Done! Edit distance "${s1}" → "${s2}" = ${table[m][n]}.`, 10, 'O(m·n)', 'O(m·n)');
   return steps;
 }

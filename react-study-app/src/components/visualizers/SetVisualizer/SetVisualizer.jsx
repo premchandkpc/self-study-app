@@ -143,7 +143,7 @@ export default function SetVisualizer() {
           )}
         </div>
 
-        <VariablesPanel vars={viz?.vars} />
+        <VariablesPanel vars={viz?.vars} result={viz?.result} />
       </div>
 
       <div className={styles.bottom}>

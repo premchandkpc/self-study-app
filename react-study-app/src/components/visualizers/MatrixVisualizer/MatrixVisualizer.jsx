@@ -74,7 +74,7 @@ export default function MatrixVisualizer() {
 
         {/* Right side: variables */}
         <div className={styles.sidePanel}>
-          <VariablesPanel vars={viz?.vars} />
+          <VariablesPanel vars={viz?.vars} result={viz?.result} />
         </div>
       </div>
 

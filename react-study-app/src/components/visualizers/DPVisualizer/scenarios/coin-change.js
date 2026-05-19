@@ -16,6 +16,7 @@ function buildCoinChangeSteps({ coins = [1, 3, 4], target = 7 } = {}) {
     active: null, deps: [], coins, target,
     metrics: { solved: 0, minCoins: 0 },
     vars: { coins: coins.join(','), target, amount: null, coin: null, best: null },
+    result: null,
   };
 
   snap(steps, s, `Coin Change: min coins for amount ${target}. Coins=[${coins}]. dp[0]=0, rest=∞.`, 1, 'O(n·k)', 'O(n)');
@@ -50,10 +51,12 @@ function buildCoinChangeSteps({ coins = [1, 3, 4], target = 7 } = {}) {
     if (dp[amount] !== INF) s.metrics.solved = amount;
     s.metrics.minCoins = dp[target] === INF ? 0 : dp[target];
     s.vars = { coins: coins.join(','), target, amount, coin: '-', best: dp[amount] === INF ? '∞' : dp[amount] };
+    s.result = { label: `Min coins for ${target}`, value: dp[target] === INF ? '∞' : dp[target] };
     snap(steps, s, `dp[${amount}] = ${dp[amount] === INF ? '∞ (unreachable)' : dp[amount] + ' coin(s)'}.`, 9, 'O(n·k)', 'O(n)');
   }
 
   s.active = null;
+  s.result = { label: `Min coins for ${target}`, value: dp[target] === INF ? '∞' : dp[target] };
   snap(steps, s, `Done! Min coins for amount ${target} = ${dp[target] === INF ? 'impossible' : dp[target]}.`, 11, 'O(n·k)', 'O(n)');
   return steps;
 }

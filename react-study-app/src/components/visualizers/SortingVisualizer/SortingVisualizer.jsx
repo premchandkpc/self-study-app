@@ -74,7 +74,7 @@ export default function SortingVisualizer() {
         </div>
 
         <div className={styles.sidePanel}>
-          <VariablesPanel vars={viz?.vars} />
+          <VariablesPanel vars={viz?.vars} result={viz?.result} />
 
           <div className={styles.legend}>
             {Object.entries(BAR_COLOR).map(([state, color]) => (

@@ -1,20 +1,26 @@
+import ResultPanel from '../ResultPanel/ResultPanel';
 import styles from './VariablesPanel.module.css';
 
-export default function VariablesPanel({ vars = {} }) {
+export default function VariablesPanel({ vars = {}, result }) {
   const entries = Object.entries(vars);
-  if (!entries.length) return null;
+  if (!entries.length && !result) return null;
 
   return (
     <div className={styles.panel}>
-      <div className={styles.header}>
-        <span className={styles.title}>Variables</span>
-        <span className={styles.count}>{entries.length}</span>
-      </div>
-      <div className={styles.table}>
-        {entries.map(([name, value]) => (
-          <VarRow key={name} name={name} value={value} />
-        ))}
-      </div>
+      {entries.length > 0 && (
+        <>
+          <div className={styles.header}>
+            <span className={styles.title}>Variables</span>
+            <span className={styles.count}>{entries.length}</span>
+          </div>
+          <div className={styles.table}>
+            {entries.map(([name, value]) => (
+              <VarRow key={name} name={name} value={value} />
+            ))}
+          </div>
+        </>
+      )}
+      {result && <ResultPanel result={result} />}
     </div>
   );
 }

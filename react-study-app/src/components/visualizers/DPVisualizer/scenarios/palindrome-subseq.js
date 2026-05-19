@@ -16,6 +16,7 @@ function buildPalinSubseqSteps({ str = 'BBBAB' } = {}) {
     activeRow: null, activeCol: null, deps: [], str,
     metrics: { cells: 0, lpsLen: 1 },
     vars: { i: null, j: null, 'str[i]': null, 'str[j]': null, len: null, match: null, 'dp[i][j]': null },
+    result: null,
   };
 
   snap(steps, s, `Longest Palindromic Subsequence of "${str}". dp[i][j] = LPS in str[i..j]. Diagonal = 1.`, 1, 'O(n²)', 'O(n²)');
@@ -52,6 +53,7 @@ function buildPalinSubseqSteps({ str = 'BBBAB' } = {}) {
 
   s.activeRow = null; s.activeCol = null; s.deps = [];
   s.metrics.lpsLen = table[0][n - 1];
+  s.result = { label: 'LPS length', value: table[0][n - 1] };
   snap(steps, s, `Done! LPS of "${str}" = ${table[0][n - 1]} chars.`, 10, 'O(n²)', 'O(n²)');
   return steps;
 }

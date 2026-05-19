@@ -16,6 +16,7 @@ function buildHouseRobberSteps({ houses = [2, 7, 9, 3, 1, 8, 5] } = {}) {
     active: null, deps: [],
     metrics: { maxLoot: 0, processed: 0 },
     vars: { n, i: null, 'house[i]': null, skip: null, rob: null, 'dp[i]': null },
+    result: null,
   };
 
   snap(steps, s, `House Robber: max loot from [${houses}] — cannot rob adjacent houses.`, 1, 'O(n)', 'O(n)');
@@ -50,6 +51,7 @@ function buildHouseRobberSteps({ houses = [2, 7, 9, 3, 1, 8, 5] } = {}) {
   }
 
   s.active = null; s.deps = [];
+  s.result = { label: 'Max loot', value: dp[n - 1] };
   snap(steps, s, `Done! Max loot = dp[${n - 1}] = ${dp[n - 1]}.`, 9, 'O(n)', 'O(n)');
   return steps;
 }

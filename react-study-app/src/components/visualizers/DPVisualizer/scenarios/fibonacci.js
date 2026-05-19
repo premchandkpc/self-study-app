@@ -13,6 +13,7 @@ function buildFibSteps({ n = 10 } = {}) {
     active: null, deps: [],
     metrics: { computed: 0, current: 0 },
     vars: { n, i: null, 'dp[i]': null, 'dp[i-1]': null, 'dp[i-2]': null },
+    result: null,
   };
 
   snap(steps, s, `Fibonacci DP: compute F(0)..F(${n - 1}) bottom-up. dp[i] = dp[i-1] + dp[i-2].`, 1, 'O(n)', 'O(n)');
@@ -46,6 +47,7 @@ function buildFibSteps({ n = 10 } = {}) {
   }
 
   s.active = null; s.deps = [];
+  s.result = { label: `F(${n - 1})`, value: dp[n - 1] };
   snap(steps, s, `Done! F(${n - 1}) = ${dp[n - 1]}. Computed ${n} values in O(n) time, O(n) space.`, 9, 'O(n)', 'O(n)');
   return steps;
 }

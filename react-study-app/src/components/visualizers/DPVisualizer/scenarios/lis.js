@@ -16,6 +16,7 @@ function buildLISSteps({ arr = [2, 1, 5, 3, 6, 4, 8, 9] } = {}) {
     active: null, checking: null, deps: [],
     metrics: { length: 1, comparisons: 0 },
     vars: { i: null, j: null, 'arr[i]': null, 'arr[j]': null, 'dp[i]': null },
+    result: null,
   };
 
   snap(steps, s, `LIS in [${arr}]. dp[i]=LIS ending at index i, all start at 1.`, 1, 'O(n²)', 'O(n)');
@@ -45,11 +46,13 @@ function buildLISSteps({ arr = [2, 1, 5, 3, 6, 4, 8, 9] } = {}) {
 
     s.checking = null; s.deps = []; s.dp = dp.slice();
     s.metrics.length = Math.max(...dp);
+    s.result = { label: 'LIS length', value: Math.max(...dp) };
     snap(steps, s, `dp[${i}] = ${dp[i]}. Best LIS so far: ${s.metrics.length}.`, 7, 'O(n²)', 'O(n)');
   }
 
   s.active = null; s.base = [];
   s.metrics.length = Math.max(...dp);
+  s.result = { label: 'LIS length', value: Math.max(...dp) };
   snap(steps, s, `Done! LIS = ${s.metrics.length}. dp = [${dp}].`, 9, 'O(n²)', 'O(n)');
   return steps;
 }

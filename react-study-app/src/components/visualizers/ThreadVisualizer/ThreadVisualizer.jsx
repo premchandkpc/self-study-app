@@ -4,6 +4,7 @@ import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
 import CodePanel from '../../shared/CodePanel/CodePanel';
+import ResultPanel from '../../shared/ResultPanel/ResultPanel';
 import styles from './ThreadVisualizer.module.css';
 
 const STATE_COLOR = {
@@ -71,7 +72,10 @@ export default function ThreadVisualizer() {
 
       <div className={styles.bottom}>
         <CodePanel code={active.code} language={active.language} />
-        <ComplexityPanel />
+        <div>
+          <ResultPanel result={viz?.result} />
+          <ComplexityPanel />
+        </div>
       </div>
 
       <StepControls />

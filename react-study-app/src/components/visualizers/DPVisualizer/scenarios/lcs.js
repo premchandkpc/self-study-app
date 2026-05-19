@@ -16,6 +16,7 @@ function buildLCSSteps({ s1 = 'ABCBD', s2 = 'ABDB' } = {}) {
     activeRow: null, activeCol: null, deps: [], s1, s2,
     metrics: { cells: 0, lcsLen: 0 },
     vars: { i: null, j: null, s1char: null, s2char: null, match: null, 'dp[i][j]': null },
+    result: null,
   };
 
   snap(steps, s, `LCS of "${s1}" and "${s2}". dp[i][j] = LCS length of s1[0..i-1] and s2[0..j-1].`, 1, 'O(m·n)', 'O(m·n)');
@@ -38,12 +39,14 @@ function buildLCSSteps({ s1 = 'ABCBD', s2 = 'ABDB' } = {}) {
       s.metrics.cells++;
       if (table[i][j] > s.metrics.lcsLen) s.metrics.lcsLen = table[i][j];
       s.vars['dp[i][j]'] = table[i][j];
+      if (i === m || j === n) s.result = { label: 'LCS length', value: table[m][n] };
       snap(steps, s, `dp[${i}][${j}] = ${table[i][j]}.`, 7, 'O(m·n)', 'O(m·n)');
     }
   }
 
   s.activeRow = null; s.activeCol = null; s.deps = [];
   s.metrics.lcsLen = table[m][n];
+  s.result = { label: 'LCS length', value: table[m][n] };
   snap(steps, s, `Done! LCS("${s1}", "${s2}") = ${table[m][n]}.`, 10, 'O(m·n)', 'O(m·n)');
   return steps;
 }

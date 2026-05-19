@@ -5,6 +5,7 @@ import StepControls from '../../shared/StepControls/StepControls';
 import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
 import CodePanel from '../../shared/CodePanel/CodePanel';
 import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
+import ResultPanel from '../../shared/ResultPanel/ResultPanel';
 import styles from './AWSVisualizer.module.css';
 
 const NODE_COLORS = {
@@ -121,6 +122,7 @@ export default function AWSVisualizer() {
         <CodePanel code={active.code} language={active.language} />
         <div className={styles.rightPanels}>
           <MetricsPanel metrics={metrics} />
+          <ResultPanel result={viz?.result} />
           <ComplexityPanel />
         </div>
       </div>
