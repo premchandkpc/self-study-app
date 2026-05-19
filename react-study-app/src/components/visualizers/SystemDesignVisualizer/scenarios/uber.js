@@ -352,10 +352,55 @@ const CODE = [
   '}',
 ];
 
+/* ── Layer zone boundaries (x-coords match node layout) ─────────────────────
+   Nodes at: clients x=75, gateway x=215, core x=360, domain x=500,
+             infra x=645, storage x=790. Half-width=54.
+   Band edges = midpoints between adjacent layer outer edges.
+─────────────────────────────────────────────────────────────────────────── */
+const LAYERS = [
+  {
+    label:  'Client',
+    x1: 8,   x2: 148,
+    color:  'rgba(100,140,255,0.06)',
+    border: 'rgba(100,140,255,0.30)',
+  },
+  {
+    label:  'API Gateway',
+    x1: 152, x2: 292,
+    color:  'rgba(255,160,50,0.06)',
+    border: 'rgba(255,160,50,0.35)',
+  },
+  {
+    label:  'Core Services',
+    x1: 296, x2: 448,
+    color:  'rgba(60,200,120,0.06)',
+    border: 'rgba(60,200,120,0.28)',
+  },
+  {
+    label:  'Domain Services',
+    x1: 452, x2: 578,
+    color:  'rgba(80,190,220,0.06)',
+    border: 'rgba(80,190,220,0.28)',
+  },
+  {
+    label:  'Infrastructure',
+    x1: 582, x2: 718,
+    color:  'rgba(190,110,220,0.06)',
+    border: 'rgba(190,110,220,0.28)',
+  },
+  {
+    label:  'Storage',
+    x1: 722, x2: 872,
+    color:  'rgba(220,90,90,0.06)',
+    border: 'rgba(220,90,90,0.28)',
+  },
+];
+
 export default {
   id:       'uber',
   label:    'Uber',
   icon:     '🚗',
+  layers:   LAYERS,
   build:    buildUberSteps,
   code:     CODE,
   language: 'JavaScript',
