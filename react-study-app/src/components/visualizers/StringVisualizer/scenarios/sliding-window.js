@@ -68,7 +68,7 @@ function buildSlidingWindowSteps({ text: tIn = TEXT, pattern: pIn = PATTERN } = 
     for (let i = left; i <= right; i++) newStates[i] = 'window';
 
     const isMatch = countsMatch(pCount, wCount);
-    state.vars = { left, right, pCount: { ...pCount }, wCount: { ...wCount }, matches: matches.length };
+    state.vars = { left, right, addChar: s[right], removeChar, isMatch, pCount: { ...pCount }, wCount: { ...wCount }, matches: matches.length };
     state.metrics.steps++;
     state.metrics.window = m;
 

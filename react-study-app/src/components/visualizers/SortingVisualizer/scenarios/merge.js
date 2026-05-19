@@ -47,13 +47,26 @@ function buildMergeSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
     while (li < left.length && ri < right.length) {
       s.comparisons += 1;
       s.metrics.comparisons = s.comparisons;
-      s.vars = { lo, hi, li, ri, left, right, merged: [...merged], depth, comparing: [left[li], right[ri]] };
-      if (left[li] <= right[ri]) {
-        merged.push(left[li++]);
+      const takeLeft = left[li] <= right[ri];
+      s.arr = arr.map((v, idx) => ({
+        val: v,
+        state: idx < lo || idx >= hi ? 'idle' :
+               idx === lo + li ? 'comparing' :
+               idx === mid + ri ? 'comparing' :
+               'window',
+        group: idx >= lo && idx < mid ? 0 : idx >= mid && idx < hi ? 1 : -1,
+      }));
+      s.vars = { lo, hi, mid, li, ri, 'left[li]': left[li], 'right[ri]': right[ri], takeLeft, merged: [...merged], depth };
+      if (takeLeft) {
+        merged.push(left[li]);
+        snap(steps, s, `Merge: left[${li}]=${left[li]} ≤ right[${ri}]=${right[ri]} → take ${left[li]}`, 14, 'O(n log n)');
+        li++;
       } else {
-        merged.push(right[ri++]);
+        merged.push(right[ri]);
         s.swaps += 1;
         s.metrics.swaps = s.swaps;
+        snap(steps, s, `Merge: right[${ri}]=${right[ri]} < left[${li}]=${left[li]} → take ${right[ri]}`, 14, 'O(n log n)');
+        ri++;
       }
     }
     while (li < left.length) merged.push(left[li++]);

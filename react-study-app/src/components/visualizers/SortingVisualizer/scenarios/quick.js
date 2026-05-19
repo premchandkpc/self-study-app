@@ -84,7 +84,7 @@ function buildQuickSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
       if (idx < lo || idx > hi) return { val: v, state: 'sorted' };
       return { val: v, state: 'idle' };
     });
-    s.vars = { pivot, lo, hi, partitionIdx: pivotPos };
+    s.vars = { pivot, lo, hi, wallI: i, pivotPos, 'arr[pivotPos]': arr[pivotPos], swaps: s.swaps };
     snap(steps, s, `Pivot ${pivot} placed at index ${pivotPos}. Now in final position!`, 9, 'O(n log n) avg');
 
     quickSort(lo, pivotPos - 1);

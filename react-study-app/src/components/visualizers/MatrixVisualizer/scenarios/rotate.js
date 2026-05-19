@@ -49,12 +49,14 @@ function build() {
   for (let i = 0; i < N; i++) {
     for (let j = i + 1; j < N; j++) {
       ops++;
-      const tmp = mat[i][j];
-      mat[i][j] = mat[j][i];
+      const origIJ = mat[i][j];
+      const origJI = mat[j][i];
+      const tmp = origIJ;
+      mat[i][j] = origJI;
       mat[j][i] = tmp;
 
       s.matrix = toMatrix([], [[i, j], [j, i]]);
-      s.vars = { step: 'transpose', i, j, swapping: `[${i}][${j}]↔[${j}][${i}]` };
+      s.vars = { step: 'transpose', i, j, tmp, 'mat[i][j]_before': origIJ, 'mat[j][i]_before': origJI, 'mat[i][j]_after': mat[i][j], 'mat[j][i]_after': mat[j][i] };
       s.complexity = { ops, label: 'O(n²)', space: 'O(1)' };
       snap(steps, s, `Transpose: swap mat[${i}][${j}] ↔ mat[${j}][${i}]`, 5);
     }

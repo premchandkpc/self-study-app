@@ -49,6 +49,7 @@ function buildHeapSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
         val: v,
         state: idx >= size ? 'sorted' : idx === rootIdx || idx === largest ? 'window' : 'idle',
       }));
+      s.vars = { size, rootIdx, largestIdx: largest, 'arr[rootIdx]': arr[rootIdx], 'arr[largest]': arr[largest], swapped: true, swaps: s.swaps };
       snap(steps, s, `Swap arr[${rootIdx}]=${arr[rootIdx]} ↔ arr[${largest}]=${arr[largest]}. Re-heapify subtree.`, 7, 'O(n log n)');
       heapify(arr, size, largest);
     }
@@ -75,7 +76,7 @@ function buildHeapSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
       val: v,
       state: idx >= i ? 'sorted' : idx === 0 ? 'pivot' : 'idle',
     }));
-    s.vars = { size: i, root: arr[0], i: 0, largest: arr[0] };
+    s.vars = { phase: 'extract', extractIdx: i, extractedMax: arr[i], heapSize: i, 'arr[0]': arr[0], swaps: s.swaps };
     snap(steps, s, `Move max ${arr[i]} to position ${i}. Heap size → ${i}.`, 12, 'O(n log n)');
 
     s.metrics.passes++;
@@ -83,7 +84,7 @@ function buildHeapSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
   }
 
   s.arr = arr.map((v) => ({ val: v, state: 'sorted' }));
-  s.vars = { size: 0, root: arr[0], i: 0, largest: arr[0] };
+  s.vars = { phase: 'done', sorted: true, comparisons: s.comparisons, swaps: s.swaps, passes: s.metrics.passes };
   s.heapSize = 0;
   snap(steps, s, `Heap Sort complete! ${s.comparisons} comparisons, ${s.swaps} swaps. Array sorted.`, 15, 'O(n log n)');
 

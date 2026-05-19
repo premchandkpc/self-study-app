@@ -35,7 +35,7 @@ function buildBubbleSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
       }));
       s.comparisons += 1;
       s.metrics.comparisons = s.comparisons;
-      s.vars = { i, j, comparing: [arr[j], arr[j + 1]], swaps: s.swaps, pass: s.pass };
+      s.vars = { i, j, n, 'arr[j]': arr[j], 'arr[j+1]': arr[j + 1], comparisons: s.comparisons, swaps: s.swaps, pass: s.pass };
       snap(steps, s, `Pass ${i + 1}: Compare arr[${j}]=${arr[j]} vs arr[${j + 1}]=${arr[j + 1]}.`, 5, 'O(n²)');
 
       if (arr[j] > arr[j + 1]) {
@@ -43,7 +43,7 @@ function buildBubbleSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
         s.swaps += 1;
         s.metrics.swaps = s.swaps;
-        s.vars = { i, j, comparing: [arr[j], arr[j + 1]], swaps: s.swaps, pass: s.pass };
+        s.vars = { i, j, n, 'arr[j]': arr[j], 'arr[j+1]': arr[j + 1], swapped: true, comparisons: s.comparisons, swaps: s.swaps, pass: s.pass };
         s.arr = arr.map((v, idx) => ({
           val: v,
           state: idx === j || idx === j + 1 ? 'comparing' : idx >= n - i ? 'sorted' : 'idle',

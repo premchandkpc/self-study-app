@@ -6,6 +6,7 @@ import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
+import CompilerPage from './pages/Compiler/CompilerPage';
 import NotFound from './pages/NotFound/NotFound';
 
 function AppRoutes() {
@@ -20,6 +21,7 @@ function AppRoutes() {
           <Route path="/topics/:topicId" element={<Topics />} />
           <Route path="/visualizer/:type" element={<VisualizerPage />} />
           <Route path="/interview" element={<InterviewMode />} />
+          <Route path="/compiler" element={<CompilerPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainLayout>
