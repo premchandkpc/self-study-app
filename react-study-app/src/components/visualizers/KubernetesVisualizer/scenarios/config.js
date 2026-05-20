@@ -77,4 +77,21 @@ export default {
     { key: 'pods', label: 'Pods', max: 8, color: 'var(--pod-running)' },
     { key: 'cpu', label: 'CPU avg', max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
   ],
+  topicContent: {
+    concept: [
+      { title: 'ConfigMap', content: 'ConfigMap stores non-sensitive configuration as key-value pairs or files. It is stored in etcd (max 1MiB per ConfigMap). Pods consume it via environment variables, command-line arguments, or volume mounts.' },
+      { title: 'Secret', content: 'Secret is similar to ConfigMap but stores sensitive data (passwords, tokens, keys). Values are base64-encoded, NOT encrypted. For real encryption, use SealedSecrets, External Secrets Operator, or cloud KMS integration.' },
+      { title: 'Update Propagation', content: 'Env var injections from ConfigMaps/Secrets are static — they only update on pod restart. Volume mounts update dynamically (~60s propagation delay) via symlink swaps.' },
+    ],
+    why: ['ConfigMaps and Secrets separate configuration from application code, enabling immutable container images and environment-specific deployments without rebuilding images.'],
+    interview: [
+      { question: 'What is the difference between env var and volume mount for ConfigMap consumption?', answer: 'Env vars are set at pod creation and never update — changes to the ConfigMap require a pod restart. Volume mounts create files that update via symlink swap (kubelet syncs every ~60s). Volume mounts also handle large config files better but require the application to watch for file changes.', followUps: ['How does the Reloader sidecar handle ConfigMap updates?', 'What is the 1MiB limit and how to work around it?'] },
+      { question: 'How do you securely manage Secrets in a GitOps workflow?', answer: 'Never commit raw Secret YAMLs to git. Use SealedSecrets (SealedSecret CRD encrypts secrets for git), External Secrets Operator (syncs from AWS Secrets Manager/GCP Secret Manager), or Bitnami\'s Kubeseal. The controller decrypts at runtime into native Secret objects.', followUps: ['What is the difference between Opaque and dockerconfigjson Secret types?', 'How does encryption at rest work for etcd Secrets?'] },
+    ],
+    gotcha: ['kubectl get secret shows values as base64 — any user with read access to Secrets in the namespace can decode them. Use RBAC to restrict Secret access to only necessary service accounts.', 'ConfigMap/Secret updates via env vars do NOT propagate to running pods. This leads to the infamous "I updated the ConfigMap but my app still sees old values" bug. Always restart pods after updating env-sourced config.'],
+    tradeoffs: [
+      { pro: 'Decouples config from code — single image deploys to any environment', con: 'ConfigMap updates via env vars require pod restart, complicating CD pipelines' },
+      { pro: 'Secrets can be integrated with external KMS for strong encryption', con: 'Base64-only encoding by default means anyone with etcd access can read secrets' },
+    ],
+  },
 };

@@ -80,4 +80,21 @@ export default {
     { key: 'cpu',      label: 'CPU avg',  max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
     { key: 'restarts', label: 'Restarts', max: 10,  color: 'var(--pod-crash)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Horizontal Pod Autoscaler', content: 'HPA automatically scales the number of pod replicas based on observed CPU, memory, or custom metrics. It runs as a control loop (default sync period: 15s) and adjusts the replicas field of Deployments or StatefulSets.' },
+      { title: 'HPA Formula', content: 'desiredReplicas = ceil(currentReplicas × (currentMetricValue / targetMetricValue)). This ensures proportional scaling. Cooldown periods (default 5min scale-up, 3min scale-down) prevent thrashing.' },
+      { title: 'Custom and External Metrics', content: 'Beyond CPU/Memory, HPA supports custom metrics from Prometheus (via prometheus-adapter) and external metrics (SQS queue depth, Kafka lag) via adapters. This enables event-driven scaling.' },
+    ],
+    why: ['HPA is essential for handling traffic spikes without over-provisioning. It reduces cloud costs by scaling down during low traffic and maintains availability by scaling up under load.'],
+    interview: [
+      { question: 'How does HPA handle metrics from multiple pods?', answer: 'HPA aggregates metrics across all pods in the target. For CPU/Memory, it takes the average utilization across pods. The formula computes desired replicas based on the ratio of current average to target. Individual pod failures are smoothed out by averaging.', followUps: ['What happens when metrics are not available?', 'How does HPA interact with cluster autoscaler?'] },
+      { question: 'What is the cooldown delay and why is it needed?', answer: 'Cooldown prevents thrashing (rapid scaling up and down) by forcing HPA to wait before reversing a scaling decision. Default: scale-up immediately (or 3min with --horizontal-pod-autoscaler-upscale-delay), scale-down after 5min. This avoids oscillations caused by metric sampling noise.', followUps: ['How do you tune cooldown values for bursty workloads?', 'Can HPA scale to zero replicas?'] },
+    ],
+    gotcha: ['HPA default behavior with missing metrics can cause unexpected behavior — if metrics are unavailable, HPA may scale aggressively or not at all depending on configuration.', 'HPA + Cluster Autoscaler interaction: HPA requests more pods, but if nodes lack capacity, pods stay Pending. Cluster Autoscaler then adds nodes. Without CA, HPA cannot scale beyond node capacity — a common production surprise.'],
+    tradeoffs: [
+      { pro: 'Automatic elasticity reduces manual intervention during traffic spikes', con: 'Reactive scaling has lag — traffic may be dropped during the scale-up window' },
+      { pro: 'Cost savings through scale-down during low traffic periods', con: 'Thrashing risk if cooldown and metric thresholds are not properly tuned' },
+    ],
+  },
 };

@@ -129,4 +129,20 @@ export default {
     { key: 'lag',        label: 'Lag',        max: 20,   color: 'var(--kafka-consumer)', warn: 50, critical: 80 },
     { key: 'throughput', label: 'Throughput', max: 10,   unit: ' msg', color: 'var(--kafka-broker)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'ELI5 — Kid-friendly analogy', content: 'Producers are like people writing letters. The topic is a mailbox, and partitions are slots in a post office sorting room. Consumers are mail carriers who pick up from specific slots. If a slot\'s carrier crashes, the post office elects a new one so mail keeps flowing.' },
+      { title: 'Core — How it works', content: 'Producers publish records to a topic, specifying a key (determines partition via hash) or letting the partitioner round-robin. Records are appended to a partition log (sequential write). Consumers poll partitions and maintain an offset (position in the log). When a consumer commits an offset, it signals that messages up to that point are processed. Lag = producer offset - consumer committed offset for a partition.' },
+    ],
+    why: ['Monitor consumer lag with Burrow or Kafka Lag Exporter. High lag indicates consumers cannot keep up — add partitions or consumers to scale. Lag=0 means consumers are fully caught up.'],
+    interview: [
+      { question: 'What happens if a producer sends with acks=0?', answer: 'The producer fires and forgets — it does not wait for any broker acknowledgment. Highest throughput but data loss is possible if the broker crashes before persisting. Use acks=1 for at-least-once delivery.', followUps: ['What does acks=all guarantee?', 'How does idempotent production work?'] },
+      { question: 'How does Kafka achieve high throughput for writes?', answer: 'Kafka uses sequential disk I/O (append-only logs), zero-copy (sendfile syscall for reads), batching (producers batch records into fewer network requests), and page cache (OS caches hot data). Sequential writes are faster than random writes on HDDs by an order of magnitude.', followUps: ['How does zero-copy work?', 'What is the batch.size config?'] },
+    ],
+    gotcha: ['A consumer that does not call `commitSync` or `commitAsync` will re-read the same messages on restart — auto-commit (enable.auto.commit=true) is best-effort and can skip messages on crash.', 'Topic partitions are immutable once created. Adding partitions later changes the partition assignment strategy and can break key-based ordering guarantees.'],
+    tradeoffs: [
+      { pro: 'Sequential writes give extremely high throughput (millions msg/s)', con: 'Each partition is a single log file — too many partitions increase file descriptor usage and recovery time' },
+      { pro: 'Consumers can replay from any offset (reprocessing)', con: 'Old log segments consume disk space — retention policies or compaction are required' },
+    ],
+  },
 };

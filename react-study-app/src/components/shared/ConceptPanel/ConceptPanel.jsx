@@ -11,6 +11,11 @@ const SECTIONS = {
   breakpoints:    { icon: '⚠️', label: 'Breakpoints',       color: 'var(--text-warn)' },
   tricky:         { icon: '🧩', label: 'Tricky Points',     color: 'var(--pod-crash)' },
   critical:       { icon: '🚨', label: 'Critical Cares',    color: 'var(--pod-crash)' },
+  concept:        { icon: '📖', label: 'Concept',           color: 'var(--node-active)' },
+  analogy:        { icon: '🧒', label: 'Analogy',           color: 'var(--kafka-producer)' },
+  failure:        { icon: '⚡', label: 'Failure Scenarios', color: 'var(--pod-crash)' },
+  interview:      { icon: '💬', label: 'Interview Q&A',     color: 'var(--text-accent)' },
+  gotcha:         { icon: '⚠️', label: 'Gotchas',           color: 'var(--text-warn)' },
 };
 
 export default function ConceptPanel({ concepts }) {
@@ -29,14 +34,75 @@ export default function ConceptPanel({ concepts }) {
       </div>
       <div className={styles.body}>
         {entries.map(([key, meta]) => (
-          <ConceptCard key={key} section={meta} items={concepts[key]} />
+          <ConceptCard key={key} section={meta} items={concepts[key]} sectionKey={key} />
         ))}
       </div>
     </div>
   );
 }
 
-function ConceptCard({ section, items }) {
+function ConceptCard({ section, items, sectionKey }) {
+  const isRich = sectionKey === 'interview' || sectionKey === 'failure' || sectionKey === 'concept';
+
+  if (isRich) {
+    return (
+      <div className={styles.card} style={{ '--accent': section.color }}>
+        <div className={styles.cardBar} style={{ background: section.color }} />
+        <div className={styles.cardContent}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon}>{section.icon}</span>
+            <span className={styles.cardLabel}>{section.label}</span>
+          </div>
+          {sectionKey === 'concept' && (
+            <div className={styles.cardList}>
+              {items.map((item, i) => (
+                <div key={i} className={styles.cardRichItem}>
+                  <strong>{item.title || `Level ${i + 1}`}</strong>
+                  <p>{item.content || item}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {sectionKey === 'failure' && (
+            <div className={styles.cardList}>
+              {items.map((item, i) => (
+                <div key={i} className={styles.cardRichItem}>
+                  <strong style={{ color: 'var(--pod-crash)' }}>
+                    {typeof item === 'string' ? item : (item.scenario || item.name)}
+                  </strong>
+                  {item.cause && <p><em>Cause:</em> {item.cause}</p>}
+                  {item.impact && <p><em>Impact:</em> {item.impact}</p>}
+                  {item.fix && <p><em>Fix:</em> {item.fix}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+          {sectionKey === 'interview' && (
+            <div className={styles.cardList}>
+              {items.map((item, i) => (
+                <div key={i} className={styles.cardRichItem}>
+                  {typeof item === 'string' ? (
+                    <p>{item}</p>
+                  ) : (
+                    <>
+                      <strong>Q: {item.question}</strong>
+                      {item.answer && <p>{item.answer}</p>}
+                      {item.followUps?.length > 0 && (
+                        <p style={{ opacity: 0.7, fontSize: '0.9em' }}>
+                          Follow-ups: {item.followUps.join(' · ')}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.card} style={{ '--accent': section.color }}>
       <div className={styles.cardBar} style={{ background: section.color }} />

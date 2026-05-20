@@ -79,4 +79,21 @@ export default {
     { key: 'pods', label: 'Pods', max: 8, color: 'var(--pod-running)' },
     { key: 'cpu', label: 'CPU avg', max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Storage Classes and Dynamic Provisioning', content: 'StorageClass defines the provisioner (e.g., ebs.csi.aws.com), parameters (type, IOPS), and reclaimPolicy. When a PVC requests storage, the provisioner dynamically creates the underlying volume.' },
+      { title: 'PV/PVC Binding Lifecycle', content: 'A PVC in Pending state waits for a matching PV. Dynamic provisioning creates the PV automatically. Once bound, the PV is reserved exclusively for that PVC until deletion. The CSI driver handles Attach, Mount, and Unmount operations.' },
+      { title: 'Access Modes and Reclaim Policies', content: 'Access modes: ReadWriteOnce (single node), ReadOnlyMany, ReadWriteMany. Reclaim policies: Delete (auto-delete on PVC deletion), Retain (keep volume for manual recovery), Recycle (basic scrub).' },
+    ],
+    why: ['Stateful workloads (databases, queues, file storage) require persistent storage that outlives pods. Incorrect StorageClass configuration or reclaim policy can lead to permanent data loss.'],
+    interview: [
+      { question: 'How does the CSI driver work in Kubernetes?', answer: 'CSI (Container Storage Interface) is a standard for exposing storage systems to containers. The CSI driver runs as a DaemonSet, handling three phases: ControllerPublishVolume (attach to node), NodeStageVolume (mount filesystem), NodePublishVolume (bind mount to pod). This decouples storage logic from Kubernetes core.', followUps: ['What is the difference between in-tree and CSI drivers?', 'How do you migrate from in-tree to CSI?'] },
+      { question: 'What happens to data when a StatefulSet pod is rescheduled to a different node?', answer: 'The PVC remains bound to the same PV. The CSI driver detaches the volume from the old node and attaches it to the new node. Data survives because the PV (backed by EBS/gcePersistentDisk) is a network-attached storage resource, not local to the node.', followUps: ['What happens if a PV\'s reclaimPolicy is Delete and the PVC is deleted?', 'How do you back up and restore PV data?'] },
+    ],
+    gotcha: ['Default StorageClass can be accidentally used for workloads requiring specific performance — always specify storageClassName explicitly in PVCs.', 'StorageClass reclaimPolicy=Delete removes the underlying cloud volume when PVC is deleted. A single kubectl delete on a PVC can irreversibly destroy production data — use Retain for critical databases.'],
+    tradeoffs: [
+      { pro: 'Dynamic provisioning eliminates manual volume management', con: 'Cloud volume costs can grow unexpectedly if PVCs are not cleaned up' },
+      { pro: 'Data survives pod restarts and rescheduling across nodes', con: 'ReadWriteOnce limits access to a single node — not suitable for multi-replica writers' },
+    ],
+  },
 };

@@ -154,4 +154,20 @@ export default {
     { key: 'p99ms',      label: 'P99 (ms)',     max: 1000, unit: 'ms', color: 'var(--node-comparing)' },
     { key: 'errors',     label: 'Errors',       max: 5,    color: 'var(--pod-error)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Cold Starts', content: 'AWS downloads code, initializes runtime, and runs init code before handler. Cold start adds 200ms-1s latency. Warm containers skip init and respond in ~10ms.' },
+      { title: 'Concurrency Model', content: 'Lambda creates one container per concurrent request. Scale automatically but regional concurrency limit (1000 default). Reserved concurrency guarantees capacity. Provisioned concurrency eliminates cold starts.' },
+    ],
+    why: ['Lambda enables true pay-per-use compute — no idle cost, automatic scaling, zero server management. It is the cornerstone of serverless architectures on AWS.'],
+    interview: [
+      { question: 'How do you mitigate Lambda cold starts?', answer: 'Provisioned Concurrency keeps N containers always warm. Choosing ARM/Graviton reduces init time. Keeping dependencies small and using SnapStart (Java) helps. VPC Lambda adds ~10s to cold starts — use RDS Proxy.', followUps: ['What is SnapStart and when is it available?', 'How does VPC affect Lambda cold starts?'] },
+      { question: 'How does Lambda handle concurrent invocations?', answer: 'Lambda creates one container per concurrent request. If all containers are busy, new requests are throttled (429). Regional burst concurrency varies (500-3000). Reserved concurrency limits a function and guarantees capacity.', followUps: ['What is the difference between reserved and provisioned concurrency?', 'How does Lambda scale for SQS triggers?'] },
+    ],
+    gotcha: ['Lambda in a VPC requires an ENI in each subnet, adding ~10s to cold starts and requiring NAT gateway for internet access — significant cost and latency overhead.', 'Lambda timeouts (max 15 minutes) and /tmp storage (512MB default, 10GB max) are hard limits — long-running processes or large file processing may need ECS/Fargate instead.'],
+    tradeoffs: [
+      { pro: 'Zero infrastructure management — no patching, no scaling config, no capacity planning. Pay only for compute time consumed.', con: 'Cold starts impact latency-sensitive applications. VPC Lambda cold starts are particularly slow (~10s). Some workloads need predictable, always-on compute.' },
+      { pro: 'Automatic scaling from 0 to thousands of concurrent executions based on demand.', con: 'Hard limits on execution duration (15min), memory (10GB), and payload size (6MB for sync, 256KB for async).' },
+    ],
+  },
 };

@@ -364,7 +364,7 @@ export default function CanvasTemplate({ scenarios }) {
       <ScenarioToolbar scenarios={scenarios} active={activeId} onChange={select} />
       {canvasEl}
       <NarrationPanel />
-      {hasConcepts && <ConceptPanel concepts={viz.concepts} />}
+      {hasConcepts && <ConceptPanel concepts={{ ...(viz.concepts || {}), ...(active.topicContent || {}) }} />}
       <SvgEventsList events={events} max={5} styles={styles} />
       {metrics.length > 0 && <MetricsPanel metrics={metrics} />}
       <StepControls />

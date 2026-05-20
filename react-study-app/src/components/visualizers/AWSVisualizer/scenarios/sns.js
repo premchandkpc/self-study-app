@@ -119,4 +119,20 @@ export default {
     { key: 'filtered',  label: 'Filtered',  max: 3, color: 'var(--node-comparing)' },
     { key: 'failed',    label: 'Failed',    max: 3, color: 'var(--pod-crash)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Pub/Sub Fan-Out', content: 'Publisher sends one message to an SNS topic, which fans it out to all subscribers in parallel. Subscribers can be SQS, Lambda, HTTP, email, SMS, or mobile push.' },
+      { title: 'Filter Policies', content: 'Subscribers define JSON filter rules (e.g., amount > 1000). SNS only delivers matching messages — reducing downstream processing and cost.' },
+    ],
+    why: ['SNS enables event-driven architectures by decoupling event producers from consumers — one event can trigger email, push notification, audit logging, and third-party webhooks simultaneously.'],
+    interview: [
+      { question: 'What is the SNS + SQS fan-out pattern and why is it useful?', answer: 'SNS publishes to a topic, SQS queues subscribe and receive the message, Lambda/EC2 polls each queue independently. This provides durable, buffered fan-out where each consumer has isolated failure domains.', followUps: ['What happens if one SQS queue subscriber is down?', 'How does filtering work in this pattern?'] },
+      { question: 'How does SNS handle failed deliveries?', answer: 'HTTP subscriptions retry with exponential backoff up to 100 retries over 20 days. SQS and Lambda subscriptions rely on their own retry mechanisms. Delivery status logging sends per-attempt results to CloudWatch Logs.', followUps: ['Can failed deliveries go to a DLQ?', 'How do you monitor SNS delivery failures?'] },
+    ],
+    gotcha: ['SNS topics are regional — messages do NOT automatically replicate across regions. You need cross-region SNS subscriptions or a fan-out architecture in each region.', 'HTTP/HTTPS subscriptions require subscription confirmation within 3 days — the endpoint must handle the SubscriptionConfirmation notification before receiving messages.'],
+    tradeoffs: [
+      { pro: 'Simple pub/sub model with multiple delivery protocols and filter policies for targeted delivery.', con: 'No built-in support for replay or message history — messages are delivered in real-time and discarded. Use SNS + Kinesis Firehose for archiving.' },
+      { pro: 'FIFO topics provide strict ordering with fan-out, enabling ordered event distribution to multiple consumers.', con: 'FIFO topics require all subscribers to be SQS FIFO, limiting protocol options and throughput to 3000/s.' },
+    ],
+  },
 };

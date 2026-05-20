@@ -9,7 +9,7 @@ export const TOPICS = [
     id: 'java',
     label: 'Java',
     icon: '☕',
-    subtopics: ['JVM', 'GC', 'Threads', 'Locks', 'Streams', 'Collections'],
+    subtopics: ['JVM', 'GC', 'Threads', 'Locks', 'Streams', 'Collections', 'Classloader', 'String Pool', 'HashMap Internals', 'Volatile', 'Exception Stack'],
   },
   {
     id: 'spring',
@@ -33,13 +33,13 @@ export const TOPICS = [
     id: 'kubernetes',
     label: 'Kubernetes',
     icon: '☸️',
-    subtopics: ['Pods', 'Deployments', 'Services', 'Ingress', 'HPA', 'Config & Storage'],
+    subtopics: ['Pods', 'Deployments', 'Services', 'Ingress', 'HPA', 'Config & Storage', 'DNS', 'Sidecars', 'etcd', 'Node Failure'],
   },
   {
     id: 'aws',
     label: 'AWS',
     icon: '☁️',
-    subtopics: ['EC2', 'Lambda', 'SQS', 'SNS', 'EKS', 'API Gateway', 'S3', 'IAM'],
+    subtopics: ['EC2', 'Lambda', 'SQS', 'SNS', 'EKS', 'API Gateway', 'S3', 'IAM', 'Route53', 'ECS', 'Step Functions', 'Aurora / RDS', 'ElastiCache'],
   },
   {
     id: 'kafka',
@@ -88,5 +88,29 @@ export const TOPICS = [
     label: 'Networking',
     icon: '🌐',
     subtopics: ['TCP Handshake', 'HTTP', 'DNS', 'Load Balancer'],
+  },
+  {
+    id: 'os',
+    label: 'Operating Systems',
+    icon: '🖥️',
+    subtopics: ['Scheduler', 'Paging', 'Virtual Memory'],
+  },
+  {
+    id: 'ai',
+    label: 'AI / Transformers',
+    icon: '🤖',
+    subtopics: ['Transformer', 'Attention', 'Embeddings'],
+  },
+  {
+    id: 'distributed',
+    label: 'Distributed Systems',
+    icon: '🌍',
+    subtopics: ['Raft', 'CAP Theorem', '2PC'],
+  },
+  {
+    id: 'concurrency',
+    label: 'Concurrency',
+    icon: '🧵',
+    subtopics: ['Mutex', 'Semaphore', 'Producer-Consumer'],
   },
 ];

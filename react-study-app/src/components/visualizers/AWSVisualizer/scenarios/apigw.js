@@ -116,4 +116,20 @@ export default {
     { key: 'latency',    label: 'Latency (ms)', max: 200, unit: 'ms', color: 'var(--pod-running)' },
     { key: 'wafBlocked', label: 'WAF Blocked', max: 5,   color: 'var(--pod-error)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'API Gateway Types', content: 'REST API: full-featured with WAF, caching, usage plans, API keys. HTTP API: cheaper, simpler, faster. WebSocket API: bidirectional real-time communication.' },
+      { title: 'API Gateway as a Security Barrier', content: 'Terminates SSL, validates JWT (Cognito/Lambda authorizer), throttles traffic (rate + burst), filters requests through WAF (SQL injection, XSS), and validates request schemas — all before reaching your backend.' },
+    ],
+    why: ['API Gateway is the front door for your APIs — it handles cross-cutting concerns (auth, throttling, CORS, WAF) centrally, keeping backend code focused on business logic.'],
+    interview: [
+      { question: 'How does API Gateway handle authentication?', answer: 'Cognito Authorizer verifies JWT tokens against Cognito User Pools. Lambda Authorizer runs custom auth logic (custom JWT, OAuth, API keys). Request validation can reject malformed payloads before reaching Lambda.', followUps: ['What is a Lambda authorizer?', 'How does CORS work with API Gateway?'] },
+      { question: 'What is VPC Link in API Gateway?', answer: 'VPC Link (Private Integration) connects API Gateway to resources inside your VPC via PrivateLink/NLB — no internet exposure. Used for internal microservices that should not be publicly accessible.', followUps: ['What protocols does VPC Link support?', 'How does VPC Link differ from a public integration?'] },
+    ],
+    gotcha: ['API Gateway 429 throttling returns "Too Many Requests" but does NOT wait — request is dropped entirely. Design clients to handle 429s with exponential backoff, not retry storms.', 'CORS preflight (OPTIONS) requests are handled automatically but only work if you configure CORS properly — double-check allowed origins, methods, and headers in production.'],
+    tradeoffs: [
+      { pro: 'Handles SSL, auth, throttling, caching, CORS, WAF, and request validation — reducing backend complexity significantly.', con: 'Cost can add up at scale ($3.50/M requests for REST API). HTTP API ($1.00/M) is cheaper but lacks some features (WAF, usage plans).' },
+      { pro: 'Stage variables + canary deployments enable safe, gradual rollouts with instant rollback.', con: 'Custom domain names require ACM certificates in us-east-1 (for CloudFront), adding cross-region complexity for global APIs.' },
+    ],
+  },
 };

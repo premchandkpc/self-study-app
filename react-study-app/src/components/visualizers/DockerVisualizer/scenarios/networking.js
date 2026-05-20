@@ -104,4 +104,20 @@ export default {
     { key: 'ports',      label: 'Port Maps',  max: 5, color: 'var(--node-active)' },
     { key: 'network',    label: 'Networks',   max: 3, color: 'var(--node-comparing)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'ELI5 — Kid-friendly analogy', content: 'A bridge network is like a party with name tags. Each container gets its own "name tag" (IP address). They can talk to each other directly by name (DNS). Port mapping is like a front desk — outside guests talk to the front desk (host port), who forwards them to the right room.' },
+      { title: 'Core — How it works', content: 'Docker creates a virtual bridge (docker0) on the host. Each container gets a veth pair — one end in the container namespace, the other plugged into the bridge. Traffic is NAT-ted through iptables rules for external access. `-p hostPort:containerPort` creates DNAT rules. Containers on the same user-defined bridge can resolve each other by name via embedded DNS at 127.0.0.11.' },
+    ],
+    why: ['Use user-defined bridge networks instead of the default docker0 bridge for DNS-based service discovery. With the default bridge, containers can only connect via IP, not name.'],
+    interview: [
+      { question: 'How does Docker DNS resolution work?', answer: 'Docker embeds a DNS resolver at 127.0.0.11 inside each container. Containers on user-defined networks are registered by container name, so they can reach each other by name. The default bridge does not support this.', followUps: ['What about `--link` (legacy)?', 'How does Swarm/Kubernetes handle DNS?'] },
+      { question: 'What is the difference between bridge, host, and overlay network drivers?', answer: 'Bridge: isolated per-host, containers get their own network stack. Host: shares host network stack, no isolation — faster but less secure. Overlay: spans multiple Docker hosts, used by Swarm, encapsulates traffic with VXLAN.', followUps: ['When would you use host networking?', 'How does overlay encryption work?'] },
+    ],
+    gotcha: ['Publishing a port (`-p`) opens a hole in the host firewall via iptables. Running with `--network host` bypasses Docker iptables management entirely.', 'Removing a network does not clean up existing iptables rules. Manually flush them or restart Docker.'],
+    tradeoffs: [
+      { pro: 'Bridge isolation prevents containers from seeing host network', con: 'NAT adds slight latency to external traffic' },
+      { pro: 'User-defined networks enable automatic DNS resolution', con: 'Each network adds overhead — avoid creating hundreds per host' },
+    ],
+  },
 };

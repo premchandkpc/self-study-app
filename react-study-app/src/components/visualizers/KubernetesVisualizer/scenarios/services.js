@@ -84,4 +84,21 @@ export default {
     { key: 'cpu',      label: 'CPU avg',  max: 100, unit: '%', color: 'var(--node-comparing)' },
     { key: 'services', label: 'Services', max: 5, color: 'var(--node-default)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Service Types', content: 'ClusterIP (internal virtual IP), NodePort (port on every node), LoadBalancer (cloud LB), and ExternalName (DNS alias). ClusterIP is the default and is the basis for internal service discovery.' },
+      { title: 'kube-proxy and Endpoints', content: 'kube-proxy runs on every node, implementing Service-to-Pod routing via iptables, IPVS, or userspace mode. The EndpointSlice controller watches pods and updates EndpointSlice objects with active pod IPs, removing unhealthy pods automatically.' },
+      { title: 'DNS-Based Service Discovery', content: 'Kubernetes DNS creates A/AAAA records for each Service: <service>.<namespace>.svc.cluster.local. SRV records are created for named ports. This enables dynamic routing without hardcoded addresses.' },
+    ],
+    why: ['Services are the fundamental abstraction for stable networking in Kubernetes. Without Services, pod IPs are ephemeral and inter-service communication breaks on every restart or reschedule.'],
+    interview: [
+      { question: 'How does ClusterIP work internally?', answer: 'The API server assigns a virtual IP from the Service CIDR to the Service. kube-proxy on each node programs iptables/IPVS rules to DNAT the ClusterIP to one of the backing pod IPs. The EndpointSlice controller ensures the pod IP list is current — unhealthy pods are automatically removed.', followUps: ['How does kube-proxy handle traffic in iptables vs IPVS mode?', 'What happens when a pod crashes while a request is in flight?'] },
+      { question: 'How does NodePort differ from LoadBalancer?', answer: 'NodePort exposes the Service on the same high port (30000-32767) on all nodes. LoadBalancer is built on top of NodePort and additionally provisions a cloud load balancer to distribute traffic across nodes. LoadBalancer is the recommended external access method for production.', followUps: ['How do you achieve session stickiness with Services?', 'What is the difference between Service mesh and native kube-proxy?'] },
+    ],
+    gotcha: ['NodePort ports must be in range 30000-32767 by default. Many users accidentally set nodePort: 8080 and wonder why the service is unreachable. The kube-apiserver flag --service-node-port-range can extend the range.', 'Session affinity (sticky sessions) does not work with DNS round-robin — clients may resolve to different ClusterIPs. Use externalTrafficPolicy: Local to preserve client IP but risk imbalanced traffic distribution.'],
+    tradeoffs: [
+      { pro: 'Stable virtual IP decouples clients from ephemeral pod IPs', con: 'Each Service adds iptables rules — thousands of Services can degrade node networking performance' },
+      { pro: 'Multiple Service types support internal, external, and cloud LB access patterns', con: 'ClusterIP alone cannot handle gRPC load balancing — requires a service mesh or headless Service with client-side LB' },
+    ],
+  },
 };

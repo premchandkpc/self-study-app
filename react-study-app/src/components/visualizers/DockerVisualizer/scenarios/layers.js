@@ -87,4 +87,20 @@ export default {
     { key: 'cached', label: 'Cached',  max: 10, color: 'var(--pod-running)' },
     { key: 'size',   label: 'Size MB', max: 400, color: 'var(--node-comparing)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'ELI5 — Kid-friendly analogy', content: 'Image layers are like a stack of tracing paper. Each Dockerfile instruction draws on a new sheet. If you reuse the same bottom sheets (FROM, RUN apt-get), Docker doesn\'t redraw them — just puts new tracing paper on top. The final image is the stack viewed from above.' },
+      { title: 'Core — How it works', content: 'Each Dockerfile instruction creates a read-only layer stored in /var/lib/docker/overlay2. Layers use copy-on-write: when a container runs, a thin writable layer is added. Layer caching uses content hashes — if the instruction text and context hash match a previous build, the cached layer is reused. Cache is invalidated when COPY/ADD file content changes or RUN instructions change.' },
+    ],
+    why: ['Order Dockerfile instructions from least-to-most frequently changing (deps before code) to maximize cache hits. A single cache miss invalidates all subsequent layers — rebuilds are much slower.'],
+    interview: [
+      { question: 'What happens to a RUN instruction\'s layer when its command changes?', answer: 'The cache is invalidated for that RUN and every subsequent instruction. Docker hashes the command string. If it differs from the cached layer\'s instruction, Docker runs it fresh. The previous layer still exists but is unused in the new image.', followUps: ['How does COPY cache invalidation differ?', 'Can you force a cache miss?'] },
+      { question: 'How does Docker share layers between images?', answer: 'Layers are content-addressed by digest. If two images share the same base layer (e.g., FROM ubuntu:22.04), Docker stores one copy on disk. That\'s why multi-stage builds can copy artifacts between stages without bloat — only the final stage\'s layers are saved.', followUps: ['What is a dangling layer?', 'How do you clean up unused layers?'] },
+    ],
+    gotcha: ['COPY . . invalidates the cache on every file change. Always COPY files in dependency-order: package.json first, then `npm install`, then source. This way npm install is cached until deps change.', 'Layer count is not a performance concern on modern storage (overlay2). Merge them with multi-stage builds to reduce final image size, not for speed.'],
+    tradeoffs: [
+      { pro: 'Layer caching drastically speeds up CI/CD rebuilds', con: 'Cache invalidation can cause unexpectedly long builds if instructions are poorly ordered' },
+      { pro: 'Shared layers save disk space across images', con: 'Too many layers can slow `docker push/pull` on older storage drivers (aufs, devicemapper)' },
+    ],
+  },
 };

@@ -110,4 +110,20 @@ export default {
     { key: 'cpu',         label: 'CPU %',        max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
     { key: 'fargatePods', label: 'Fargate Pods', max: 5,   color: 'var(--node-path)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'EKS Architecture', content: 'AWS runs the Kubernetes control plane (API server, etcd) for free. Worker nodes are EC2 instances or Fargate pods. Standard Kubernetes API — works with kubectl, Helm, ArgoCD.' },
+      { title: 'Karpenter vs Cluster Autoscaler', content: 'Karpenter directly provisions EC2 instances (~60s) choosing optimal types per pod request. Cluster Autoscaler relies on ASG scaling (2-5min). Karpenter is faster and more cost-effective.' },
+    ],
+    why: ['EKS provides managed Kubernetes on AWS without the operational burden of running the control plane yourself, enabling portability across on-prem, cloud, and hybrid environments.'],
+    interview: [
+      { question: 'How does pod networking work in EKS?', answer: 'EKS uses the Amazon VPC CNI plugin — each pod gets a real VPC IP address from the subnet (no overlay, no NAT). VPC CNI attaches an ENI per node and assigns IPs from that ENI\'s secondary IP range.', followUps: ['What happens when a node runs out of ENI IPs?', 'How does Security Groups per Pod work?'] },
+      { question: 'What is IRSA and why is it important?', answer: 'IAM Roles for Service Accounts (IRSA) gives each Kubernetes pod its own IAM role via OIDC federation. No hardcoded AWS keys in pods. Each microservice gets only the permissions it needs (least privilege).', followUps: ['How does OIDC provider work with EKS?', 'What is the difference between IRSA and instance profile-based access?'] },
+    ],
+    gotcha: ['EBS volumes are AZ-specific — a pod using an EBS PVC can only run on a node in the same AZ. Use EFS (NFS) for cross-AZ persistent storage.', 'Default network policy in EKS allows ALL traffic between ALL pods — you must install Calico or Cilium for pod-level network isolation, which is essential for security compliance.'],
+    tradeoffs: [
+      { pro: 'Standard Kubernetes API enables workload portability across on-prem, EKS, and other Kubernetes distributions.', con: 'EKS control plane upgrades require careful planning (1 minor version skip max, addon compatibility testing).' },
+      { pro: 'Fargate for EKS allows running pods without managing EC2 nodes, ideal for burst workloads and batch jobs.', con: 'Fargate pods have limitations — no DaemonSets, no privileged containers, no GPU support, and higher per-pod cost for steady-state workloads.' },
+    ],
+  },
 };

@@ -1,0 +1,345 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.vizArea {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  min-height: 300px;
+  align-items: start;
+}
+
+.mainViz { flex: 1; }
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.eventsLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.evDot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.ev-info  { color: var(--text-accent); }
+.ev-ok    { color: var(--pod-running); }
+.ev-warn  { color: var(--node-comparing); }
+.ev-error { color: var(--pod-crash); }
+
+.narration {
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+}
+
+.bottomPanels {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+}
+
+.rightPanels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.emptyState {
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+  text-align: center;
+  padding: var(--space-md);
+}
+
+/* === TRANSFORMER === */
+.transformerLayout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.tokensRow {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.tokenBox {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  min-width: 70px;
+  transition: all var(--transition-fast);
+}
+
+.tokenText {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tokenEmbedding {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.embedVal {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--pod-running);
+}
+
+.embedEllipsis {
+  font-size: 8px;
+  color: var(--text-faint);
+}
+
+.layersRow {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.layerBox {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  transition: all var(--transition-fast);
+}
+
+.layerActive {
+  border-color: var(--node-active);
+  background: color-mix(in srgb, var(--node-active) 10%, transparent);
+  color: var(--node-active);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node-active) 30%, transparent);
+}
+
+.attnGridSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.attnGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  max-width: 300px;
+}
+
+.attnCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.attnVal {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.7);
+}
+
+/* === ATTENTION === */
+.attentionLayout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.attentionTokens {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.attnTokenBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+}
+
+.attnTokenText {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.attnTokenId {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-faint);
+}
+
+.matrixRow {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.matrixSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.heatGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.heatCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-width: 40px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.8);
+  transition: all var(--transition-fast);
+}
+
+/* === EMBEDDINGS === */
+.embedLayout {
+  display: flex;
+  flex-direction: column;
+}
+
+.embedGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.wordCard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  transition: all var(--transition-fast);
+}
+
+.wordText {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--node-active);
+}
+
+.wordVector {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.vectorLabel {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.vectorVal {
+  font-weight: 600;
+}
+
+.neighborRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  font-size: 10px;
+}
+
+.neighborLabel {
+  color: var(--text-faint);
+}
+
+.neighborWord {
+  color: var(--kafka-producer);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .vizArea {
+    grid-template-columns: 1fr;
+    padding: var(--space-md);
+  }
+  .matrixRow {
+    flex-direction: column;
+  }
+  .bottomPanels {
+    grid-template-columns: 1fr;
+  }
+}

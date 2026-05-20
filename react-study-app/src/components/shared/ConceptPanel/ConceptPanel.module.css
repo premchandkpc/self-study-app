@@ -106,3 +106,32 @@
   background: var(--accent);
   opacity: 0.5;
 }
+
+.cardRichItem {
+  padding: var(--space-xs) 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  border-bottom: 1px solid var(--border);
+}
+
+.cardRichItem:last-child {
+  border-bottom: none;
+}
+
+.cardRichItem strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  margin-bottom: 2px;
+}
+
+.cardRichItem p {
+  margin: 2px 0;
+  white-space: pre-wrap;
+}
+
+.cardRichItem em {
+  font-style: italic;
+  color: var(--text-muted);
+}

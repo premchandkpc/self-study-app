@@ -29,7 +29,7 @@ export default function ConceptTemplate({ scenarios }) {
         </div>
 
         <div className={styles.conceptArea}>
-          <ConceptPanel concepts={viz.concepts} />
+          <ConceptPanel concepts={{ ...(viz.concepts || {}), ...(active.topicContent || {}) }} />
         </div>
       </div>
 

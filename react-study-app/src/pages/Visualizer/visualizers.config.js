@@ -188,4 +188,36 @@ export const VISUALIZERS = {
     component: lazy(() => import('../../components/visualizers/SpringVisualizer/SpringVisualizer')),
     desc: 'Visual simulations of Spring internals: bean lifecycle & circular deps, MVC request flow & interceptors, JDK/CGLIB proxy & advice chain, @Transactional propagation & rollback rules, security filter chain & JWT, JPA N+1 & fetch strategies, auto-configuration & @Conditional, and Spring Cloud circuit breaker & discovery.',
   },
+
+  /* ─── Operating Systems ───────────────────────────────────────────────── */
+  os: {
+    label: 'Operating Systems — CPU Scheduler, Paging, Virtual Memory',
+    icon: '🖥️',
+    component: lazy(() => import('../../components/visualizers/OSVisualizer/OSVisualizer')),
+    desc: 'FCFS & Round Robin CPU scheduling, page table & TLB walks, virtual memory swapping & thrashing.',
+  },
+
+  /* ─── AI / Transformers ───────────────────────────────────────────────── */
+  ai: {
+    label: 'AI / Transformers — Transformer, Attention, Embeddings',
+    icon: '🤖',
+    component: lazy(() => import('../../components/visualizers/AIVisualizer/AIVisualizer')),
+    desc: 'Transformer encoder-decoder architecture, multi-head scaled dot-product attention, word embedding vectors.',
+  },
+
+  /* ─── Distributed Systems ─────────────────────────────────────────────── */
+  distributed: {
+    label: 'Distributed Systems — Raft, CAP, 2PC',
+    icon: '🌍',
+    component: lazy(() => import('../../components/visualizers/DistributedSystemsVisualizer/DistributedSystemsVisualizer')),
+    desc: 'Raft leader election & log replication, CAP theorem partition simulation, two-phase commit protocol.',
+  },
+
+  /* ─── Concurrency ─────────────────────────────────────────────────────── */
+  concurrency: {
+    label: 'Concurrency — Mutex, Semaphore, Producer-Consumer',
+    icon: '🧵',
+    component: lazy(() => import('../../components/visualizers/ConcurrencyVisualizer/ConcurrencyVisualizer')),
+    desc: 'Mutex lock/unlock with blocked queue, counting semaphore permit tracking, bounded buffer producer-consumer.',
+  },
 };

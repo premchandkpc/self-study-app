@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './jvm-engine';
 import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
@@ -11,10 +12,12 @@ import styles from './JVMVisualizer.module.css';
 
 export default function JVMVisualizer() {
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(SCENARIOS);
+  const [showContent, setShowContent] = useState(false);
 
   if (!viz) return null;
 
   const isSTW = viz.stopTheWorld;
+  const tc = active.topicContent;
 
   return (
     <div className={`${styles.wrapper} ${isSTW ? styles.stopWorld : ''}`}>
@@ -79,6 +82,66 @@ export default function JVMVisualizer() {
       <div className={styles.codePanelWrap}>
         <CodePanel code={active.code} language={active.language} />
       </div>
+
+      {tc && (
+        <div className={styles.contentSection}>
+          <button className={styles.contentToggle} onClick={() => setShowContent(!showContent)}>
+            {showContent ? '▾' : '▸'} Topic Content
+          </button>
+          {showContent && (
+            <div className={styles.contentBody}>
+              {tc.concept && (
+                <div className={styles.contentBlock}>
+                  <h4>Concept</h4>
+                  {tc.concept.map((c, i) => (
+                    <div key={i} className={styles.contentItem}>
+                      <strong>{c.title}</strong>
+                      <p>{c.content}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {tc.why && (
+                <div className={styles.contentBlock}>
+                  <h4>Why It Matters</h4>
+                  <ul>{tc.why.map((w, i) => <li key={i}>{w}</li>)}</ul>
+                </div>
+              )}
+              {tc.gotcha && (
+                <div className={`${styles.contentBlock} ${styles.gotchaBlock}`}>
+                  <h4>Gotchas</h4>
+                  <ul>{tc.gotcha.map((g, i) => <li key={i}>{g}</li>)}</ul>
+                </div>
+              )}
+              {tc.interview && (
+                <div className={styles.contentBlock}>
+                  <h4>Interview Q&A</h4>
+                  {tc.interview.map((q, i) => (
+                    <div key={i} className={styles.qaItem}>
+                      <strong>Q: {q.question}</strong>
+                      <p>{q.answer}</p>
+                      {q.followUps?.length > 0 && (
+                        <small>Follow-ups: {q.followUps.join(' · ')}</small>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {tc.tradeoffs && (
+                <div className={styles.contentBlock}>
+                  <h4>Trade-offs</h4>
+                  {tc.tradeoffs.map((t, i) => (
+                    <div key={i} className={styles.tradeItem}>
+                      <span className={styles.pro}>✓ {t.pro}</span>
+                      <span className={styles.con}>✗ {t.con}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <StepControls />
     </div>

@@ -128,4 +128,20 @@ export default {
     { key: 'pending', label: 'Pending',  max: 4, color: 'var(--node-comparing)', warn: 60, critical: 90 },
     { key: 'healthy', label: 'Healthy',  max: 4, color: 'var(--node-active)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'ELI5 — Kid-friendly analogy', content: 'Docker Compose is like a party planner\'s checklist. Instead of telling each guest (container) when to arrive, where to sit, and what to bring, you write one plan. The planner starts things in the right order (database before app), checks everyone is ready, and ties it all together.' },
+      { title: 'Core — How it works', content: 'Compose reads a docker-compose.yml, resolves dependencies via `depends_on` (optionally with `condition: service_healthy`), creates a shared network, starts services in dependency order, and runs health checks before declaring a service ready. It supports `healthcheck` commands (e.g., pg_isready for Postgres) and environment variable interpolation. `docker compose up` is the equivalent of `docker network create` + multiple `docker run` commands orchestrated together.' },
+    ],
+    why: ['Always use `condition: service_healthy` (not just `depends_on` without condition) to prevent the app from starting before the database is ready to accept connections.'],
+    interview: [
+      { question: 'How does Compose handle service startup order?', answer: 'Compose starts services in reverse dependency order — services with no deps first. If `depends_on` has `condition: service_healthy`, Compose waits for the health check to pass. Without it, Compose only waits for the container to start, not for it to be ready.', followUps: ['What happens if a health check fails?', 'Can you restart individual services?'] },
+      { question: 'What is the difference between `depends_on` and `links`?', answer: '`depends_on` is a startup ordering directive — it does not create network links. `links` (legacy) connects containers and sets environment variables. Modern Compose uses user-defined networks, where DNS resolution replaces links entirely.', followUps: ['Is `links` deprecated?', 'How does networking in Compose work by default?'] },
+    ],
+    gotcha: ['`depends_on` without `condition: service_healthy` only waits for container start, not readiness. Your app will crash if it connects before the DB is actually ready.', 'Compose does not auto-restart services unless `restart: unless-stopped` or `restart: always` is set. A crashed service stays down.'],
+    tradeoffs: [
+      { pro: 'Single file defines entire stack — great for dev environments', con: 'Not suitable for production — lacks rolling updates, self-healing, and scaling (use Swarm/K8s instead)' },
+      { pro: 'Health checks prevent race conditions between services', con: 'Health checks add startup latency — every service health check runs sequentially with depends_on chains' },
+    ],
+  },
 };

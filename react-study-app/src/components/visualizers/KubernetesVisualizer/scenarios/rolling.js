@@ -70,4 +70,21 @@ export default {
     { key: 'cpu',      label: 'CPU avg',  max: 100, unit: '%', color: 'var(--node-comparing)' },
     { key: 'restarts', label: 'Restarts', max: 10, color: 'var(--pod-crash)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Rolling Update Strategy', content: 'Rolling updates replace pods incrementally with zero downtime. maxSurge (default 25%) controls how many extra pods can be created. maxUnavailable (default 25%) controls how many pods can be down simultaneously.' },
+      { title: 'Deployment Controllers', content: 'The Deployment controller creates a new ReplicaSet for the new version. It scales the new ReplicaSet up while scaling the old ReplicaSet down, monitoring readiness probes at each step to ensure availability.' },
+      { title: 'Rollback', content: 'kubectl rollout undo deployment/app rolls back to the previous revision. Deployments store revision history (default: 10 revisions). Use revisionHistoryLimit to control storage.' },
+    ],
+    why: ['Zero-downtime deployments are critical for production services. Misconfigured rolling update parameters (especially maxUnavailable=0 with insufficient resources) can stall deployments indefinitely.'],
+    interview: [
+      { question: 'What is the difference between RollingUpdate and Recreate strategies?', answer: 'RollingUpdate gradually replaces pods, maintaining availability. Recreate kills all existing pods before creating new ones — simpler but causes downtime. RollingUpdate is the default and preferred for production; Recreate is suitable for development or stateful workloads that cannot run multiple versions simultaneously.', followUps: ['How do you rollback a failed rolling update?', 'What happens if readiness probe fails on new pods during rolling update?'] },
+      { question: 'How do maxSurge and maxUnavailable work together?', answer: 'maxSurge limits the number of extra pods during update (e.g., 25% of 4 = 1 extra). maxUnavailable limits how many pods can be down (e.g., 25% = 1 down). With maxUnavailable=0 and maxSurge=1, the update creates 1 new pod, waits for ready, then terminates 1 old pod, repeating until all pods are updated — guaranteed zero downtime.', followUps: ['How do you handle rolling updates for StatefulSets?', 'What is the impact of PDB on rolling updates?'] },
+    ],
+    gotcha: ['Setting maxUnavailable=0 with maxSurge=0 is invalid — there must be at least one pod available to make progress. The Deployment controller will stall with no way to proceed.', 'Rolling updates only proceed if the new pod passes readiness probes. A misconfigured probe (e.g., health endpoint returning 200 but app not ready) can cause the update to appear successful while serving broken code to a subset of traffic.'],
+    tradeoffs: [
+      { pro: 'Zero-downtime deployments with automatic rollback on failure', con: 'Slower than Recreate — large deployments may take minutes to fully roll out' },
+      { pro: 'Progressive traffic shifting catches issues with minimal blast radius', con: 'Multiple versions running simultaneously increases resource consumption during deployment' },
+    ],
+  },
 };

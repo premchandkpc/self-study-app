@@ -105,4 +105,20 @@ export default {
     { key: 'policies', label: 'Policies', max: 5, color: 'var(--pod-running)' },
     { key: 'scps',     label: 'SCPs',     max: 3, color: 'var(--node-comparing)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'IAM Core Components', content: 'Users (long-term human identity), Groups (collection of users with shared policies), Roles (temporary service identity with trust + permissions policies), Policies (JSON permission documents).' },
+      { title: 'Policy Evaluation Logic', content: 'SCP → Resource Policy → Identity Policy → explicit DENY always wins. If no ALLOW and no DENY → DENIED by default. Permission Boundary sets a maximum ceiling on permissions.' },
+    ],
+    why: ['IAM is the security foundation of AWS — misconfigured IAM is the #1 cause of AWS security breaches. Understanding least privilege and policy evaluation is non-negotiable.'],
+    interview: [
+      { question: 'What is the difference between an IAM Role and an IAM User?', answer: 'IAM User has long-term credentials (password, access keys) for a human or application. IAM Role has temporary credentials via STS (assumed by services like EC2, Lambda). Roles do not have static credentials — they are assumed.', followUps: ['How do temporary credentials work?', 'Can an IAM user assume a role?'] },
+      { question: 'What is iam:PassRole and why is it important?', answer: 'Allows a user to pass a role to an AWS service (e.g., EC2 launch with a role). Without restricting PassRole, a user could launch EC2 with an admin role and escalate privileges. Always restrict to specific roles.', followUps: ['What happens without PassRole permissions?', 'How do you restrict PassRole to specific roles?'] },
+    ],
+    gotcha: ['SCPs affect ALL users including the root user — a badly written SCP can lock out the entire organization. Always test SCPs on a test OU first.', 'Access keys are long-term and hard to rotate — prefer IAM Roles with temporary credentials (via STS) for all automated access. Use IAM Roles Anywhere for on-prem workloads.'],
+    tradeoffs: [
+      { pro: 'Fine-grained access control with conditions (IP, time, MFA, tags) enables comprehensive security postures.', con: 'Policy complexity grows quickly — hundreds of policies across multiple accounts are hard to audit. Use IAM Access Analyzer and automated policy validation.' },
+      { pro: 'IAM Identity Center (SSO) centralizes access management across accounts and integrates with external IdPs (OKTA, Azure AD).', con: 'ABAC requires careful tag governance — if tags are misused, permissions become unpredictable. RBAC is simpler for smaller organizations.' },
+    ],
+  },
 };

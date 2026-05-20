@@ -135,4 +135,20 @@ export default {
     { key: 'batchSize', label: 'Batch',     max: 10, color: 'var(--node-comparing)' },
     { key: 'dlq',       label: 'DLQ',       max: 3,  color: 'var(--pod-crash)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Standard vs FIFO Queues', content: 'Standard: high throughput (near unlimited), at-least-once delivery (possible duplicates), best-effort ordering. FIFO: exactly-once, strict ordering, 3000 msg/s, name must end in .fifo.' },
+      { title: 'Visibility Timeout', content: 'Message received becomes hidden from other consumers for N seconds. If not deleted in time, it reappears for retry. Prevents duplicate processing and handles consumer crashes.' },
+    ],
+    why: ['SQS decouples producers from consumers, acting as a shock absorber for traffic spikes and preventing data loss if a consumer fails — essential for building resilient distributed systems.'],
+    interview: [
+      { question: 'What is the difference between short polling and long polling in SQS?', answer: 'Short polling returns immediately (may return empty responses). Long polling (WaitTimeSeconds=20) waits up to 20s for messages to arrive, reducing empty responses and saving cost. Long polling is recommended.', followUps: ['What is the maximum WaitTimeSeconds?', 'How does long polling affect cost?'] },
+      { question: 'How does a Dead Letter Queue work in SQS?', answer: 'Messages that exceed MaxReceiveCount (e.g., fail processing 3 times) are automatically moved to a DLQ. This prevents poison pills from looping forever. DLQ depth can trigger CloudWatch alarms for manual inspection.', followUps: ['How do you redrive messages from the DLQ?', 'What is the redrive policy?'] },
+    ],
+    gotcha: ['Standard queues can deliver the same message twice — consumer code MUST be idempotent. Use deduplication IDs or idempotency keys in your processing logic.', 'FIFO queues have a 3000 msg/s throughput limit (or 3000/s for batched). Exceeding this causes throttling — you cannot scale FIFO by adding more consumers.'],
+    tradeoffs: [
+      { pro: 'Fully managed, highly durable (messages stored across 3 AZs), and virtually unlimited throughput for Standard queues.', con: 'At-least-once delivery in Standard queues requires idempotent consumers. FIFO queues have throughput limitations.' },
+      { pro: 'Long polling reduces cost by eliminating empty responses, and batching (up to 10 messages) improves consumer efficiency.', con: 'Latency is inherent — polling has delay. For real-time messaging without polling, consider SNS or EventBridge.' },
+    ],
+  },
 };

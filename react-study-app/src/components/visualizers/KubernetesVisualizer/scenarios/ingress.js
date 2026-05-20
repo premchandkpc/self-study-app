@@ -69,4 +69,21 @@ export default {
     { key: 'pods', label: 'Pods', max: 8, color: 'var(--pod-running)' },
     { key: 'cpu', label: 'CPU avg', max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Ingress vs Service', content: 'Ingress operates at Layer 7 (HTTP/HTTPS), providing path- and host-based routing, TLS termination, and name-based virtual hosting. Services operate at Layer 4 (TCP/UDP) and are the underlying routing target for Ingress.' },
+      { title: 'Ingress Controller', content: 'The Ingress resource is just a declaration; the Ingress Controller (nginx, ALB, Traefik, HAProxy, Istio) watches for Ingress resources and configures the actual reverse proxy or load balancer.' },
+      { title: 'TLS Termination', content: 'Ingress terminates TLS at the edge, forwarding plain HTTP to backend Services. Certificates are stored in Secrets. cert-manager can automate certificate provisioning via Let\'s Encrypt.' },
+    ],
+    why: ['Ingress provides a single entry point for multiple services with minimal cloud costs (one LB vs one per Service), simplifies certificate management, and enables advanced traffic control through annotations.'],
+    interview: [
+      { question: 'How does path-based routing work in Ingress?', answer: 'The Ingress resource defines rules mapping hostnames and paths to backend Services. The Ingress Controller translates these into reverse proxy config (e.g., nginx.conf location blocks). Path matching supports Exact, Prefix, and ImplementationSpecific pathTypes.', followUps: ['What is the difference between an Ingress and a Gateway API?', 'How do you handle path rewriting with Ingress?'] },
+      { question: 'How does cert-manager integrate with Ingress for TLS?', answer: 'cert-manager watches Ingress resources for spec.tls[]. It uses the configured ClusterIssuer (e.g., letsencrypt-prod) to request certificates via ACME protocol, stores them as Secrets, and auto-renews before expiry. The Ingress Controller uses the Secret as the TLS certificate.', followUps: ['What happens when a certificate expires?', 'How do you handle wildcard certificates with cert-manager?'] },
+    ],
+    gotcha: ['Ingress controllers are not automatically deployed — most clusters need manual installation. Many users create Ingress resources but wonder why nothing works: the controller is missing.', 'Path rewriting caveat: /api/users to /users requires rewrite-target annotation. Without it, the full original path is forwarded to the backend, causing 404 errors.'],
+    tradeoffs: [
+      { pro: 'Single public endpoint for multiple services reduces cloud load balancer costs', con: 'L7 routing adds latency compared to direct L4 load balancing' },
+      { pro: 'Rich annotation ecosystem for rate limiting, auth, and CORS', con: 'Annotations are controller-specific, making migration between controllers time-consuming' },
+    ],
+  },
 };

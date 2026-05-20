@@ -116,4 +116,20 @@ export default {
     { key: 'cacheHit',      label: 'Edge Hits',     max: 5,  color: 'var(--pod-running)' },
     { key: 'storageClass',  label: 'Tiered',        max: 3,  color: 'var(--node-comparing)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'Object Storage Model', content: 'S3 stores files as objects in buckets with a key (path), value (data up to 5TB), metadata, tags, and version ID. NOT a file system — flat namespace, no folders, just prefix-based grouping.' },
+      { title: 'Storage Classes and Lifecycle', content: 'Standard → Standard-IA → Glacier → Deep Archive. Lifecycle policies auto-transition or expire objects based on age, prefix, or tags — optimizing cost without code changes.' },
+    ],
+    why: ['S3 is the foundation of cloud storage with 99.999999999% durability. Understanding its storage classes, security controls, and event-driven features is critical for cost-effective, secure data management.'],
+    interview: [
+      { question: 'How does S3 achieve 99.999999999% durability?', answer: 'S3 automatically replicates objects across a minimum of 3 Availability Zones in the region. Each object is stored with redundant data and CRC checksums. 11 9s durability means 1 object lost per 10 trillion objects stored.', followUps: ['What is the difference between durability and availability?', 'How does S3 One Zone-IA affect durability?'] },
+      { question: 'How do you secure data in S3?', answer: 'Block public access by default (account + bucket level). Use bucket policies + IAM for access control. Enable SSE-S3 (AES-256 free) or SSE-KMS for encryption. Use S3 Object Lock for WORM compliance. Enable versioning for accidental deletion protection.', followUps: ['What is the difference between SSE-S3 and SSE-KMS?', 'How does S3 Access Analyzer help with security?'] },
+    ],
+    gotcha: ['S3 is strongly consistent for PUT and DELETE of objects (since Dec 2020) but LIST operations are eventually consistent — newly created objects may not appear immediately in listings.', 'S3 Transfer Acceleration costs per GB transferred — for small files or close regions, it can cost more than the benefit. Test before enabling globally.'],
+    tradeoffs: [
+      { pro: '11 9s durability, unlimited storage, 99.99% availability, and 15 storage classes for cost optimization.', con: 'No file system locking — concurrent writes to the same key overwrite each other (last writer wins). Use versioning or S3 Object Lock for critical data.' },
+      { pro: 'Event notifications (SQS, SNS, Lambda, EventBridge) enable event-driven workflows without polling or custom code.', con: 'Event notifications are best-effort — for guaranteed delivery, use EventBridge with S3 events (supports retries and DLQ).' },
+    ],
+  },
 };

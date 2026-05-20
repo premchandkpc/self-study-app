@@ -116,4 +116,20 @@ export default {
     { key: 'memory',  label: 'Memory MB',  max: 256, color: 'var(--node-active)' },
     { key: 'cpu',     label: 'CPU %',      max: 10,  color: 'var(--node-comparing)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'ELI5 — Kid-friendly analogy', content: 'A container is like a takeout box. You create the box, put food in it and start "eating" (running), can pause and put it in the fridge, then either stop (lunch break) or throw the box away entirely. The recipe (image) stays on the shelf.' },
+      { title: 'Core — How it works', content: 'Docker uses namespaces (PID, net, mount, user, uts, ipc) and cgroups to isolate processes. `docker create` allocates a writable layer on top of image layers. `docker start` spawns PID 1 inside the namespace. `docker pause` sends SIGSTOP to freeze all threads. `docker stop` sends SIGTERM then SIGKILL after grace period. `docker rm` deletes the writable layer only.' },
+    ],
+    why: ['Production containers should use `docker stop` with a proper grace period to let processes clean up. Never `docker kill` unless a container hangs beyond the timeout.'],
+    interview: [
+      { question: 'What happens when you run `docker run --rm`?', answer: 'It creates, starts, and when the container exits, automatically removes the writable layer. Useful for ephemeral tasks.', followUps: ['What happens to the image layers?', 'When is the removal triggered?'] },
+      { question: 'How does Docker handle zombie processes?', answer: 'PID 1 inside the container is responsible for reaping zombies. If your app doesn\'t handle SIGCHLD, zombies accumulate. Use a minimal init like tini or dumb-init.', followUps: ['What happens if PID 1 exits?', 'What is the --init flag?'] },
+    ],
+    gotcha: ['Pausing a container freezes all processes via SIGSTOP, which cannot be caught or ignored — even background threads freeze.', 'A stopped container\'s writable layer persists. Use `docker rm -v` to also remove anonymous volumes.'],
+    tradeoffs: [
+      { pro: 'Fast startup (milliseconds) compared to VMs', con: 'Weaker isolation than VMs — shares host kernel' },
+      { pro: 'Ephemeral containers keep hosts clean', con: 'Ephemeral containers lose logs on exit without volume mounts' },
+    ],
+  },
 };

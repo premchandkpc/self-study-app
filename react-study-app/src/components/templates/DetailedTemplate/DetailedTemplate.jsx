@@ -19,7 +19,7 @@ export default function DetailedTemplate({ scenarios }) {
   const codeNotes = active?.codeNotes || [];
   const tradeoffs = active?.tradeoffs || [];
   const bestPractices = active?.bestPractices || [];
-  const concepts = viz.concepts || [];
+  const concepts = { ...(viz.concepts || {}), ...(active.topicContent || {}) };
 
   return (
     <div className={styles.wrapper}>

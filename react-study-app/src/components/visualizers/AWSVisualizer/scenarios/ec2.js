@@ -112,4 +112,20 @@ export default {
     { key: 'cpu',       label: 'CPU %',     max: 100, unit: '%', color: 'var(--node-comparing)', warn: 60, critical: 85 },
     { key: 'ebsSnap',   label: 'Snapshots', max: 3,  color: 'var(--node-path)' },
   ],
+  topicContent: {
+    concept: [
+      { title: 'EC2 Instance Lifecycle', content: 'Launch (PENDING → RUNNING), STOP (compute released, EBS persists), HIBERNATE (RAM saved to EBS), TERMINATE (destroyed). Public IP changes on stop/start unless using Elastic IP.' },
+      { title: 'Instance Types and Families', content: 't (burstable), m (general), c (compute), r (memory), i (storage), g (GPU). Choose based on workload — CPU-bound, memory-bound, or I/O-bound.' },
+    ],
+    why: ['EC2 is the foundation of AWS compute — understanding instance lifecycle, storage options, and Auto Scaling is essential for designing cost-effective, resilient architectures.'],
+    interview: [
+      { question: 'What happens when you stop and start an EC2 instance?', answer: 'The instance moves to a new physical host. EBS volumes persist with data intact. Private IP is preserved (if same AZ), but public IP changes unless using an Elastic IP. No EC2 compute charge while stopped.', followUps: ['What happens to instance store volumes on stop?', 'Can you change instance type while stopped?'] },
+      { question: 'How does EC2 Auto Scaling work?', answer: 'Auto Scaling Groups maintain desired instance count using Launch Templates. They auto-replace unhealthy instances via ALB health checks and scale based on policies (target tracking, step scaling, scheduled).', followUps: ['What is the difference between scale-out and scale-up?', 'How do you handle graceful shutdown during scale-in?'] },
+    ],
+    gotcha: ['Instance store volumes lose data on stop/termination — they are ephemeral. Always use EBS for persistent data.', 't2/t3 burstable instances accumulate CPU credits. When credits are exhausted, CPU throttles to baseline — workloads above baseline will see performance degradation.'],
+    tradeoffs: [
+      { pro: 'Complete control over the OS, kernel, and software — install anything, configure everything, no platform limitations.', con: 'Full operational responsibility — patching, security, backups, and capacity planning are your problem, not AWS\'s.' },
+      { pro: 'Wide variety of instance types and pricing models (On-Demand, Reserved, Spot) allows fine-grained cost optimization.', con: 'Over-provisioning is common and expensive. Rightsizing requires continuous monitoring and instance type changes.' },
+    ],
+  },
 };
