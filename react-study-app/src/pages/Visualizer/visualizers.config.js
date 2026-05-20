@@ -44,6 +44,12 @@ export const VISUALIZERS = {
     component: lazy(() => import('../../components/visualizers/GraphVisualizer/GraphVisualizer')),
     desc: 'Breadth-First and Depth-First traversal. O(V+E) time.',
   },
+  unionfind: {
+    label: 'Union-Find — Path Compression, Kruskal MST',
+    icon: '⚡',
+    component: lazy(() => import('../../components/visualizers/UnionFindVisualizer/UnionFindVisualizer')),
+    desc: 'Disjoint Set Union with path compression and union by rank. Find connected components, detect cycles, Kruskal MST. O(α(n)) amortized.',
+  },
   tree: {
     label: 'BST — Insert & Traversals',
     icon: '🌳',
