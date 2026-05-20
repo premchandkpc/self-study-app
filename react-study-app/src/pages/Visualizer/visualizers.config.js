@@ -26,6 +26,12 @@ export const VISUALIZERS = {
     component: lazy(() => import('../../components/visualizers/StringVisualizer/StringVisualizer')),
     desc: 'KMP pattern matching, sliding window anagram finder, expand-around-center palindrome. O(n) time.',
   },
+  trie: {
+    label: 'Trie — Insert, Search, Autocomplete',
+    icon: '🌳',
+    component: lazy(() => import('../../components/visualizers/TrieVisualizer/TrieVisualizer')),
+    desc: 'Prefix tree for efficient string search, autocomplete, and spell checking. O(m) search time.',
+  },
   sorting: {
     label: 'Sorting — Bubble, Merge, Quick, Heap',
     icon: '📶',
