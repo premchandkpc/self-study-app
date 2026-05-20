@@ -87,7 +87,7 @@ export default function InterviewMode() {
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Interview Mode</h1>
-            <p className={styles.sub}>Flash cards for technical interviews. Flip to reveal answer.</p>
+            <p className={styles.sub}>Flashcard-based interview prep. Test your knowledge across system design, algorithms, architecture, and distributed systems.</p>
           </div>
           <div className={styles.headerActions}>
             <button

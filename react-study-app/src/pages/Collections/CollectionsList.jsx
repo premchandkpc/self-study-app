@@ -12,7 +12,15 @@ export default function CollectionsList() {
     <div className={styles.page}>
       <div className={styles.header}>
         <h1 className={styles.title}>Collections</h1>
-        <p className={styles.sub}>Scenarios organized by concurrency, edge cases, situations, and exceptions</p>
+        <p className={styles.sub}>Real-world scenarios organized by concurrency, edge cases, failure modes, and exception handling</p>
+      </div>
+
+      <div className={styles.infoBox}>
+        <h3 className={styles.infoTitle}>📌 What are Collections?</h3>
+        <p className={styles.infoText}>
+          Collections group related scenarios that test edge cases and failure modes of systems. Each scenario simulates real-world situations:
+          concurrent updates, network timeouts, resource exhaustion, cascading failures, and more. Learn how production systems handle chaos.
+        </p>
       </div>
 
       <div className={styles.grid}>

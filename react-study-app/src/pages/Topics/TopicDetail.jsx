@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { TOPICS } from '../../core/constants/topics';
 import { TOPIC_META } from '../../core/constants/topicMeta';
 import Button from '../../components/shared/Button/Button';
+import StudyGuide from '../../components/shared/StudyGuide/StudyGuide';
 import SubtopicCard from './SubtopicCard';
 import styles from './Topics.module.css';
 
@@ -31,6 +32,13 @@ export default function TopicDetail({ topicId }) {
           </div>
         </div>
       </div>
+
+      {(meta.objectives || meta.keyTopics) && (
+        <StudyGuide
+          objectives={meta.objectives}
+          keyTopics={meta.keyTopics}
+        />
+      )}
 
       <div className={styles.modulesGrid}>
         {topic.subtopics.map((sub, i) => (

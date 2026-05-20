@@ -120,11 +120,37 @@ export default function Home({ onSelectTopic }) {
         )}
       </section>
 
+      {/* === FEATURES === */}
+      <section className={styles.featuresSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Why Visual Learning Works</h2>
+          <p className={styles.sectionSub}>See algorithms and systems in action, not just theory</p>
+        </div>
+        <div className={styles.featuresGrid}>
+          {[
+            { icon: '▶️', title: 'Step-by-Step Execution', desc: 'Pause and play through every operation, watch variables change in real-time' },
+            { icon: '📊', title: 'Live Data Structures', desc: 'See arrays, trees, graphs, heaps transform as algorithms execute' },
+            { icon: '🎯', title: 'Learn by Doing', desc: 'Interactive visualizers let you experiment, modify inputs, test edge cases' },
+            { icon: '💡', title: 'Understand Why', desc: 'Trace execution to understand performance characteristics and correctness' },
+            { icon: '🔗', title: 'Real-World Systems', desc: 'From Kafka partitions to Kubernetes scheduling—learn how prod systems work' },
+            { icon: '📚', title: 'Study Materials', desc: 'Learning objectives, key concepts, and code examples for every topic' },
+          ].map((feature, i) => (
+            <AnimatedBox key={i} animation="slide-up" delay={i * 40}>
+              <Card variant="elevated" className={styles.featureCard}>
+                <span className={styles.featureIcon}>{feature.icon}</span>
+                <h3 className={styles.featureTitle}>{feature.title}</h3>
+                <p className={styles.featureDesc}>{feature.desc}</p>
+              </Card>
+            </AnimatedBox>
+          ))}
+        </div>
+      </section>
+
       {/* === TOPICS GRID === */}
       <section className={styles.topicsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>All Topics</h2>
-          <p className={styles.sectionSub}>Click any topic to explore</p>
+          <p className={styles.sectionSub}>Choose a topic and explore subtopics with interactive visualizations</p>
         </div>
         <div className={styles.topicsGrid}>
           {TOPICS.map((topic, i) => (
@@ -150,6 +176,31 @@ export default function Home({ onSelectTopic }) {
                     )}
                   </div>
                 </CardBody>
+              </Card>
+            </AnimatedBox>
+          ))}
+        </div>
+      </section>
+
+      {/* === GETTING STARTED === */}
+      <section className={styles.gettingStartedSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>🚀 Getting Started</h2>
+          <p className={styles.sectionSub}>Choose your learning path</p>
+        </div>
+        <div className={styles.pathsGrid}>
+          {[
+            { title: 'System Design Interview', emoji: '🏗️', desc: 'Learn to design Uber, load balancers, and distributed systems', cta: 'Explore System Design' },
+            { title: 'Coding Interview Prep', emoji: '💻', desc: 'Master algorithms, data structures, and optimize solutions', cta: 'Start with DSA' },
+            { title: 'Backend Fundamentals', emoji: '⚙️', desc: 'Understand Java, Kafka, Kubernetes, and AWS', cta: 'Learn Backend' },
+            { title: 'Practice Mode', emoji: '🎯', desc: 'Test yourself with flashcards and interview questions', cta: 'Go to Interview Mode' },
+          ].map((path, i) => (
+            <AnimatedBox key={i} animation="slide-up" delay={i * 40}>
+              <Card variant="elevated" className={styles.pathCard}>
+                <div className={styles.pathIcon}>{path.emoji}</div>
+                <h3 className={styles.pathTitle}>{path.title}</h3>
+                <p className={styles.pathDesc}>{path.desc}</p>
+                <Button variant="secondary" size="sm">{path.cta}</Button>
               </Card>
             </AnimatedBox>
           ))}

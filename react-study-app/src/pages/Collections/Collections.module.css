@@ -22,6 +22,28 @@
   margin: 0;
 }
 
+.infoBox {
+  padding: var(--space-md);
+  background: var(--surface-secondary);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--text-accent);
+  margin-bottom: var(--space-xl);
+}
+
+.infoTitle {
+  margin: 0 0 var(--space-xs);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.infoText {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
 /* === COLLECTIONS LIST GRID === */
 .grid {
   display: grid;

@@ -5,6 +5,7 @@ import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
 import UberDetail from './pages/Topics/UberDetail';
+import Collections from './pages/Collections/Collections';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
@@ -21,6 +22,8 @@ function AppRoutes() {
           <Route path="/topics" element={<Topics />} />
           <Route path="/topics/system-design/uber" element={<UberDetail />} />
           <Route path="/topics/:topicId" element={<Topics />} />
+          <Route path="/collections" element={<Collections />} />
+          <Route path="/collections/:collectionId" element={<Collections />} />
           <Route path="/visualizer/:type" element={<VisualizerPage />} />
           <Route path="/interview" element={<InterviewMode />} />
           <Route path="/compiler" element={<CompilerPage />} />

@@ -37,6 +37,32 @@
   font-family: var(--font-mono);
 }
 
+.guideSection {
+  margin-bottom: var(--space-xl);
+}
+
+.guideContent {
+  padding: var(--space-md);
+}
+
+.guideTitle {
+  margin: 0 0 var(--space-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.guideList {
+  margin: 0;
+  padding-left: var(--space-md);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.guideList li {
+  margin-bottom: var(--space-xs);
+}
+
 .vizWrapper {
   border-radius: var(--radius-xl);
   overflow: hidden;
