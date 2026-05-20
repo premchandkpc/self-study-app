@@ -214,9 +214,10 @@ export function SvgEdgeLine({ edge, fromPos, toPos, active, edgePrefix = 'svg', 
         markerEnd={active ? `url(#${edgePrefix}-arrow-active)` : `url(#${edgePrefix}-arrow)`} />
       <line x1={fromPos.x} y1={fromPos.y} x2={toPos.x} y2={toPos.y} stroke="transparent" strokeWidth={16} />
       {showLabel && (edge?.label || edge?.protocol) && (
-        <text x={mx} y={my - 8} textAnchor="middle" fontSize="8" fontFamily="var(--font-mono)"
-          fill={active ? 'var(--node-active)' : 'var(--text-muted)'}
-          fontWeight={active ? 700 : 400}
+        <text x={mx} y={my - 8} textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
+          fill={active ? 'var(--node-active)' : 'var(--text-accent)'}
+          fontWeight={active ? 700 : 600}
+          opacity={1}
           pointerEvents="none">
           {edge.protocol || edge.label}
         </text>

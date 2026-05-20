@@ -26,7 +26,7 @@ export default function Navbar({ onMenuToggle }) {
       <nav className={styles.center}>
         <NavItem to="/" label="Home" />
         <NavItem to="/topics" label="Topics" />
-        <NavItem to="/collections" label="Collections" />
+        <NavItem to="/visualizer/java-collections" label="Java Collections" />
         <NavItem to="/visualizer/array" label="DSA" />
         <NavItem to="/visualizer/graph" label="Graphs" />
         <NavItem to="/interview" label="Interview" />

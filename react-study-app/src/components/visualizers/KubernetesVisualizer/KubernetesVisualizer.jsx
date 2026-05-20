@@ -67,6 +67,9 @@ export default function KubernetesVisualizer() {
       {viz.hpa && <HPABar hpa={viz.hpa} />}
 
       {viz.services?.length > 0 && <ServicesView services={viz.services} />}
+      {viz.ingressRules?.length > 0 && <IngressView rules={viz.ingressRules} />}
+      {viz.configEntries?.length > 0 && <ConfigView entries={viz.configEntries} />}
+      {viz.storageEntries?.length > 0 && <StorageView entries={viz.storageEntries} />}
 
       <div className={styles.bottom}>
         <CodePanel code={active.code} language={active.language} />
@@ -145,7 +148,7 @@ function HPABar({ hpa }) {
 function ServicesView({ services }) {
   return (
     <div className={styles.servicesView}>
-      <div className={styles.servicesLabel}>Services</div>
+      <div className={styles.sectionLabel}>Services</div>
       <div className={styles.servicesRow}>
         {services.map((svc) => (
           <div key={svc.id} className={styles.serviceCard} style={{ '--svc-color': SERVICE_TYPE_COLOR[svc.type] || 'var(--node-default)' }}>
@@ -155,6 +158,77 @@ function ServicesView({ services }) {
             </div>
             <div className={styles.svcIp}>{svc.ip}:{svc.port}</div>
             <div className={styles.svcEndpoints}>→ {svc.endpoints?.join(', ')}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function IngressView({ rules }) {
+  const HOST_COLORS = { true: 'var(--pod-running)', false: 'var(--text-muted)' };
+  return (
+    <div className={styles.servicesView}>
+      <div className={styles.sectionLabel}>Ingress Rules</div>
+      <div className={styles.servicesRow}>
+        {rules.map((r, i) => (
+          <div key={i} className={styles.serviceCard} style={{ '--svc-color': r.active ? 'var(--accent-blue)' : 'var(--border)' }}>
+            <div className={styles.svcHeader}>
+              <span className={styles.svcName}>{r.host}</span>
+              <span className={styles.svcType} style={{ color: HOST_COLORS[r.tls] }}>{r.tls ? '🔒 TLS' : 'HTTP'}</span>
+            </div>
+            <div className={styles.svcIp}>{r.path} → {r.svc}:{r.port}</div>
+            <div className={styles.svcEndpoints}>→ {r.backend}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ConfigView({ entries }) {
+  return (
+    <div className={styles.servicesView}>
+      <div className={styles.sectionLabel}>ConfigMaps & Secrets</div>
+      <div className={styles.servicesRow}>
+        {entries.map((e, i) => (
+          <div key={i} className={styles.serviceCard} style={{ '--svc-color': e.kind === 'Secret' ? 'var(--pod-crash)' : 'var(--node-default)' }}>
+            <div className={styles.svcHeader}>
+              <span className={styles.svcName}>{e.name}</span>
+              <span className={styles.svcType}>{e.kind}</span>
+            </div>
+            <div className={styles.svcIp}>
+              {e.data.map((d, j) => (
+                <span key={j} className={styles.configItem}>{d.key}={d.masked ? '••••••••' : d.val}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StorageView({ entries }) {
+  const ACTIVE_COLOR = { Bound: 'var(--pod-running)', Available: 'var(--node-default)', Pending: 'var(--node-comparing)' };
+  return (
+    <div className={styles.servicesView}>
+      <div className={styles.sectionLabel}>Storage</div>
+      <div className={styles.servicesRow}>
+        {entries.map((e, i) => (
+          <div key={i} className={styles.serviceCard} style={{ '--svc-color': ACTIVE_COLOR[e.status] || 'var(--border)' }}>
+            <div className={styles.svcHeader}>
+              <span className={styles.svcName}>{e.kind}: {e.name}</span>
+              <span className={styles.svcType}>{e.status}</span>
+            </div>
+            <div className={styles.svcIp}>
+              {e.cap && <span className={styles.configItem}>cap: {e.cap}</span>}
+              {e.request && <span className={styles.configItem}>request: {e.request}</span>}
+              {e.storageClass && <span className={styles.configItem}>class: {e.storageClass}</span>}
+              {e.provisioner && <span className={styles.configItem}>provisioner: {e.provisioner}</span>}
+              {e.node && <span className={styles.configItem}>node: {e.node}</span>}
+              {e.reclaimPolicy && <span className={styles.configItem}>reclaim: {e.reclaimPolicy}</span>}
+            </div>
           </div>
         ))}
       </div>

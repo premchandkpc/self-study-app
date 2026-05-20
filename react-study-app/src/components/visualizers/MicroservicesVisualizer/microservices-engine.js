@@ -1,3 +1,3 @@
-import microservices from '../SystemDesignVisualizer/scenarios/microservices.js';
+import microservices from './scenarios/microservices.js';
 
 export const SCENARIOS = [microservices];

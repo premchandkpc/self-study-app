@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ICONS, NODE_COLORS } from '../../visualizers/SystemDesignVisualizer/sd-types';
+import { ICONS, NODE_COLORS } from '../../visualizers/sd-types';
 import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
 import { useSimulation } from '../../../core/context/SimulationContext';
 import { STATE_COLORS, PKT_COLORS } from '../../../core/constants/colors';
@@ -145,6 +145,8 @@ export default function CanvasTemplate({ scenarios }) {
   const dotX    = ((pan.x % dotSize) + dotSize) % dotSize;
   const dotY    = ((pan.y % dotSize) + dotSize) % dotSize;
   const pktDur  = Math.max(0.5, Math.min(simState.speed * 0.02, 2.5));
+  const minusSign = String.fromCharCode(0x2212);
+  const fitIcon = String.fromCharCode(0x229E);
 
   const hasConcepts = !!viz.concepts;
   const canvasEl = (
@@ -338,9 +340,9 @@ export default function CanvasTemplate({ scenarios }) {
             onClick={() => setScale(s => Math.min(MAX_ZOOM, +(s * 1.3).toFixed(2)))}>+</button>
           <span className={styles.zLabel}>{Math.round(scale * 100)}%</span>
           <button className={styles.zBtn} title="Zoom out"
-            onClick={() => setScale(s => Math.max(MIN_ZOOM, +(s / 1.3).toFixed(2)))}>\u2212</button>
+            onClick={() => setScale(s => Math.max(MIN_ZOOM, +(s / 1.3).toFixed(2)))}>{minusSign}</button>
           <button className={styles.zBtn} title="Fit to content"
-            onClick={fitToContent}>\u229E</button>
+            onClick={fitToContent}>{fitIcon}</button>
         </div>
 
         <div className={styles.legend}>
@@ -360,8 +362,8 @@ export default function CanvasTemplate({ scenarios }) {
   return (
     <div className={styles.wrapper}>
       <ScenarioToolbar scenarios={scenarios} active={activeId} onChange={select} />
-      <NarrationPanel />
       {canvasEl}
+      <NarrationPanel />
       {hasConcepts && <ConceptPanel concepts={viz.concepts} />}
       <SvgEventsList events={events} max={5} styles={styles} />
       {metrics.length > 0 && <MetricsPanel metrics={metrics} />}

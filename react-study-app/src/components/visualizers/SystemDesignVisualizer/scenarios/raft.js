@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../sd-types';
+import { ICONS } from '../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const raftNode = _mk('raft');
 
@@ -111,17 +111,31 @@ function buildRaftSteps() {
 }
 
 const CODE = [
-  '// Raft leader election',
-  'if (electionTimeout) {',
-  '  term++; role = CANDIDATE;',
-  '  broadcast(RequestVote{term});',
+  '// Raft State Machine (etcd/Consul)',
+  'class RaftNode {',
+  '  state: FOLLOWER | CANDIDATE | LEADER',
+  '  currentTerm: number',
+  '  votedFor: string',
+  '  log: LogEntry[]',
+  '',
+  '  onElectionTimeout() {',
+  '    this.currentTerm++',
+  '    this.state = CANDIDATE',
+  '    this.startElection()',
+  '  }',
+  '',
+  '  onAppendEntries(req) {',
+  '    if (req.term > this.currentTerm) {',
+  '      this.state = FOLLOWER',
+  '      this.currentTerm = req.term',
+  '    }',
+  '  }',
+  '',
+  '  commitEntry(index) {',
+  '    this.applyStateMachine(this.log[index])',
+  '  }',
   '}',
-  '// Log replication',
-  'if (role === LEADER) {',
-  '  log.append(entry);',
-  '  broadcast(AppendEntries);',
-  '  if (majority_ack) commit();',
-  '}',
+  '// Timeouts: 150-300ms election, 100ms heartbeat',
 ];
 
 export default {

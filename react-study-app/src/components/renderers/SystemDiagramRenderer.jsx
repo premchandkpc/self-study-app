@@ -13,6 +13,8 @@ export function SystemDiagramRenderer({ viz, svgW = 700, svgH = 380, prefix = 's
 
   const tooltipStyle = Object.keys(tooltipStyles).length ? tooltipStyles : styles;
 
+  const protocolTypes = [...new Set(edges.map(e => e.protocol).filter(Boolean))].sort();
+
   return (
     <div style={{ position: 'relative' }}>
       <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width: '100%', borderRadius: 12, background: 'var(--bg-card)', border: '1px solid var(--border)' }} preserveAspectRatio="xMidYMid meet">
@@ -60,6 +62,31 @@ export function SystemDiagramRenderer({ viz, svgW = 700, svgH = 380, prefix = 's
         }}>
           {hovered.kind === 'node' && <SvgNodeTooltip node={hovered.data} nodeMeta={SYSTEM_NODE_META} styles={tooltipStyle} />}
           {hovered.kind === 'edge' && <SvgEdgeTooltip edge={hovered.data} styles={tooltipStyle} />}
+        </div>
+      )}
+
+      {protocolTypes.length > 0 && (
+        <div style={{
+          marginTop: '12px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '16px',
+          fontSize: '12px',
+          fontFamily: 'var(--font-mono)',
+          color: 'var(--text-muted)',
+        }}>
+          {protocolTypes.map((proto) => (
+            <div key={proto} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{
+                display: 'inline-block',
+                width: '20px',
+                height: '2px',
+                background: 'var(--text-accent)',
+                borderRadius: '1px',
+              }} />
+              <span style={{ color: 'var(--text-primary)' }}>{proto}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -318,13 +318,21 @@
   border-top: 1px solid var(--border);
 }
 
-.servicesLabel {
+.servicesLabel,
+.sectionLabel {
   font-size: var(--font-size-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-muted);
   margin-bottom: var(--space-sm);
+}
+
+.configItem {
+  display: block;
+  font-size: 9px;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
 }
 
 .servicesRow {

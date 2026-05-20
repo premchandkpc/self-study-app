@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../sd-types';
+import { ICONS } from '../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const lbNode = _mk('lb');
@@ -80,16 +80,22 @@ function buildLBSteps() {
 }
 
 const CODE = [
-  '# Nginx round-robin config',
+  '# Nginx Round-Robin Load Balancer',
   'upstream backend {',
-  '  server s1.internal:8080;',
-  '  server s2.internal:8080;',
-  '  server s3.internal:8080;',
+  '  server s1.internal:8080 max_fails=3 fail_timeout=5s;',
+  '  server s2.internal:8080 max_fails=3 fail_timeout=5s;',
+  '  server s3.internal:8080 max_fails=3 fail_timeout=5s;',
   '}',
-  'location / {',
-  '  proxy_pass http://backend;',
+  'server {',
+  '  listen 80;',
+  '  location / {',
+  '    proxy_pass http://backend;',
+  '    proxy_set_header Host $host;',
+  '    proxy_connect_timeout 5s;',
+  '    proxy_read_timeout 30s;',
+  '  }',
   '}',
-  '# Health check every 5s',
+  '# Algorithms: round-robin, least_conn, ip_hash, random, weighted',
 ];
 
 const LAYERS = [

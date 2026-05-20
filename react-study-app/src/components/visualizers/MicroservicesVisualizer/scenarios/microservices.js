@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../sd-types';
+import { ICONS } from '../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const gatewayNode = _mk('gateway');
@@ -78,15 +78,22 @@ function buildMicroservicesSteps() {
 }
 
 const CODE = [
-  '// Circuit Breaker (Resilience4j)',
-  'CircuitBreaker cb = factory.create("payment");',
-  'cb.onError(→ OPEN after 3 fails)',
-  'cb.onSuccess(→ HALF_OPEN → CLOSED)',
+  '// Circuit Breaker Pattern (Resilience4j)',
+  'CircuitBreaker cb = CircuitBreakerFactory',
+  '  .create("payment", config);',
   '',
-  '// Service Mesh (Istio)',
-  'retries: 3, timeout: 5s',
-  'loadBalancing: LEAST_CONN',
-  '// Traces via Jaeger/Zipkin',
+  'config.setFailureThreshold(3);',
+  'config.setWaitDurationInOpenState(30s);',
+  'config.setSlowCallRateThreshold(50%);',
+  '',
+  '// States: CLOSED (normal) -> OPEN',
+  '// (failures) -> HALF_OPEN (probe) -> CLOSED',
+  '',
+  '// Service Mesh (Istio VirtualService)',
+  'retries: {attempts: 3, perTryTimeout: 5s}',
+  'loadBalancer: {simple: LEAST_CONN}',
+  'timeout: 30s',
+  '// Distributed traces: Jaeger/Zipkin',
 ];
 
 const LAYERS = [

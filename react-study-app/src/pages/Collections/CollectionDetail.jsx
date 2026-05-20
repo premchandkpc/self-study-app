@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COLLECTIONS, COLLECTION_CATEGORIES } from '../../core/constants/collections';
-import Card, { CardBody } from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
-import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import styles from './Collections.module.css';
 
 export default function CollectionDetail({ collectionId }) {
@@ -15,7 +13,7 @@ export default function CollectionDetail({ collectionId }) {
   if (!collection) {
     return (
       <div className={styles.page}>
-        <p className={styles.sub}>Collection not found.</p>
+        <p className={styles.sub}>Collection not found: {collectionId}</p>
         <Button variant="secondary" onClick={() => navigate('/collections')}>← Back</Button>
       </div>
     );
@@ -60,63 +58,53 @@ export default function CollectionDetail({ collectionId }) {
       </div>
 
       {activeScenarios.length === 0 ? (
-        <p className={styles.sub} style={{ marginTop: 'var(--space-xl)' }}>No scenarios yet for this category.</p>
+        <p className={styles.sub}>No scenarios yet for this category.</p>
       ) : (
         <div className={styles.scenarioGrid}>
-          {activeScenarios.map((scenario, i) => (
-            <AnimatedBox key={scenario.id} animation="slide-up" delay={i * 40}>
-              <Card
-                variant="default"
-                className={`${styles.scenarioCard} ${scenario.comingSoon ? styles.comingSoon : ''}`}
-                padding="md"
-              >
-                <CardBody>
-                  <div className={styles.scenarioTop}>
-                    <span className={styles.scenarioIcon}>{scenario.icon}</span>
-                    <span className={styles.scenarioName}>{scenario.label}</span>
-                    {scenario.comingSoon && <Badge variant="default" size="xs">Soon</Badge>}
-                    {!scenario.comingSoon && <Badge variant={collection.color || 'blue'} size="xs" dot>Live</Badge>}
-                  </div>
+          {activeScenarios.map((scenario) => (
+            <div
+              key={scenario.id}
+              className={`${styles.scenarioCard} ${scenario.comingSoon ? styles.comingSoon : ''}`}
+            >
+              <div className={styles.scenarioTop}>
+                <span className={styles.scenarioIcon}>{scenario.icon}</span>
+                <span className={styles.scenarioName}>{scenario.label}</span>
+                {scenario.comingSoon
+                  ? <Badge variant="default" size="xs">Soon</Badge>
+                  : <Badge variant={collection.color || 'blue'} size="xs" dot>Live</Badge>
+                }
+              </div>
 
-                  <p className={styles.scenarioDesc}>{scenario.desc}</p>
+              <p className={styles.scenarioDesc}>{scenario.desc}</p>
 
-                  {scenario.code && (
-                    <pre className={styles.scenarioCode}>
-                      {scenario.code.join('\n')}
-                    </pre>
-                  )}
+              {scenario.code && (
+                <pre className={styles.scenarioCode}>{scenario.code.join('\n')}</pre>
+              )}
 
-                  {scenario.tags && (
-                    <div className={styles.scenarioTags}>
-                      {scenario.tags.map((tag) => (
-                        <span key={tag} className={styles.tag}>{tag}</span>
-                      ))}
-                    </div>
-                  )}
+              {scenario.tags?.length > 0 && (
+                <div className={styles.scenarioTags}>
+                  {scenario.tags.map((tag) => (
+                    <span key={tag} className={styles.tag}>{tag}</span>
+                  ))}
+                </div>
+              )}
 
-                  <div className={styles.scenarioActions}>
-                    {!scenario.comingSoon && scenario.vizType && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        icon="▶"
-                        onClick={() => navigate(`/visualizer/${scenario.vizType}`)}
-                      >
-                        Simulate
-                      </Button>
-                    )}
-                    {scenario.comingSoon && (
-                      <Button variant="ghost" size="sm" disabled>
-                        Coming Soon
-                      </Button>
-                    )}
-                    <Button variant="ghost" size="sm" icon="📖">
-                      Study
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
-            </AnimatedBox>
+              <div className={styles.scenarioActions}>
+                {!scenario.comingSoon && scenario.vizType ? (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    icon="▶"
+                    onClick={() => navigate(`/visualizer/${scenario.vizType}`)}
+                  >
+                    Simulate
+                  </Button>
+                ) : (
+                  <Button variant="ghost" size="sm" disabled>Coming Soon</Button>
+                )}
+                <Button variant="ghost" size="sm" icon="📖">Study</Button>
+              </div>
+            </div>
           ))}
         </div>
       )}

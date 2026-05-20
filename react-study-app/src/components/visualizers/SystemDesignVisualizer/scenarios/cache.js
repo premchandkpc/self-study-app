@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../sd-types';
+import { ICONS } from '../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const serverNode = _mk('server');
@@ -81,16 +81,23 @@ function buildCacheSteps() {
 }
 
 const CODE = [
-  '// Cache-aside pattern',
-  'async get(key) {',
-  '  let val = await redis.get(key);',
-  '  if (val) return val; // HIT',
-  '  val = await db.query(key); // MISS',
-  '  await redis.set(key, val, { EX: 300 });',
-  '  return val;',
+  '// Cache-Aside Pattern (Lazy Loading)',
+  'async function getUser(userId) {',
+  '  // Check cache first',
+  '  const cached = await redis.get(`user:${userId}`);',
+  '  if (cached) return JSON.parse(cached); // HIT',
+  '',
+  '  // Cache miss: fetch from DB',
+  '  const user = await db.query(',
+  '    "SELECT * FROM users WHERE id=?", userId);',
+  '  // Write to cache (5min TTL)',
+  '  await redis.setex(`user:${userId}`, 300, ',
+  '    JSON.stringify(user));',
+  '  return user;',
   '}',
-  '// LRU: maxmemory-policy',
-  '// allkeys-lru',
+  '',
+  '// LRU Eviction: maxmemory-policy allkeys-lru',
+  '// Hit Ratio Target: >90%',
 ];
 
 const LAYERS = [

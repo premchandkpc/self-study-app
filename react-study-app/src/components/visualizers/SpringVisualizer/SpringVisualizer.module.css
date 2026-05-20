@@ -1,0 +1,287 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  min-height: 600px;
+}
+
+.flowLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono, monospace);
+}
+
+.catTabs {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-sm);
+}
+
+.catTab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px var(--space-sm);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s, border-color 0.15s;
+}
+.catTab:hover { color: var(--text-primary); }
+.catTabActive { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+.catCount {
+  background: var(--bg-tertiary);
+  border-radius: 999px;
+  padding: 1px 5px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.scenarioRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-xs) 0;
+  min-height: 36px;
+}
+
+.scenBtn {
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+.scenBtn:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.scenBtnActive { background: var(--bg-tertiary); border-color: var(--accent-blue); color: var(--accent-blue); font-weight: 600; }
+
+.vizArea {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  overflow-x: auto;
+}
+
+.emptyState {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  padding: var(--space-lg);
+}
+
+.flowRow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-height: 80px;
+  padding: var(--space-sm) 0;
+  flex-wrap: wrap;
+}
+
+.stageWrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.arrow {
+  color: var(--text-muted);
+  font-size: 20px;
+  padding: 0 4px;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.stageCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  background: var(--bg-card);
+  min-width: 130px;
+  max-width: 220px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.stageCardActive {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-blue) 20%, transparent);
+}
+
+.stageCardActive::after {
+  content: '▶';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 10px;
+  color: var(--accent-blue);
+}
+
+.stageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.stageOp {
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono, monospace);
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.stageBadge {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.itemsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 24px;
+  align-items: center;
+}
+
+.itemChip {
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono, monospace);
+  color: var(--text-primary);
+  padding: 1px 5px;
+  border-radius: 3px;
+  cursor: default;
+  transition: transform 0.15s;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemChip:hover {
+  transform: scale(1.12);
+  z-index: 2;
+}
+
+.emptyItems {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-family: monospace;
+}
+
+.resultBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.resultLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--pod-running);
+}
+
+.resultValue {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono, monospace);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.opsLog {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-sm);
+}
+
+.opEntry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+}
+
+.opDot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.op-ok .opDot { background: var(--pod-running); }
+.op-warn .opDot { background: var(--node-comparing); }
+.op-error .opDot { background: var(--pod-crash); }
+.op-ok { color: var(--text-secondary); }
+.op-warn { color: var(--node-comparing); }
+.op-error { color: var(--pod-crash); }
+
+.exceptionBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  background: color-mix(in srgb, var(--pod-crash) 15%, transparent);
+  border: 1px solid var(--pod-crash);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.excIcon { font-size: 20px; flex-shrink: 0; }
+.excType { font-weight: 700; color: var(--pod-crash); font-size: var(--font-size-sm); }
+.excMsg { font-size: var(--font-size-xs); color: var(--text-muted); font-family: var(--font-mono, monospace); }
+
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .catTabs { gap: 3px; }
+  .catTab { font-size: 11px; padding: 3px 6px; }
+  .stageCard { min-width: 100px; max-width: 160px; }
+}

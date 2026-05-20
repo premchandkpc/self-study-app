@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../sd-types';
+import { ICONS } from '../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const gatewayNode = _mk('gateway');
@@ -339,25 +339,38 @@ function buildUberSteps() {
 
 /* ── Code sample ─────────────────────────────────────────────────────────── */
 const CODE = [
-  '// Ride Matching — core flow',
-  'async function matchRide(riderId, pickup) {',
-  '  // 1. sync: find nearby drivers (Redis, <2ms)',
-  '  const drivers = await redis.geoRadius(pickup, "2km");',
+  '// Uber Ride Matching Service',
+  'async function matchRide(req) {',
+  '  const {riderId, pickup, pref} = req;',
   '',
-  '  // 2. sync: get surge multiplier (Pricing gRPC)',
-  '  const { surge } = await pricingSvc.getSurge(pickup);',
+  '  // 1. Geospatial query (Redis GEORADIUS)',
+  '  const drivers = await redis.geoRadius(',
+  '    "drivers:online", pickup.lat, ',
+  '    pickup.lon, 2000, "m", "WITHCOORD");',
   '',
-  '  // 3. pick best driver (distance + rating)',
-  '  const best = selectBest(drivers);',
+  '  // 2. Filter: rating >= 4.5, <30 min away',
+  '  const eligible = drivers.filter(d =>',
+  '    d.rating >= 4.5 && d.eta < 30);',
   '',
-  '  // 4. async: publish event (non-blocking)',
-  '  await kafka.publish("rides", {',
-  '    type: "RIDE_REQUESTED",',
-  '    riderId, driverId: best.id, surge',
+  '  // 3. Get surge multiplier (Pricing gRPC)',
+  '  const pricing = await pricingSvc.getSurge(',
+  '    {lat: pickup.lat, lon: pickup.lon},',
+  '    {timeout: "200ms"});',
+  '',
+  '  // 4. Scoring: distance + surge + demand',
+  '  const scored = eligible.map(d => ({',
+  '    ...d, score: distance(d) + surge*0.3}));',
+  '  const best = scored.sort()[0];',
+  '',
+  '  // 5. Publish event (async, non-blocking)',
+  '  kafka.produce("rides", {',
+  '    rideId: uuid(), riderId, driverId: best.id,',
+  '    surge, eta: best.eta, timestamp: now()',
   '  });',
   '',
-  '  return { driverId: best.id, eta: best.eta, surge };',
+  '  return {driverId, eta, surge, estimatedFare};',
   '}',
+  '// P99 latency: 50ms (Redis) + 20ms (gRPC)',
 ];
 
 /* ── Layer zone boundaries (x-coords match node layout) ─────────────────────

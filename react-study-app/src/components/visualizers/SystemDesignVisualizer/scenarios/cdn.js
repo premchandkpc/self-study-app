@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../sd-types';
+import { ICONS } from '../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const serverNode = _mk('server');
@@ -82,15 +82,23 @@ function buildCDNSteps() {
 }
 
 const CODE = [
-  '# CDN cache control headers',
-  'Cache-Control: public, max-age=3600',
-  '# Invalidation via API',
-  'curl -X POST cdn/purge \\',
-  '  -d "url=/hero.jpg"',
-  '# Edge config (Cloudflare)',
-  'cache_ttl: 3600',
-  'stale_while_revalidate: 60',
-  'cache_key: host+url',
+  '# Origin Server Response Headers',
+  'Cache-Control: public, max-age=3600, ',
+  '  stale-while-revalidate=86400, ',
+  '  s-maxage=31536000',
+  'ETag: "abc123"',
+  'Last-Modified: Wed, 20 May 2026 10:30:00 GMT',
+  '',
+  '# Intelligent Cache Invalidation',
+  'POST /api/purge',
+  '  paths: ["/images/hero.jpg", "/css/*"]',
+  '',
+  '# Edge Server (Cloudflare Workers/Fastly)',
+  'if (!cache.has(url)) {',
+  '  response = await origin.fetch(request);',
+  '  cache.put(url, response, {ttl: 3600});',
+  '}',
+  '# Geo-routing: closest edge to client',
 ];
 
 const LAYERS = [

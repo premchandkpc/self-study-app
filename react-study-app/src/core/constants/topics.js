@@ -12,6 +12,12 @@ export const TOPICS = [
     subtopics: ['JVM', 'GC', 'Threads', 'Locks', 'Streams', 'Collections'],
   },
   {
+    id: 'spring',
+    label: 'Spring',
+    icon: '🍃',
+    subtopics: ['IoC', 'MVC', 'AOP', 'Transactions', 'Security', 'JPA', 'AutoConfig', 'Cloud'],
+  },
+  {
     id: 'golang',
     label: 'Go',
     icon: '🐹',
@@ -27,13 +33,13 @@ export const TOPICS = [
     id: 'kubernetes',
     label: 'Kubernetes',
     icon: '☸️',
-    subtopics: ['Pods', 'Deployments', 'Services', 'Ingress', 'HPA'],
+    subtopics: ['Pods', 'Deployments', 'Services', 'Ingress', 'HPA', 'Config & Storage'],
   },
   {
     id: 'aws',
     label: 'AWS',
     icon: '☁️',
-    subtopics: ['EC2', 'Lambda', 'SQS', 'SNS', 'EKS', 'API Gateway'],
+    subtopics: ['EC2', 'Lambda', 'SQS', 'SNS', 'EKS', 'API Gateway', 'S3', 'IAM'],
   },
   {
     id: 'kafka',
