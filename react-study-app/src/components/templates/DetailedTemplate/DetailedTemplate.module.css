@@ -1,0 +1,242 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+}
+
+.body {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.leftPanel {
+  flex: 0 0 55%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-default);
+  padding-right: 16px;
+}
+
+.rightPanel {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.diagramArea {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.diagramWrap {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.conceptArea {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--bg-secondary);
+}
+
+/* Tabs */
+.tabContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+input[type="radio"][id^="tab-"] {
+  display: none;
+}
+
+.tabLabels {
+  display: flex;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+}
+
+.tabLabel {
+  flex: 1;
+  padding: 10px 12px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.tabLabel:hover {
+  color: var(--text-default);
+  background: var(--bg-tertiary);
+}
+
+#tab-code:checked ~ .tabLabels label[for="tab-code"],
+#tab-notes:checked ~ .tabLabels label[for="tab-notes"],
+#tab-tradeoffs:checked ~ .tabLabels label[for="tab-tradeoffs"],
+#tab-practices:checked ~ .tabLabels label[for="tab-practices"] {
+  color: var(--text-accent);
+  border-bottom-color: var(--text-accent);
+}
+
+.tabContent {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.tabPane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  overflow-y: auto;
+}
+
+#tab-code:checked ~ .tabContent #tab-code-content,
+#tab-notes:checked ~ .tabContent #tab-notes-content,
+#tab-tradeoffs:checked ~ .tabContent #tab-tradeoffs-content,
+#tab-practices:checked ~ .tabContent #tab-practices-content {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 24px 12px;
+  line-height: 1.6;
+}
+
+.notesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.noteItem {
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--text-accent);
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.noteItem strong {
+  color: var(--text-accent);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.noteItem p {
+  color: var(--text-default);
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tradeoffsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tradeoffItem {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.tradeoffPro {
+  margin-bottom: 8px;
+  color: var(--pod-running);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tradeoffPro strong {
+  font-weight: 600;
+}
+
+.tradeoffCon {
+  color: var(--pod-crash);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tradeoffCon strong {
+  font-weight: 600;
+}
+
+.practicesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.practiceItem {
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--text-accent);
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.footer {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1200px) {
+  .body {
+    flex-direction: column;
+  }
+
+  .leftPanel,
+  .rightPanel {
+    flex: none;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-default);
+    padding-right: 0;
+  }
+
+  .rightPanel {
+    border-bottom: none;
+  }
+}

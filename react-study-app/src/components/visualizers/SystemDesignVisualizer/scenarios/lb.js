@@ -117,4 +117,24 @@ export default {
     { key: 's1',       label: 'S1 load',  max: 5,  color: 'var(--pod-running)' },
     { key: 's2',       label: 'S2 load',  max: 5,  color: 'var(--node-comparing)' },
   ],
+  codeNotes: [
+    { title: 'Round-Robin', content: 'Requests cycle through servers in order (s1 → s2 → s3 → s1). O(1) operation but ignores current load.' },
+    { title: 'Health Checks', content: 'Every 5s, LB sends HTTP GET to /health. If timeout/5xx, server marked unhealthy. Auto-removed from rotation.' },
+    { title: 'Upstream Context', content: 'upstream backend { ... } defines pool. Nginx caches DNS for 30s by default.' },
+    { title: 'Connection Pooling', content: 'keepalive 32 maintains persistent TCP to backends. Reduces handshake overhead ~100ms per req.' },
+  ],
+  tradeoffs: [
+    { pro: 'Round-robin is O(1) and simple', con: 'Ignores backend load. Fast server may get same traffic as slow one.' },
+    { pro: 'Health checks prevent cascading failures', con: 'Adds latency (probe time ~200ms) and increases traffic overhead ~2% on 50 backends.' },
+    { pro: 'Single LB is easy to deploy', con: 'LB itself becomes a SPOF. Solution: redundancy via HAProxy active/passive + Keepalived.' },
+    { pro: 'Stateless servers scale horizontally', con: 'Session data must be stored externally (Redis/PostgreSQL) or sticky sessions needed.' },
+  ],
+  bestPractices: [
+    'Use weighted round-robin if servers have different capacity (e.g., 70%/30% for 2x CPU difference).',
+    'Monitor LB CPU; if hitting 80%+, split into 2 LBs or upgrade to hardware LB (F5, Citrix).',
+    'Set TCP idle timeout to 60s on LB to reclaim connections quickly.',
+    'Log failed requests; alert if error rate > 5% or latency p99 > 500ms.',
+    'For geographic distribution, use DNS round-robin (simple, no SPOF) or GeoDNS (expensive).',
+  ],
 };
+

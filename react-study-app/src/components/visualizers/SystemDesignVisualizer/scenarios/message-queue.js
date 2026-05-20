@@ -119,4 +119,24 @@ export default {
     { key: 'lag_sec',    label: 'Consumer Lag', max: 60,  color: 'var(--pod-crash)' },
     { key: 'consumers',  label: 'Active Cons.', max: 10,  color: 'var(--node-visited)' },
   ],
+  codeNotes: [
+    { title: 'Partition Keys', content: 'Messages with same key go to same partition. Order guaranteed within partition only. E.g., key="user:123" ensures all orders from 1 user processed sequentially.' },
+    { title: 'Consumer Groups', content: 'Each group tracks offset independently. 3 consumers in same group each get ~1/3 of partitions. Rebalance takes ~30s when consumer added/removed.' },
+    { title: 'Idempotent Processing', content: 'Consumer must handle duplicate delivery (broker failure → resend). Use dedup cache: if event_id in Redis, skip. TTL = 24h to handle slow consumers.' },
+    { title: 'Offset Commits', content: 'Auto-commit every 5s or manual after processing. Early commit = data loss. Late commit = duplicate processing. Use transactions: Kafka 0.11+ supports exactly-once semantics.' },
+  ],
+  tradeoffs: [
+    { pro: 'Decouples producer from consumers', con: 'Adds 100-500ms latency (network + broker persist). Not suitable for RPC-style requests.' },
+    { pro: 'Consumer lag provides visibility', con: 'Lag = 0 but still "slow consumer" if processing each message takes 10s. Need app-level monitoring.' },
+    { pro: 'Partition-level order guarantees', con: 'Global ordering requires single partition (throughput capped ~50k msg/s).' },
+    { pro: '7-day retention = replay capability', con: 'Storage overhead: ~100MB/day per 1k msg/s. Needs monitoring; old topics auto-delete.' },
+  ],
+  bestPractices: [
+    'Monitor consumer lag; alert if >10min behind. Slow consumers trigger cascading failures (lag grows exponentially).',
+    'Use partition keys for ordering guarantees. Unkeyed messages distribute randomly; good for throughput but lose ordering.',
+    'Set replication factor = 3 for durability. In-sync replicas (ISR) = 2 at minimum. Tolerance: lose 1 broker without data loss.',
+    'Tune batch.size = 16KB for latency, 100KB+ for throughput. Compression (snappy) reduces network by 70% on text-heavy messages.',
+    'For critical events, use transactions: atomically publish to Kafka + write to PostgreSQL. Enables exactly-once semantics end-to-end.',
+  ],
 };
+

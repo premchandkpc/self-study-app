@@ -4,12 +4,13 @@ function buildLambdaSteps() {
   const steps = [];
   const s = {
     nodes: [
-      svc('client',    'Client App',            'client',   30,  170),
-      svc('apigw',     'API Gateway',           'apigw',    180, 170),
-      svc('lambda',    'Lambda Function',       'lambda',   350, 170, { instances: 0, cold: true, timeout: 30, mem: 512 }),
-      svc('dynamo',    'DynamoDB Table',        'db',       510, 170),
-      svc('cwlogs',    'CloudWatch Logs',       'server',   510, 70),
-      svc('cf',        'CloudFront CDN',        'apigw',    510, 270),
+      svc('client',  'Client App',    'client',  30, 170, { desc: 'Mobile app or web browser making HTTPS calls. No AWS SDK needed — just HTTP.' }),
+      svc('apigw',   'API Gateway',   'apigw',  180, 170, { desc: 'Managed API front door. Terminates SSL (TLS 1.3), validates JWT, routes to Lambda. Handles CORS, throttling, request validation.', throttle: '1000/s', stage: 'prod' }),
+      svc('lambda',  'Lambda Function', 'lambda', 350, 170, { instances: 0, cold: true, timeout: 30, mem: 512, desc: 'Serverless function. Node.js 20.x runtime. 512MB RAM, 30s timeout. Ephemeral storage: 512MB. AWS manages scaling, patching, availability.', runtime: 'nodejs20.x', arch: 'x86_64' }),
+      svc('dynamo',  'DynamoDB Table', 'db',    510, 170, { desc: 'NoSQL key-value + document DB. Single-digit millisecond latency at any scale. Auto-scales throughput. Pay per read/write request unit.', table: 'orders', region: 'us-east-1' }),
+      svc('cwlogs',  'CloudWatch Logs', 'server', 510, 70, { desc: 'Centralized log storage. Auto-captures all console.log() from Lambda. No agent needed. Retention: configurable (default indefinite). Log stream per container instance.', retention: 'indefinite' }),
+      svc('cf',      'CloudFront CDN',  'apigw', 510, 270, { desc: 'Content delivery network at 450+ edge locations. Lambda@Edge runs at edge for low-latency transforms. Cache static content, rewrite URLs, add security headers.', pops: 450 }),
+      svc('rdsproxy','RDS Proxy',      'db',    670, 270, { desc: 'Managed connection pool for RDS/Aurora. Lambda creates many connections quickly → proxy pools them. No more "too many connections" errors. IAM auth + VPC.', engine: 'Aurora MySQL' }),
     ],
     edges: [
       { from: 'client', to: 'apigw' },
@@ -17,6 +18,7 @@ function buildLambdaSteps() {
       { from: 'lambda', to: 'dynamo' },
       { from: 'lambda', to: 'cwlogs' },
       { from: 'cf',     to: 'lambda' },
+      { from: 'lambda', to: 'rdsproxy' },
     ],
     packets: [],
     events: [],
@@ -90,8 +92,23 @@ function buildLambdaSteps() {
   s.events.push({ type: 'info', msg: 'Memory: 512MB → 1024MB (2x CPU + 2x cost). Max: 10,240MB. Ephemeral storage: 512MB→10GB.' });
   snap(steps, s, 'Lambda resources: memory 128MB-10,240MB (CPU scales proportionally — more memory = more CPU). Ephemeral storage /tmp: 512MB default, up to 10GB. VPC Lambda: needs ENI in your VPC (adds ~10s cold start). Environment variables: up to 4KB. Layers: shared dependencies (zip) up to 250MB unzipped.', 12);
 
+  s.nodes[6].state = 'active';
+  s.packets = [pkt('lambda', 'rdsproxy', 'query via pool', 'request')];
+  s.events.push({ type: 'ok', msg: 'RDS Proxy: Lambda connects to proxy → proxy maintains persistent DB connections. Prevents connection storms. Requires VPC.' });
+  snap(steps, s, 'RDS Proxy: Lambda creates a new DB connection per invoke → easily exhausts RDS connection pool (esp. with concurrency). RDS Proxy sits between Lambda and RDS/Aurora. It maintains a warm connection pool. Lambda connects to proxy via IAM auth (no DB password in code!). Proxy queues and multiplexes connections. Supports MySQL and PostgreSQL. Must deploy Lambda in VPC + proxy in same VPC.', 13);
+
+  s.packets = [];
+  s.events.push({ type: 'info', msg: 'Lambda Function URL: https://xxxxx.lambda-url.us-east-1.on.aws/ — direct HTTPS endpoint, no API Gateway needed. Auth: IAM or NONE.' });
+  snap(steps, s, 'Lambda Function URL: public HTTPS endpoint for Lambda without API Gateway. Create from Lambda console → URL config. Supports IAM auth (caller must sign) or NONE (public — use with caution). CORS configurable. Invoke mode: BUFFERED (wait for response) or RESPONSE_STREAM (stream response chunks back). Use for: simple webhooks, internal microservices, prototype APIs. When to NOT use: need throttling, WAF, custom domain, usage plans — use API Gateway instead.', 14);
+
+  s.events.push({ type: 'warn', msg: 'Reserved Concurrency: set to 5. Regional burst concurrency: 500-3000 (varies by region). No other functions can use this capacity.' });
+  snap(steps, s, 'Reserved Concurrency: guarantee N concurrent executions for a function. Other functions CANNOT use this capacity. Prevents noisy neighbors. Also sets a hard limit — function never scales beyond N. Without reserved concurrency: Lambda scales unlimited (up to regional burst). With reserved = 5: only 5 concurrent invocations, extra requests get throttled (429). Use reserved concurrency for: critical path functions, to limit downstream DB pressure, control max cost.', 15);
+
+  s.events.push({ type: 'ok', msg: 'SnapStart (Java only): snapshot at init complete → restore from snapshot on cold start. ~850ms → ~100ms. Cache warmed JVM.' });
+  snap(steps, s, 'Lambda SnapStart (Java 11+): takes a snapshot of the microVM after initialization (after Init code, before handler). On cold start: restores from snapshot instead of re-running init. Cold start drops from ~850ms to ~100ms for Java. Works by: Lambda caches the fired-initialized VM, on next start it restores from cache. Limitations: no random number seeds at init, no unique IDs generated at init. Use RANDOM or SecureRandom at handler (not init) to avoid duplicates. Also works with .NET (startup improvement).', 16);
+
   s.result = 'Lambda: cold (~850ms) vs warm (~12ms). Scales 1 container per concurrent request. Pay per ms.';
-  snap(steps, s, 'Lambda pricing: $0.0000166667/GB-s (x86) or $0.0000133334/GB-s (arm64/Graviton). Free tier: 1M requests + 400,000 GB-s/month. Use ARM (Graviton) for 20% cost reduction. Always prefer provisioned concurrency for latency-sensitive paths. Use DLQ + dead-letter queue for async failure handling.', 13);
+  snap(steps, s, 'Lambda pricing: $0.0000166667/GB-s (x86) or $0.0000133334/GB-s (arm64/Graviton). Free tier: 1M requests + 400,000 GB-s/month. Use ARM (Graviton) for 20% cost reduction. Always prefer provisioned concurrency for latency-sensitive paths. Use DLQ + dead-letter queue for async failure handling.', 17);
 
   return steps;
 }
@@ -108,6 +125,15 @@ const CODE = [
   '# DLQ: send failed async invocations',
   'DeadLetterConfig:',
   '  TargetArn: arn:aws:sqs:.../dlq',
+  '# Function URL (no API GW)',
+  'aws lambda create-function-url-config',
+  '  --function-name my-fn --auth-type IAM',
+  '# RDS Proxy',
+  'aws rds create-db-proxy --engine-family MYSQL',
+  '# SnapStart (Java)',
+  'aws lambda update-function-configuration',
+  '  --function-name my-fn',
+  '  --snap-start ApplyOn=PublishedVersions',
   '# Pricing',
   'x86: $0.0000166667/GB-s',
   'arm64: $0.0000133334/GB-s (20% less)',

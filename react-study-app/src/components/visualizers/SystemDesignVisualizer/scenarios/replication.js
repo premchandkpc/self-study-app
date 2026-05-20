@@ -117,4 +117,24 @@ export default {
     { key: 'reads',            label: 'Reads/sec',   max: 500, color: 'var(--pod-running)' },
     { key: 'replicationLag',   label: 'Lag (ms)',    max: 5000, color: 'var(--node-comparing)' },
   ],
+  codeNotes: [
+    { title: 'Binlog Streaming', content: 'Master writes all changes to binlog (binary transaction log). Replicas pull via IO_THREAD, apply via SQL_THREAD. Asynchronous: master doesn\'t wait for replica ACK.' },
+    { title: 'Replication Lag', content: 'Typical: <100ms (network round-trip). Under heavy load: 5-30s possible. Lag = IO_THREAD lag + SQL_THREAD lag. IO fast, SQL single-threaded = bottleneck.' },
+    { title: 'Write-Ahead Logging (WAL)', content: 'Master commits to binlog BEFORE returning success. Durable on disk in ~1-10ms. Replicas apply same writes; ordering preserved via GTIDs.' },
+    { title: 'GTID vs Binlog File+Position', content: 'GTIDs (Global Transaction ID) track universally; enables multi-master, easy failover. Binlog position is fragile: sync fails if positions mismatch.' },
+  ],
+  tradeoffs: [
+    { pro: 'Asynchronous replication = master not blocked', con: 'Replica crash-safe but replica data can lag 10s+. Failover to stale replica = recent writes lost.' },
+    { pro: 'Read scaling: 1 master + 10 replicas = 100x read throughput', con: 'Writes still single-threaded on master. Write scaling needs sharding.' },
+    { pro: 'Simple operational model; mature tooling (Percona XtraBackup)', con: 'Manual failover needed; no automatic detection of best replica to promote.' },
+    { pro: 'Works across data centers', con: 'Lag grows with network distance. Remote replica: 100ms+ lag (2PC worse: 500ms round-trip).' },
+  ],
+  bestPractices: [
+    'Use GTIDs (MySQL 5.6+) over binlog file+position. Enables easier replication setup and failover automation.',
+    'Monitor SHOW SLAVE STATUS \\G; alert if Seconds_Behind_Master > 10s. Lag >30s indicates replica overload or network issue.',
+    'Set innodb_flush_log_at_trx_commit = 1 for durability (sync every commit). Safer than setting=2 (fsync every second).',
+    'On replica, set read_only=1 to prevent accidental writes. Require SUPER privilege to disable (protects against accidents).',
+    'For failover, promote replica with least lag. Parallel replication (slave_parallel_workers=8) helps SQL_THREAD keep up; requires MySQL 5.7+.',
+  ],
 };
+

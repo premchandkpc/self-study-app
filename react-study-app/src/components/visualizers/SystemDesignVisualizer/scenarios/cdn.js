@@ -120,4 +120,24 @@ export default {
     { key: 'edgeHits', label: 'Edge Hits', max: 10,   color: 'var(--pod-running)' },
     { key: 'savedMs',  label: 'Saved(ms)', max: 1200, unit: 'ms', color: 'var(--node-comparing)' },
   ],
+  codeNotes: [
+    { title: 'Cache-Control Headers', content: 's-maxage applies to CDN (not browsers). stale-while-revalidate allows serving stale content while revalidating in background (~2s delay acceptable).' },
+    { title: 'ETag & Last-Modified', content: 'If static content unchanged, CDN sends 304 Not Modified. Saves bandwidth: 304 = 500B vs full response 50KB. Origin revalidates via HEAD in ~200ms.' },
+    { title: 'Geo-Routing', content: 'DNS routes client to nearest edge (~10-50ms latency win). Determined by client IP geolocation (accuracy ~95% at city level).' },
+    { title: 'Cache Invalidation', content: 'Purge APIs delete from edge (instant). Partial purge (paths: ["*.jpg"]) invalidates wildcard ~5s across global network (15,000+ edges).' },
+  ],
+  tradeoffs: [
+    { pro: 'Edge servers reduce latency (NYC→LA: 200ms→50ms)', con: 'CDN costs ~$0.015/GB. Break-even at ~500Mbps traffic vs direct origin.' },
+    { pro: 'Global distribution absorbs DDoS (attacks spread across 200 edges)', con: 'Edge-originated attacks on content; adds 50-100ms extra per request if bypassing.' },
+    { pro: 'Cache misses can be batched (coalesced) at origin', con: 'Stale content possible; miss cache (1 user waits 200ms, 10k others get stale for 60s).' },
+    { pro: 'HTTP/2 multiplexing at edge reduces connection overhead', con: 'Cache key includes HTTP version; HTTP/1.1 hits != HTTP/2 hits.' },
+  ],
+  bestPractices: [
+    'Use versioned filenames for cache-busting: style.v12345.css. Immutable assets get max-age=31536000 (1 year).',
+    'Monitor origin load; if <10% of requests reach origin, edge caching working (90%+ hit ratio ideal for static).',
+    'Set Cache-Control headers at origin: 3600s for dynamic, 86400s for semi-static, 31536000s for versioned assets.',
+    'Log cache hit/miss ratio; alert if origin latency >500ms (indicates cache thrashing or origin issue).',
+    'For real-time content, use short TTL (60s) with stale-while-revalidate. Avoid purge storms (batching updates to 5min intervals).',
+  ],
 };
+

@@ -4,13 +4,13 @@ function buildSQSSteps() {
   const steps = [];
   const s = {
     nodes: [
-      svc('producer', 'Producer\n(App Server)',   'server',  50,  180, { region: 'us-east-1' }),
-      svc('sqsS',     'SQS Standard',              'queue',   250, 100, { messages: [], visibility: 30, retention: 4 }),
-      svc('sqsF',     'SQS FIFO',                  'queue',   250, 310, { messages: [], dedup: true, ordered: true }),
-      svc('consumer1','Consumer 1\n(Lambda)',      'lambda',  460, 80, { batchSize: 10 }),
-      svc('consumer2','Consumer 2\n(EC2 Service)', 'server',  460, 180),
-      svc('dlq',      'Dead Letter\nQueue (DLQ)',  'dlq',     460, 310, { messages: [] }),
-      svc('cw',       'CloudWatch\nMetrics',       'server',  460, 420),
+      svc('producer', 'Producer\n(App Server)', 'server',  50, 180, { desc: 'Web server or Lambda sending messages. SendMessage API puts messages in queue. Can batch up to 10 messages (max 256KB each).', region: 'us-east-1', app: 'order-service' }),
+      svc('sqsS',     'SQS Standard',           'queue',   270, 100, { messages: [], visibility: 30, retention: 4, desc: 'Standard queue: high throughput (near unlimited), at-least-once delivery (duplicates possible), best-effort ordering. Max 120K inflight messages.', type: 'Standard', arn: 'arn:aws:sqs:us-east-1:123:orders-queue' }),
+      svc('sqsF',     'SQS FIFO',               'queue',   270, 320, { messages: [], dedup: true, ordered: true, desc: 'FIFO queue: strict first-in-first-out ordering, exactly-once delivery. 3000 msgs/s (batch: 3000). Name ends in .fifo. Requires MessageGroupId.', type: 'FIFO', throughput: '3000/s' }),
+      svc('consumer1','Consumer 1\n(Lambda)',   'lambda',  480, 80,  { batchSize: 10, desc: 'Lambda with SQS trigger. Auto-polls queue, processes batch of up to 10 messages. Scales automatically (60 concurrent batches/min). DLQ configured.', concurrency: 60 }),
+      svc('consumer2','Consumer 2\n(EC2 Worker)','server',  480, 180, { desc: 'EC2 worker that polls SQS. Long polling (WaitTimeSeconds=20) to reduce cost. Processes in background thread. Scales via ASG based on queue depth.', pollInterval: '20s' }),
+      svc('dlq',      'Dead Letter\nQueue (DLQ)','dlq',    480, 310, { messages: [], desc: 'Messages that exceeded maxReceiveCount go here. Monitor depth via CloudWatch. Redrive back to source queue after fixing bug.', maxReceiveCount: 3 }),
+      svc('cw',       'CloudWatch\nMetrics',    'server',  480, 430, { desc: 'Queue metrics: ApproximateNumberOfMessagesVisible, AgeOfOldestMessage, Sent/Received count. Creates alarms for DLQ depth, age threshold.', metricsCount: 8 }),
     ],
     edges: [
       { from: 'producer', to: 'sqsS' },
@@ -21,8 +21,7 @@ function buildSQSSteps() {
       { from: 'sqsF', to: 'consumer2' },
       { from: 'sqsS', to: 'cw' },
     ],
-    packets: [],
-    events: [],
+    packets: [], events: [],
     metrics: { sent: 0, received: 0, dlq: 0, inFlight: 0, batchSize: 0 },
     activeEdge: null,
   };
@@ -51,7 +50,7 @@ function buildSQSSteps() {
 
   s.nodes[3].state = 'active';
   s.packets = [pkt('sqsS', 'consumer1', 'order#1..order#10', 'request')];
-  s.nodes.find(n => n.id === 'sqsS').messages = s.nodes.find(n => n.id === 'sqsS').messages.slice(1); // remove first via shift simulation
+  s.nodes.find(n => n.id === 'sqsS').messages = s.nodes.find(n => n.id === 'sqsS').messages.slice(1);
   s.metrics.received = 1; s.metrics.batchSize = 10;
   s.events.push({ type: 'ok', msg: 'ReceiveMessage: batch of 10 messages → Consumer1 Lambda. MaxBatchSize=10. WaitTimeSeconds=20 (long poll).' });
   snap(steps, s, 'Consumer polls SQS using ReceiveMessage. Best practice: Long Polling (WaitTimeSeconds=20) — reduces empty responses, saves cost. Short polling returns immediately (may return empty). Batch size up to 10 messages. Lambda SQS trigger auto-polls with batches. Also supports: SQS→EC2 worker, SQS→ECS task, SQS→SES.', 5);
@@ -74,17 +73,27 @@ function buildSQSSteps() {
   snap(steps, s, 'Dead Letter Queue: message fails 3 times (MaxReceiveCount) → automatically moved to DLQ. Prevents "poison pills" from looping forever. Think of DLQ as a "problems pile". Monitor DLQ depth in CloudWatch. Configure alarm when DLQ has messages. Manually redrive DLQ messages back to source queue after fixing the bug (using SQS console or StartMessageMoveTask).', 8);
 
   s.nodes.find(n => n.id === 'dlq').state = 'idle';
+  s.events.push({ type: 'ok', msg: 'DLQ Redrive: "StartMessageMoveTask" moves DLQ messages back to source queue. Source must be empty or same type (Standard↔Standard, FIFO↔FIFO).' });
+  snap(steps, s, 'SQS DLQ Redrive (2022): managed operation to move messages from DLQ back to source queue. Console: select DLQ → "Start DLQ redrive". CLI: `aws sqs start-message-move-task`. Handles large volumes (millions). Cancelable. Does NOT re-trigger Lambda if source SQS trigger configured — messages go back to queue for normal polling. No more custom scripts or manual re-queuing.', 9);
+
   s.packets = [pkt('sqsS', 'cw', 'queue depth: 0', 'request')];
   s.events.push({ type: 'ok', msg: 'CloudWatch: ApproximateNumberOfMessagesVisible=0, ApproximateAgeOfOldestMessage=0s. Auto-scaling: target 1 msg/batch.' });
-  snap(steps, s, 'CloudWatch metrics: ApproximateNumberOfMessagesVisible (queue depth), ApproximateAgeOfOldestMessage, NumberOfMessagesSent, NumberOfMessagesReceived. Use these for auto-scaling consumers: CloudWatch alarm → SQS queue depth > N → add more consumers. For Lambda: SQS triggers scale automatically (up to 60 concurrent batches per minute per queue).', 9);
+  snap(steps, s, 'CloudWatch metrics: ApproximateNumberOfMessagesVisible (queue depth), ApproximateAgeOfOldestMessage, NumberOfMessagesSent, NumberOfMessagesReceived. Use these for auto-scaling consumers: CloudWatch alarm → SQS queue depth > N → add more consumers. For Lambda: SQS triggers scale automatically (up to 60 concurrent batches per minute per queue).', 10);
+
+  s.packets = [pkt('sqsS', 'consumer2', 'EventBridge Pipes → filter + transform', 'request')];
+  s.events.push({ type: 'info', msg: 'EventBridge Pipes: SQS → filter → enrich → target. No-code filtering + transformation between source and target.' });
+  snap(steps, s, 'EventBridge Pipes: simplified point-to-point event integration. SQS as source → optional filtering (SQL-like filter pattern) → optional enrichment (Lambda, Step Functions, API Gateway) → target (SQS, SNS, Event Bus, Lambda, Step Functions). No custom code for simple filtering! Example: SQS → filter (only "orderType=premium") → SNS fan-out. Cheaper than running a Lambda just to filter messages.', 11);
 
   s.nodes[3].state = 'idle';
   s.nodes[4].state = 'idle';
-  s.events.push({ type: 'ok', msg: 'SQS + S3: S3 event notification → SQS → Lambda process. SQS + SNS: SNS fanout → SQS for durable processing.' });
-  snap(steps, s, 'SQS integrations: S3 event notifications → SQS (process uploads), SNS → SQS (durable fan-out subscriber), SQS → Lambda trigger (auto-poll), SQS → Auto Scaling Group (scale EC2 workers), SQS → ECS (run task per message). Key pattern: use SQS anywhere you need buffer + decoupling + durability between services.', 10);
+  s.events.push({ type: 'ok', msg: 'VPC Endpoint (Gateway): access SQS from VPC without internet/NAT. Endpoint policy controls which queues are accessible.' });
+  snap(steps, s, 'VPC Endpoints for SQS: access SQS from EC2/Lambda in private VPC without NAT gateway or internet. Gateway Endpoint: free, accessed via prefix list in route table. Interface Endpoint (PrivateLink): paid, uses ENI with private IP. Configure VPC endpoint policy: restrict to specific SQS queues. Without endpoint: Lambda in VPC can only reach SQS via NAT → NAT cost + latency. Always use Gateway Endpoint for SQS + DynamoDB.', 12);
+
+  s.events.push({ type: 'ok', msg: 'SQS + S3 Event Notifications: S3 → SQS → Lambda. SQS + SNS: SNS fanout → SQS for durable processing.' });
+  snap(steps, s, 'SQS integrations: S3 event notifications → SQS (process uploads), SNS → SQS (durable fan-out subscriber), SQS → Lambda trigger (auto-poll), SQS → Auto Scaling Group (scale EC2 workers), SQS → ECS (run task per message). Key pattern: use SQS anywhere you need buffer + decoupling + durability between services.', 13);
 
   s.result = 'Standard: at-least-once, unordered, high throughput. FIFO: exactly-once, ordered, 3000/s.';
-  snap(steps, s, 'Key takeaways: Standard = maximum throughput + at-least-once. FIFO = ordering + exactly-once, capped at 3000/s (or 3000/s batch). Use Long Polling (WaitTimeSeconds=20) to reduce cost + empty responses. Set appropriate VisibilityTimeout (processing time × 2). Always configure DLQ. Make consumer code idempotent. Encryption at rest: SSE-SQS (AWS managed) or SSE-KMS (custom key). Access: SQS queue policy or IAM with sqs:* actions.', 11);
+  snap(steps, s, 'Key takeaways: Standard = maximum throughput + at-least-once. FIFO = ordering + exactly-once, capped at 3000/s (or 3000/s batch). Use Long Polling (WaitTimeSeconds=20) to reduce cost + empty responses. Set appropriate VisibilityTimeout (processing time × 2). Always configure DLQ. Make consumer code idempotent. Encryption at rest: SSE-SQS (AWS managed) or SSE-KMS (custom key). Access: SQS queue policy or IAM with sqs:* actions.', 14);
 
   return steps;
 }
@@ -107,6 +116,10 @@ const CODE = [
   '  --message-body "order"',
   '  --message-group-id "orders"',
   '  --message-deduplication-id "abc123"',
+  '# EventBridge Pipes (SQS → filter → SNS)',
+  'aws pipes create-pipe --source <sqs-arn> --target <sns-arn>',
+  '# VPC Gateway Endpoint for SQS',
+  'aws ec2 create-vpc-endpoint --service-name com.amazonaws.<region>.sqs',
 ];
 
 export default {
@@ -117,9 +130,9 @@ export default {
   code: CODE,
   language: 'YAML/CLI',
   metrics: [
-    { key: 'sent',     label: 'Sent',      max: 8,  color: 'var(--node-default)' },
-    { key: 'received', label: 'Received',  max: 5,  color: 'var(--pod-running)' },
-    { key: 'batchSize',label: 'Batch',     max: 10, color: 'var(--node-comparing)' },
-    { key: 'dlq',      label: 'DLQ',       max: 3,  color: 'var(--pod-crash)' },
+    { key: 'sent',      label: 'Sent',      max: 8,  color: 'var(--node-default)' },
+    { key: 'received',  label: 'Received',  max: 5,  color: 'var(--pod-running)' },
+    { key: 'batchSize', label: 'Batch',     max: 10, color: 'var(--node-comparing)' },
+    { key: 'dlq',       label: 'DLQ',       max: 3,  color: 'var(--pod-crash)' },
   ],
 };

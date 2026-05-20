@@ -150,4 +150,24 @@ export default {
     { key: 'committed', label: 'Committed', max: 5, color: 'var(--pod-running)' },
     { key: 'nodes',     label: 'Nodes',     max: 5, color: 'var(--node-visited)' },
   ],
+  codeNotes: [
+    { title: 'Election Timeout', content: 'Randomized 150-300ms per node. Prevents split-brain: if all nodes timeout at 150ms, candidate floods peers with votes, achieving majority quickly.' },
+    { title: 'Term Increment', content: 'Each election bumps term. Node with higher term wins authority. Old leader with term=1 rejects writes if new leader has term=2.' },
+    { title: 'Majority Quorum', content: '5-node cluster needs 3 votes (50% + 1). Can tolerate 2 failures. 7-node cluster tolerates 3 failures. Larger clusters = more resilience but slower consensus.' },
+    { title: 'Log Replication', content: 'Leader sends AppendEntries every 50ms (heartbeat). Followers apply entries once majority has ACK\'d. Committed entries are durable (survive leader failure).' },
+  ],
+  tradeoffs: [
+    { pro: 'Raft guarantees linearizability (strong consistency)', con: 'Write latency = max(network RTT, quorum size). 5 nodes across 3 DCs: 100ms+ latency.' },
+    { pro: 'Automatic leader election (no manual failover)', con: 'Election takes 150-300ms; reads may fail during election. ~2 outages/year per node.' },
+    { pro: 'Log replication is straightforward', con: 'Full log replication = O(n) bandwidth. Snapshotting needed every 1GB (Raft optimization).' },
+    { pro: 'Works with asynchronous networks', con: 'Byzantine faults (corrupted nodes) not tolerated. Need BFT (PBFT) for that (3x slower).' },
+  ],
+  bestPractices: [
+    'Deploy Raft clusters (etcd, Consul) across 3 datacenters minimum. 5-node cluster typical for fault tolerance.',
+    'Monitor leader changes; alert if >1/day (indicates instability). Use steady-state election timeout 3-6s for WAN networks.',
+    'Snapshot logs every 10k entries or 1GB. Without snapshots, recovery time = O(total log size) = 10s → 100s on 10GB logs.',
+    'Use Raft for metadata only (configs, service discovery). Don\'t use for high-volume data (etcd: <10k req/s, Consul: <50k).',
+    'Prefer "read from leader only" to avoid stale reads. Read-only followers need querying leader for current term (2 round-trips).',
+  ],
 };
+

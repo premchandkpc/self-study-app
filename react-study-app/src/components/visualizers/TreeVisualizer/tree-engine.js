@@ -177,20 +177,69 @@ export const SCENARIOS = [
     id: 'insert', label: 'BST Insert', icon: '➕',
     build: ({ values = _DEFAULT } = {}) => buildInsertSteps(_parseValues(values)),
     inputs: _INPUTS, code: INSERT_CODE, language: 'JavaScript', metrics: [],
+    codeNotes: [
+      { title: 'Recursive Insertion', content: 'Compare value with current node. If less, recurse left; else right. Create new node when null reached. Time: O(h) where h=height.' },
+      { title: 'BST Property Maintained', content: 'Each comparison ensures smaller values go left, larger go right. Inorder traversal yields sorted values.' },
+      { title: 'Search is Identical', content: 'Insert logic = Search logic (stop at first match). Both O(h) time. Balanced tree h=log(n), unbalanced h=n.' },
+      { title: 'Insertion Order Affects Balance', content: 'Sorted inputs create chain (height=n). Random inputs create balanced tree (height=log n). No rebalancing in plain BST.' },
+    ],
+    tradeoffs: [
+      { pro: 'Simple to implement', con: 'Unbalanced insertion degrades to O(n) lookup.' },
+      { pro: 'Inorder gives sorted sequence naturally', con: 'Requires full tree traversal O(n) for kth smallest.' },
+      { pro: 'Good for range queries (values in range)', con: 'No better than binary search on sorted array.' },
+      { pro: 'Efficient if insertions random', con: 'Sequential or reverse insertions create skewed trees.' },
+    ],
+    bestPractices: [
+      'For production, use self-balancing trees (AVL, Red-Black). Plain BST risky if insertion order unknown.',
+      'Always check for value existence before inserting (avoid duplicates or handle via count).',
+      'For large datasets, batch insert random order to improve balance. Purely sequential kills performance.',
+      'Monitor tree height; if height > 1.5 * log(n), tree is unbalanced. Consider rebalancing (AVL rotations).',
+      'For search-heavy workloads, ensure log(n) guarantees via balanced tree. Hash table O(1) if ordering not needed.',
+    ],
   },
   {
     id: 'inorder', label: 'Inorder', icon: '↙',
     build: ({ values = _DEFAULT } = {}) => buildTraversalSteps(_buildBST(_parseValues(values)), 'inorder'),
     inputs: _INPUTS, code: TRAVERSAL_CODE.inorder, language: 'JavaScript', metrics: [],
+    codeNotes: [
+      { title: 'Inorder (L-R-R)', content: 'Visit left subtree, then root, then right. BST inorder = sorted values. Essential for dump/export.' },
+      { title: 'Recursion Stack', content: 'Call stack tracks path through tree. Stack depth = tree height. O(log n) balanced, O(n) worst skewed.' },
+      { title: 'Visiting Pattern', content: 'Left subtree processed first; when returning, visit current node; finally right subtree. Order: ascending by value.' },
+    ],
+    bestPractices: [
+      'For BST dump to sorted list: always use inorder. Verifies BST property: sorted output = valid BST.',
+      'Use iterative traversals (explicit stack) for very deep trees to avoid stack overflow. Recursion elegant but fragile on deep data.',
+      'Inorder useful for finding kth smallest (count until k), range queries (values between X and Y).',
+    ],
   },
   {
     id: 'preorder', label: 'Preorder', icon: '↖',
     build: ({ values = _DEFAULT } = {}) => buildTraversalSteps(_buildBST(_parseValues(values)), 'preorder'),
     inputs: _INPUTS, code: TRAVERSAL_CODE.preorder, language: 'JavaScript', metrics: [],
+    codeNotes: [
+      { title: 'Preorder (R-L-R)', content: 'Visit root, then left, then right. Encodes tree structure for serialization. Used in copy/clone algorithms.' },
+      { title: 'Root First', content: 'Root visited before children. Enables reconstruction: first element is root. Recursively build left/right subtrees.' },
+      { title: 'Serialization Format', content: 'Preorder + record null markers encodes tree structure uniquely. E.g., "50,30,20,null,null,40,null,null,70,..." unambiguously reconstructs tree.' },
+    ],
+    bestPractices: [
+      'For tree serialization: preorder + record null markers. Enables exact reconstruction (e.g., level-by-level deserialization).',
+      'For tree copy/clone: preorder natural; parent created before children. Simplifies pointer management.',
+      'Avoid using preorder for verification; sorted output doesn\'t confirm BST property. Use inorder for BST validation.',
+    ],
   },
   {
     id: 'postorder', label: 'Postorder', icon: '↘',
     build: ({ values = _DEFAULT } = {}) => buildTraversalSteps(_buildBST(_parseValues(values)), 'postorder'),
     inputs: _INPUTS, code: TRAVERSAL_CODE.postorder, language: 'JavaScript', metrics: [],
+    codeNotes: [
+      { title: 'Postorder (L-R-R)', content: 'Visit left, right, then root. Root visited last = safe deletion order. Useful for freeing memory bottom-up.' },
+      { title: 'Bottom-Up Processing', content: 'Children fully processed before parent. Essential for deletion: delete children before parent, avoiding dangling pointers.' },
+      { title: 'Reverse Postorder = Topological Sort', content: 'In DAGs, postorder gives reverse topological order. Reverse it for correct topological ordering.' },
+    ],
+    bestPractices: [
+      'For deletion: always postorder. Visit children first, ensuring safe cleanup of leaf nodes before parents.',
+      'For garbage collection or resource cleanup, postorder ensures all dependencies released before parent freed.',
+      'In garbage-collected languages (JS, Python), postorder less critical but still good for logical cleanup order.',
+    ],
   },
 ];

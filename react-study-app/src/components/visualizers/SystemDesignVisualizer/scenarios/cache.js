@@ -119,4 +119,24 @@ export default {
     { key: 'hitRate',  label: 'Hit Rate', max: 100, unit: '%', color: 'var(--pod-running)' },
     { key: 'misses',   label: 'Misses',   max: 5,   color: 'var(--pod-crash)' },
   ],
+  codeNotes: [
+    { title: 'Cache-Aside (Lazy Loading)', content: 'App checks cache first. On miss, fetch from DB and write back. Simple but can cause cache stampede if many threads miss simultaneously.' },
+    { title: 'TTL (Time-To-Live)', content: 'Redis SETEX(key, 300, value) sets 5-minute expiry. Balance: short TTL = fresh data but more DB hits; long TTL = fewer hits but stale reads.' },
+    { title: 'LRU Eviction', content: 'When Redis memory full, LRU removes least-used keys. O(n log n) with approximation. Tune maxmemory 256MB→2GB based on working set size.' },
+    { title: 'Hit Ratio Target', content: 'Target >90% for read-heavy workloads. 95%+ for user profile cache (narrow working set). <80% suggests keys too diverse or TTL too short.' },
+  ],
+  tradeoffs: [
+    { pro: 'Cache-aside is simple and fault-tolerant', con: 'Cache miss latency ~50ms (DB round-trip). Stampede possible: 1000 misses hit DB at once.' },
+    { pro: 'Short TTL ensures data freshness', con: 'More evictions = higher DB load. Trade-off: 5min TTL = 20% stale reads at worst, 5x fewer DB hits.' },
+    { pro: 'LRU is fair and requires no code changes', con: 'LRU scan is O(n). On millions of keys, >=10% CPU. Alternative: LFU tracks frequency, better but 10% slower.' },
+    { pro: 'Redis in-memory = <1ms latency', con: 'Finite memory ~2GB/node. Network round-trip adds ~1ms (local) or ~5ms (remote).' },
+  ],
+  bestPractices: [
+    'For high-traffic keys (>100k req/s), add probabilistic early expiry: if rand() < 0.05, refresh before TTL expires.',
+    'Monitor hit ratio; if <80%, analyze via redis-cli --stat. Look for hotspots: 80/20 rule (20% keys = 80% traffic).',
+    'Use cache versioning: key = "user:42:v2". On schema change, bump version instead of flushing.',
+    'Set maxmemory-policy allkeys-lru in Redis config. Tune maxmemory to 75% of available RAM to leave headroom.',
+    'For mutable data, invalidate on write: DELETE user:42 when profile updated. Use cache expiry as fallback.',
+  ],
 };
+
