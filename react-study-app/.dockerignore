@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+dist
+.git
+.gitignore
+.env
+.env.local
+.DS_Store
+.vscode
+.idea
+*.md
+.git
+.gitignore
+.github
+.code-review-graph
+.claude

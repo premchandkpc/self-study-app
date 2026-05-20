@@ -1,0 +1,55 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'react-study-app/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: react-study-app
+        run: npm ci
+
+      - name: Run linter
+        working-directory: react-study-app
+        run: npm run lint
+
+      - name: Build application
+        working-directory: react-study-app
+        run: npm run build
+
+      - name: Check build output
+        working-directory: react-study-app
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Build failed: dist directory not found"
+            exit 1
+          fi
+          echo "Build successful. Dist size: $(du -sh dist | cut -f1)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        if: success()
+        with:
+          name: build-${{ matrix.node-version }}
+          path: react-study-app/dist
+          retention-days: 5

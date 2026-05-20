@@ -1,0 +1,79 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'react-study-app/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: react-study-app
+        run: npm ci
+
+      - name: Build for production
+        working-directory: react-study-app
+        run: npm run build
+
+      - name: Create deployment artifact
+        run: |
+          cd react-study-app
+          tar -czf ../react-study-app-build.tar.gz dist/
+          cd ..
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-build
+          path: react-study-app-build.tar.gz
+          retention-days: 30
+
+      - name: Deploy to production server
+        if: secrets.DEPLOY_SERVER_HOST != null
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+          username: ${{ secrets.DEPLOY_SERVER_USER }}
+          key: ${{ secrets.DEPLOY_SERVER_KEY }}
+          script: |
+            cd /app/react-study-app
+            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/react-study-app-build.tar.gz
+            tar -xzf react-study-app-build.tar.gz
+            docker-compose down
+            docker-compose up -d --build
+
+      - name: Verify deployment
+        if: secrets.DEPLOY_SERVER_HOST != null
+        run: |
+          sleep 10
+          curl -f ${{ secrets.DEPLOY_URL }} || exit 1
+
+      - name: Create release notes
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## Changes in this Release
+            - Automated release build
+            - Build commit: ${{ github.sha }}
+          draft: false
+          prerelease: false
