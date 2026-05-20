@@ -50,6 +50,12 @@ export const VISUALIZERS = {
     component: lazy(() => import('../../components/visualizers/UnionFindVisualizer/UnionFindVisualizer')),
     desc: 'Disjoint Set Union with path compression and union by rank. Find connected components, detect cycles, Kruskal MST. O(α(n)) amortized.',
   },
+  backtracking: {
+    label: 'Backtracking — N-Queens, Sudoku, Permutations',
+    icon: '🔀',
+    component: lazy(() => import('../../components/visualizers/BacktrackingVisualizer/BacktrackingVisualizer')),
+    desc: 'Recursive backtracking: choose-explore-unchoose pattern. N-Queens constraints, Sudoku multi-constraint solving, permutation generation.',
+  },
   tree: {
     label: 'BST — Insert & Traversals',
     icon: '🌳',
