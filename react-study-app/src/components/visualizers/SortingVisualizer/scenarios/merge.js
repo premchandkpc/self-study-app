@@ -132,4 +132,23 @@ export default {
     { key: 'swaps',       label: 'Merges',      max: 10, color: 'var(--node-active)' },
     { key: 'passes',      label: 'Depth',        max: 4,  color: 'var(--pod-running)' },
   ],
+  codeNotes: [
+    { title: 'Divide & Conquer', content: 'Split array in half recursively until size 1. Then merge pairs bottom-up. Divide O(log n), merge O(n).' },
+    { title: 'Merge Operation', content: 'Two pointers on sorted halves. Compare, advance smaller pointer. Copy remainder. O(n) per merge.' },
+    { title: 'Stable Sort', content: 'Equal elements maintain original order due to <= comparison. Crucial for multi-key sorting.' },
+    { title: 'External Sorting', content: 'Merge sort works on streams (files too large for memory). Read blocks, merge, write results.' },
+  ],
+  tradeoffs: [
+    { pro: 'O(n log n) guaranteed (best/avg/worst)', con: 'Requires O(n) extra space (temporary arrays for merging).' },
+    { pro: 'Stable and predictable performance', con: 'Slower than Quicksort on random data (more data movement).' },
+    { pro: 'Parallelizable: split & merge phases independent', con: 'Poor cache locality (jumps between arrays).' },
+    { pro: 'Works on linked lists (no random access)', con: 'O(log n) extra space for recursion stack.' },
+  ],
+  bestPractices: [
+    'For guaranteed O(n log n): use Merge Sort or Heapsort (when stable sort not required).',
+    'Optimize: use insertion sort for small subarrays (<10 elements), reduces merge overhead.',
+    'For arrays: prefer Timsort (Python, Java 7+) = hybrid of Mergesort + insertion. Better cache & fewer comparisons.',
+    'For linked lists: Merge Sort is natural (no random access needed). O(1) pointers vs O(n) arrays.',
+    'Memory-constrained: use Heapsort or in-place Quicksort. Merge sort needs buffers.' ,
+  ],
 };

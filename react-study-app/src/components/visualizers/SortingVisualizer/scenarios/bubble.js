@@ -99,4 +99,22 @@ export default {
     { key: 'swaps',       label: 'Swaps',       max: 30, color: 'var(--node-active)' },
     { key: 'passes',      label: 'Passes',      max: 8,  color: 'var(--pod-running)' },
   ],
+  codeNotes: [
+    { title: 'Nested Loops', content: 'Outer loop: n-1 passes. Inner loop: compares adjacent pairs. Each pass bubbles largest unsorted element to end.' },
+    { title: 'Optimal Swap Count', content: 'Best case: 0 swaps (already sorted). Worst case: n(n-1)/2 swaps (reverse sorted). Avg: n(n-1)/4.' },
+    { title: 'Stable Sorting', content: 'Bubble sort preserves order of equal elements. Important for multi-key sorting.' },
+    { title: 'Early Termination', content: 'If no swaps occur in a pass, array is sorted. Optimization: reduce to O(n) best case.' },
+  ],
+  tradeoffs: [
+    { pro: 'Simple to implement and understand', con: 'O(n²) time even on nearly sorted data. Selection/Insertion better.' },
+    { pro: 'Requires only O(1) extra space', con: 'Many unnecessary swaps = slow in practice (10-50x slower than Quicksort).' },
+    { pro: 'Stable sort preserves equal order', con: 'Rarely used in production (replaced by Timsort, Mergesort).' },
+    { pro: 'Easy to parallelize (compare/swap independent)', con: 'Parallelization overhead > speedup on small arrays.' },
+  ],
+  bestPractices: [
+    'Use only for: educational purposes, very small arrays (<10 elements), or nearly sorted data with early termination.',
+    'Add "swapped" flag to detect already-sorted arrays: if no swaps in pass, break immediately.',
+    'For production: use Java Collections.sort (Timsort), JavaScript Array.sort, or std::sort (C++).',
+    'If bubble sort mandatory, use optimized variant: reduce inner loop bounds after each pass (array.length - i - 1).',
+  ],
 };

@@ -134,4 +134,23 @@ export default {
     { key: 'swaps',       label: 'Swaps',       max: 15, color: 'var(--node-active)' },
     { key: 'passes',      label: 'Partitions',  max: 8,  color: 'var(--pod-running)' },
   ],
+  codeNotes: [
+    { title: 'Partition-Based', content: 'Choose pivot (last element). Partition: left ≤ pivot < right. Recursively sort left & right.' },
+    { title: 'Pivot Selection', content: 'Last element: O(n²) on sorted data. Random: O(n log n) avg. Median-of-3: O(n log n) practical.' },
+    { title: 'In-Place Sorting', content: 'O(log n) extra space (recursion stack). One pointer from left, one from right. Zero temporary arrays.' },
+    { title: 'NOT Stable', content: 'Equal elements may reorder. Use 3-way partition (< = >) for many duplicates to avoid O(n²).' },
+  ],
+  tradeoffs: [
+    { pro: 'Avg O(n log n), fastest in practice due to cache locality', con: 'Worst O(n²) if pivot always smallest/largest (rare with random pivot).' },
+    { pro: 'O(log n) extra space (only recursion stack)', con: 'Unstable sort; not suitable if order of equal elements matters.' },
+    { pro: 'No extra array allocations', con: 'Unstable; need 3-way partition for many duplicates.' },
+    { pro: '10-50% faster than Merge Sort on random data', con: 'Poor on nearly-sorted data (reverse sorted = O(n²)).' },
+  ],
+  bestPractices: [
+    'Use random pivot or median-of-3 to avoid O(n²) worst case. Don\'t hardcode first/last element.',
+    'Introsort: if recursion depth > 2*log(n), switch to Heapsort to guarantee O(n log n) in worst case. Used in C++ std::sort.',
+    'For many duplicates: 3-way partition (< = >) reduces to O(n) on highly repetitive data.',
+    'For nearly-sorted: avoid Quicksort (O(n²)). Use Timsort (detects sorted runs) or Insertion Sort for already 90% sorted.',
+    'Randomize: use random.shuffle() before sorting, or random pivot selection. Makes adversarial input impossible.',
+  ],
 };
