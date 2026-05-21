@@ -1,0 +1,105 @@
+.container {
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.fsm {
+  width: 100%;
+  height: auto;
+  min-height: 400px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.startIndicator {
+  fill: #333;
+}
+
+.stateCircle {
+  stroke: #333;
+  stroke-width: 2;
+  transition: all 0.2s;
+}
+
+.stateCircle:hover {
+  filter: brightness(0.9);
+}
+
+.state-idle {
+  fill: #6b7280;
+}
+
+.state-active {
+  fill: #0ea5e9;
+}
+
+.state-completed {
+  fill: #22c55e;
+}
+
+.state-processing {
+  fill: #f59e0b;
+  animation: pulse 2s infinite;
+}
+
+.state-error {
+  fill: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.stateLabel {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-size: 12px;
+  font-weight: 600;
+  fill: white;
+  pointer-events: none;
+  user-select: none;
+}
+
+.edgeLine {
+  stroke: #9ca3af;
+  stroke-width: 2;
+  fill: none;
+  marker-end: url(#arrowhead);
+}
+
+.arrowHead {
+  fill: #9ca3af;
+}
+
+.edgeLabel {
+  text-anchor: middle;
+  font-size: 11px;
+  fill: #666;
+  background: white;
+  padding: 2px 4px;
+}
+
+.description {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f0fdf4;
+  border-left: 3px solid #22c55e;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #166534;
+  line-height: 1.5;
+}

@@ -56,11 +56,23 @@ export class SimulationRuntime extends EventEmitter {
     const next = this.sceneIndex + 1;
     if (next < this.config.learningUnit.scenes.length) {
       this.sceneIndex = next;
+
+      // Fine-grained emissions (only changed values)
+      this.emitFieldChange('sceneIndex', this.sceneIndex);
+      this.emitFieldChange('progress', this.progress);
+      this.emitFieldChange('scene', this.scene);
+
       this.state = 'running';
+      this.emitFieldChange('state', this.state);
+
       this.emitEvent('SCENE_ADVANCED', { sceneIndex: this.sceneIndex });
+
+      // For backward compat, still emit full snapshot
       this.emit('stateChanged', this.getSnapshot());
     } else {
       this.state = 'completed';
+      this.emitFieldChange('state', this.state);
+
       this.emitEvent('SIMULATION_COMPLETED', {});
       this.emit('stateChanged', this.getSnapshot());
     }
@@ -146,7 +158,7 @@ export class SimulationRuntime extends EventEmitter {
     return [...this.eventLog];
   }
 
-  // Snapshot for React
+  // Snapshot for React (deprecated - use fine-grained subscriptions)
   getSnapshot(): {
     state: SimulationState;
     sceneIndex: number;
@@ -154,7 +166,7 @@ export class SimulationRuntime extends EventEmitter {
     progress: number;
     nodeStates: Record<string, any>;
   } {
-    return {
+    const snapshot = {
       state: this.state,
       sceneIndex: this.sceneIndex,
       scene: this.getCurrentScene(),
@@ -162,6 +174,21 @@ export class SimulationRuntime extends EventEmitter {
         (this.sceneIndex / this.config.learningUnit.scenes.length) * 100,
       nodeStates: Object.fromEntries(this.nodeStates),
     };
+    return snapshot;
+  }
+
+  // Fine-grained getters for useRuntimeValue hook
+  get progress(): number {
+    return (this.sceneIndex / this.config.learningUnit.scenes.length) * 100;
+  }
+
+  get scene(): IRScene | null {
+    return this.getCurrentScene();
+  }
+
+  // Emit fine-grained updates (not full snapshot)
+  private emitFieldChange(field: string, newValue: any): void {
+    this.emit(`${field}:changed`, newValue);
   }
 
   // Replay from event log

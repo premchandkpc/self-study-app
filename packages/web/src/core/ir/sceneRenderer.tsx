@@ -4,15 +4,20 @@
 import { memo } from 'react';
 import { IRScene, PrimitiveType } from './schema';
 
+// Import real implementations
+import { TreeRenderer } from './renderers/TreeRenderer';
+import { TimelineRenderer } from './renderers/TimelineRenderer';
+import { StateMachineRenderer } from './renderers/StateMachineRenderer';
+
 // Generic primitive renderers (technology-agnostic)
 const PrimitiveRenderers: Record<PrimitiveType, React.ComponentType<{ scene: IRScene }>> = {
   queue: QueueRenderer,
   stack: StackRenderer,
-  tree: TreeRenderer,
+  tree: TreeRenderer, // NOW REAL
   graph: GraphRenderer,
-  timeline: TimelineRenderer,
+  timeline: TimelineRenderer, // NOW REAL
   pipeline: PipelineRenderer,
-  state_machine: StateMachineRenderer,
+  state_machine: StateMachineRenderer, // NOW REAL
   network: NetworkRenderer,
   matrix: MatrixRenderer,
   table: TableRenderer,
@@ -98,18 +103,6 @@ function GraphRenderer({ scene }: { scene: IRScene }) {
 // Stubs for other primitives
 function StackRenderer({ scene }: { scene: IRScene }) {
   return <div>{scene.title} (Stack)</div>;
-}
-
-function TreeRenderer({ scene }: { scene: IRScene }) {
-  return <div>{scene.title} (Tree)</div>;
-}
-
-function TimelineRenderer({ scene }: { scene: IRScene }) {
-  return <div>{scene.title} (Timeline)</div>;
-}
-
-function StateMachineRenderer({ scene }: { scene: IRScene }) {
-  return <div>{scene.title} (State Machine)</div>;
 }
 
 function NetworkRenderer({ scene }: { scene: IRScene }) {
