@@ -241,6 +241,13 @@ export default function CompilerTemplate() {
         <div className={styles.vizArea}>
           {hasRun ? (
             <>
+              <div className={styles.stepHeader}>
+                <div className={styles.stepTitle}>{currentStep?.title}</div>
+                <div className={styles.stepDesc}>{currentStep?.description}</div>
+                {currentStep?.duration !== undefined && (
+                  <div className={styles.stepDuration}>{currentStep.duration}ms</div>
+                )}
+              </div>
               <div className={styles.vizContainer}>
                 <DsaVizRenderer viz={currentStep} />
               </div>

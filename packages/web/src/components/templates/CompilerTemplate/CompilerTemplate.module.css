@@ -155,6 +155,33 @@
   min-height: 0;
 }
 
+.stepHeader {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.stepTitle {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.stepDesc {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stepDuration {
+  font-size: var(--font-size-xs);
+  color: var(--node-active);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
 .vizContainer {
   flex: 1;
   overflow: auto;

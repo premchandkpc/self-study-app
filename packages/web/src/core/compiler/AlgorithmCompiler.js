@@ -5,17 +5,22 @@
 export class AlgorithmCompiler {
   compile(algorithmFn, inputData, config = {}) {
     const steps = [];
-    const tracer = new Tracer(steps, config, (title, desc, state, meta) =>
-      this._buildStep(title, desc, state, meta)
-    );
+    let lastTime = performance.now();
+    const tracer = new Tracer(steps, config, (title, desc, state, meta) => {
+      const now = performance.now();
+      const duration = Math.round(now - lastTime);
+      lastTime = now;
+      return this._buildStep(title, desc, state, { ...meta, duration });
+    });
 
     try {
       // Initial state
+      lastTime = performance.now();
       steps.push(this._buildStep(
         'Initialize',
         'Set up input data',
         inputData,
-        { opsLog: [{ msg: 'Algorithm initialized', type: 'init' }] }
+        { opsLog: [{ msg: 'Algorithm initialized', type: 'init' }], duration: 0 }
       ));
 
       // Execute algorithm
@@ -23,11 +28,13 @@ export class AlgorithmCompiler {
 
       // Final step with result
       if (result !== undefined) {
+        const now = performance.now();
+        const duration = Math.round(now - lastTime);
         steps.push(this._buildStep(
           'Complete',
           `Result: ${this._formatValue(result)}`,
           inputData,
-          { opsLog: [{ msg: `Result: ${this._formatValue(result)}`, type: 'success' }], result }
+          { opsLog: [{ msg: `Result: ${this._formatValue(result)}`, type: 'success' }], result, duration }
         ));
       }
 
