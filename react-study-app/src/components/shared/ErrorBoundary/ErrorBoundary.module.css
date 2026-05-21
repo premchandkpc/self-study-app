@@ -1,0 +1,34 @@
+.errorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.errorBox {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.errorBox h2 {
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+  font-size: 24px;
+}
+
+.errorMessage {
+  margin: 0 0 24px 0;
+  color: var(--text-muted);
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  word-break: break-word;
+}

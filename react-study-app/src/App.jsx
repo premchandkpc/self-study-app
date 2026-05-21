@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './core/context/ThemeContext';
 import { UIProvider } from './core/context/UIContext';
+import ErrorBoundary from './components/shared/ErrorBoundary/ErrorBoundary';
 import MainLayout from './components/layout/MainLayout/MainLayout';
 import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
@@ -48,11 +49,13 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider>
-        <UIProvider>
-          <AppRoutes />
-        </UIProvider>
-      </ThemeProvider>
+      <ErrorBoundary>
+        <ThemeProvider>
+          <UIProvider>
+            <AppRoutes />
+          </UIProvider>
+        </ThemeProvider>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }
