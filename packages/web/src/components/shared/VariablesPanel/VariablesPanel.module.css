@@ -31,6 +31,34 @@
   border-radius: var(--radius-full);
 }
 
+.varsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.varGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  animation: var-change 0.25s ease;
+}
+
+.varName {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--node-active);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .table {
   display: flex;
   flex-direction: column;
@@ -54,7 +82,7 @@
   to   { background: transparent; }
 }
 
-.varName {
+.rowVarName {
   font-size: var(--font-size-xs);
   color: var(--node-default);
   font-weight: 600;

@@ -2,7 +2,7 @@ import ResultPanel from '../ResultPanel/ResultPanel';
 import styles from './VariablesPanel.module.css';
 
 export default function VariablesPanel({ vars = {}, result }) {
-  const entries = Object.entries(vars);
+  const entries = Object.entries(vars).sort((a, b) => a[0].localeCompare(b[0]));
 
   return (
     <div className={styles.panel}>
@@ -11,9 +11,9 @@ export default function VariablesPanel({ vars = {}, result }) {
         <span className={styles.count}>{entries.length}</span>
       </div>
       {entries.length > 0 ? (
-        <div className={styles.table}>
+        <div className={styles.varsContainer}>
           {entries.map(([name, value]) => (
-            <VarRow key={name} name={name} value={value} />
+            <VarGroup key={name} name={name} value={value} />
           ))}
         </div>
       ) : (
@@ -24,10 +24,19 @@ export default function VariablesPanel({ vars = {}, result }) {
   );
 }
 
+function VarGroup({ name, value }) {
+  return (
+    <div className={styles.varGroup}>
+      <div className={styles.varName}>{name}</div>
+      <VarValue value={value} />
+    </div>
+  );
+}
+
 function VarRow({ name, value }) {
   return (
     <div className={styles.row} key={`${name}-${JSON.stringify(value)}`}>
-      <span className={styles.varName}>{name}</span>
+      <span className={styles.rowVarName}>{name}</span>
       <span className={styles.varValue}>
         <VarValue value={value} />
       </span>

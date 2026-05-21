@@ -6,6 +6,7 @@ import healthRoutes from './routes/health.js';
 import topicsRoutes from './routes/topics.js';
 import subtopicsRoutes from './routes/subtopics.js';
 import mapsRoutes from './routes/maps.js';
+import executorRoutes from './executor/index.js';
 import { seedIfEmpty } from './db/seed.js';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/health', healthRoutes);
 app.use('/api/topics', topicsRoutes);
 app.use('/api/topics', subtopicsRoutes);
 app.use('/api/maps', mapsRoutes);
+app.use('/api', executorRoutes);
 
 // Error handling
 app.use(errorHandler);

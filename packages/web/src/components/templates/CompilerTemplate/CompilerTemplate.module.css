@@ -1,5 +1,20 @@
 .wrapper { display: flex; flex-direction: column; gap: 12px; }
 
+/* ── examples bar ── */
+.examplesBar {
+  display: flex; gap: 8px; align-items: center;
+  padding: 8px 12px; background: var(--bg-elevated);
+  border: 1px solid var(--border); border-radius: 6px;
+}
+.examplesLabel { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.examplesSelect {
+  flex: 1; padding: 6px 8px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--text-primary);
+  font-size: 12px; cursor: pointer;
+  font-family: var(--font-mono);
+}
+
 /* ── editor row ── */
 .editorRow  { display: grid; grid-template-columns: 1fr 280px; gap: 12px; align-items: start; }
 .editorBox  { display: flex; flex-direction: column; gap: 6px; }

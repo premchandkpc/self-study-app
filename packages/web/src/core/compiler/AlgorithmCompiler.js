@@ -39,20 +39,58 @@ export class AlgorithmCompiler {
   }
 
   _buildStep(title, description, state, metadata = {}) {
+    const stateClone = this._cloneState(state);
+    const variables = this._extractVariables(stateClone);
+
     return {
       title,
       description,
-      state: this._cloneState(state),
-      ...this._generateVizStructure(state),
+      state: stateClone,
+      variables, // All variables from state
+      ...this._generateVizStructure(stateClone),
       opsLog: metadata.opsLog || [{ msg: description, type: 'info' }],
       ...metadata,
     };
   }
 
+  _extractVariables(state) {
+    const vars = {};
+    for (const [key, value] of Object.entries(state)) {
+      if (!key.startsWith('_')) {
+        vars[key] = {
+          name: key,
+          value,
+          type: this._detectType(value),
+        };
+      }
+    }
+    return vars;
+  }
+
+  _detectType(value) {
+    if (value === null || value === undefined) return 'null';
+    if (Array.isArray(value)) return 'array';
+    if (typeof value === 'object') return 'object';
+    if (typeof value === 'boolean') return 'boolean';
+    if (typeof value === 'number') return 'number';
+    if (typeof value === 'string') return 'string';
+    return 'unknown';
+  }
+
   _generateVizStructure(state) {
     const viz = {};
 
-    // Detect array visualization
+    // Prefix array (prefix sum)
+    if (state.prefix) {
+      viz.cells = state.prefix.map((val, i) => ({
+        value: val,
+        val,
+        state: state.index === i ? 'highlight' : 'idle',
+      }));
+      return viz;
+    }
+
+    // Array with pointers (two pointers, binary search, etc)
     if (state.array) {
       viz.cells = state.array.map((val, i) => ({
         value: val,
@@ -60,29 +98,91 @@ export class AlgorithmCompiler {
         state: state.index === i ? 'highlight' : state.left !== undefined && i >= state.left && i <= state.right ? 'active' : 'idle',
       }));
 
-      // Add pointers if they exist
-      if (state.left !== undefined || state.right !== undefined) {
+      if (state.left !== undefined || state.right !== undefined || state.mid !== undefined) {
         viz.pointers = {};
         if (state.left !== undefined) viz.pointers.left = state.left;
         if (state.right !== undefined) viz.pointers.right = state.right;
         if (state.mid !== undefined) viz.pointers.mid = state.mid;
       }
 
-      // Add window if sliding window
       if (state.window !== undefined) {
         viz.window = state.window;
       } else if (state.left !== undefined && state.right !== undefined && state.right - state.left >= 0) {
         viz.window = { left: state.left, right: state.right };
       }
+      return viz;
     }
 
-    // Detect prefix sum (has prefix array)
-    if (state.prefix) {
-      viz.cells = state.prefix.map((val, i) => ({
-        value: val,
-        val,
-        state: state.index === i ? 'highlight' : 'idle',
+    // String visualization
+    if (state.text !== undefined) {
+      viz.chars = state.text.split('').map((ch, i) => ({
+        char: ch,
+        state: state.textPos === i ? 'highlight' : state.windowStart !== undefined && i >= state.windowStart && i <= state.windowEnd ? 'active' : 'idle',
       }));
+      if (state.patternPos !== undefined) viz.patternPos = state.patternPos;
+      if (state.windowStart !== undefined) viz.windowStart = state.windowStart;
+      if (state.windowEnd !== undefined) viz.windowEnd = state.windowEnd;
+      return viz;
+    }
+
+    if (state.string !== undefined) {
+      viz.chars = state.string.split('').map((ch, i) => ({
+        char: ch,
+        state: state.palindrome && state.palindrome.includes(ch) ? 'highlight' : 'idle',
+      }));
+      return viz;
+    }
+
+    // Linked list visualization
+    if (state.list1 !== undefined || state.nodes) {
+      const list = state.list1 || state.nodes || [];
+      viz.nodes = Array.isArray(list) ? list.map((val, i) => ({
+        value: val,
+        state: state.slow === i || state.fast === i ? 'highlight' : 'idle',
+      })) : list;
+      if (state.slow !== undefined) viz.slow = state.slow;
+      if (state.fast !== undefined) viz.fast = state.fast;
+      return viz;
+    }
+
+    // Hash map visualization
+    if (state.buckets) {
+      viz.buckets = state.buckets;
+      return viz;
+    }
+
+    // DP table visualization
+    if (state.dp || state.table) {
+      viz.dp = state.dp || state.table;
+      return viz;
+    }
+
+    // Matrix visualization
+    if (state.matrix) {
+      viz.matrix = state.matrix;
+      return viz;
+    }
+
+    // Tree visualization
+    if (state.tree) {
+      viz.tree = state.tree;
+      return viz;
+    }
+
+    // Graph visualization
+    if (state.nodeStates) {
+      viz.nodeStates = state.nodeStates;
+      return viz;
+    }
+
+    // Set visualization
+    if (state.setA || state.arr1 || state.nums) {
+      viz.setA = state.setA;
+      if (state.arr1) viz.arr1 = state.arr1;
+      if (state.arr2) viz.arr2 = state.arr2;
+      if (state.nums) viz.nums = state.nums;
+      if (state.k) viz.k = state.k;
+      return viz;
     }
 
     return viz;
