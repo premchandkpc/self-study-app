@@ -65,7 +65,7 @@ export const EXAMPLES = {
     explanation: 'Sliding window technique to find maximum sum of any contiguous subarray of size k. Time: O(n), Space: O(1).',
     defaultInput: { array: [2, 1, 5, 1, 3, 2], k: 3 },
     testCases: [
-      { input: { array: [1, 3, -1, -3, 5, 3], k: 3 }, expected: 7 },
+      { input: { array: [1, 3, -1, -3, 5, 3], k: 3 }, expected: 5 },
     ],
   },
 
@@ -410,15 +410,15 @@ export const EXAMPLES = {
   intervals.sort((a, b) => a[0] - b[0]);
   const result = [intervals[0]];
 
-  tracer.step('Sort', 'Intervals sorted', { nums: intervals });
+  tracer.step('Sort', 'Intervals sorted', { array: intervals.flat ? intervals.flat() : intervals });
 
   for (let i = 1; i < intervals.length; i++) {
     if (intervals[i][0] <= result[result.length - 1][1]) {
       result[result.length - 1][1] = Math.max(result[result.length - 1][1], intervals[i][1]);
-      tracer.step('Merge', \`Merged intervals\`, { nums: intervals });
+      tracer.step('Merge', \`Merged intervals\`, { array: result.flat ? result.flat() : result });
     } else {
       result.push(intervals[i]);
-      tracer.step('Add', \`Added new interval\`, { nums: intervals });
+      tracer.step('Add', \`Added new interval\`, { array: result.flat ? result.flat() : result });
     }
   }
 
@@ -497,12 +497,12 @@ export const EXAMPLES = {
   intervals.sort((a, b) => a[1] - b[1]);
 
   const result = [intervals[0]];
-  tracer.step('Start', 'Sort by end time', { nums: intervals });
+  tracer.step('Start', 'Sort by end time', { array: intervals.flat ? intervals.flat() : intervals });
 
   for (let i = 1; i < intervals.length; i++) {
     if (intervals[i][0] >= result[result.length - 1][1]) {
       result.push(intervals[i]);
-      tracer.step('Add', 'Non-overlapping interval added', { nums: intervals });
+      tracer.step('Add', 'Non-overlapping interval added', { array: result.flat ? result.flat() : result });
     }
   }
 
@@ -1177,14 +1177,14 @@ export const EXAMPLES = {
   const { intervals } = input;
   intervals.sort((a, b) => a[0] - b[0]);
 
-  tracer.step('Sort', 'Meetings sorted by start time', { nums: intervals });
+  tracer.step('Sort', 'Meetings sorted by start time', { array: intervals.flat ? intervals.flat() : intervals });
 
   for (let i = 1; i < intervals.length; i++) {
     if (intervals[i][0] < intervals[i - 1][1]) {
-      tracer.step('Conflict', 'Meetings overlap', { nums: intervals });
+      tracer.step('Conflict', 'Meetings overlap', { array: intervals.flat ? intervals.flat() : intervals });
       return false;
     }
-    tracer.step('Check', 'No overlap', { nums: intervals });
+    tracer.step('Check', 'No overlap', { array: intervals.flat ? intervals.flat() : intervals });
   }
 
   return true;
@@ -1209,13 +1209,13 @@ export const EXAMPLES = {
   }
 
   events.sort((a, b) => a[0] !== b[0] ? a[0] - b[0] : a[1] - b[1]);
-  tracer.step('Sort', 'Events sorted', { nums: intervals });
+  tracer.step('Sort', 'Events sorted', { array: intervals.flat ? intervals.flat() : intervals });
 
   let maxRooms = 0, currentRooms = 0;
   for (const [time, type] of events) {
     currentRooms += type;
     maxRooms = Math.max(maxRooms, currentRooms);
-    tracer.step('Update', \`Rooms needed: \${maxRooms}\`, { nums: intervals });
+    tracer.step('Update', \`Rooms needed: \${maxRooms}\`, { array: intervals.flat ? intervals.flat() : intervals });
   }
 
   return maxRooms;
