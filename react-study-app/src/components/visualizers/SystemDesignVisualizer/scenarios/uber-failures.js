@@ -280,4 +280,23 @@ export default {
     { key: 'p99_ms',  label: 'P99 ms',   max: 12000, color: 'var(--node-comparing)', unit: 'ms', warn: 100, critical: 150 },
     { key: 'errors',  label: 'Errors/s', max: 20000, color: 'var(--pod-crash)',      unit: '' },
   ],
+  codeNotes: [
+    { title: 'Circuit Breaker Pattern', content: 'Trip Svc → PG: circuit trips after 5 failures, open for 60s, then half-open (3 successes → closed). Fallback: queue trip to Kafka for replay when PG recovers.' },
+    { title: 'Idempotency Guard', content: 'DB UNIQUE(idempotency_key) prevents duplicate charges. SELECT … FOR UPDATE before charge prevents race. Stripe Idempotency-Key header provides processor-level safety.' },
+    { title: 'Rate Limiter Failure Modes', content: 'Redis INCR contention causes false negatives at high RPS. Solution: local token bucket (in-memory) eliminates Redis bottleneck for per-IP rate checks.' },
+    { title: 'Redis maxmemory-policy', content: 'allkeys-lru evicts TTL keys under memory pressure → GEORADIUS returns empty. Fix: volatile-ttl evicts cache keys first, preserves TTL location keys.' },
+  ],
+  tradeoffs: [
+    { pro: 'Circuit breaker prevents cascading — fail fast vs fail all', con: '60s cooldown means degraded service for 60s even if root cause resolved in 30s. Adaptive timeout helps.' },
+    { pro: 'Kafka dead-letter queue preserves events for manual replay', con: 'Dead-lettered events on local disk LOST if pod restarts before replay. Use Kafka DLQ topic instead.' },
+    { pro: 'Redis volatile-ttl preserves location keys under memory pressure', con: 'Cache keys evicted early = more DB reads. Hit ratio drops from 95% to 70% during pressure.' },
+    { pro: 'Chaos Monkey surfaces resilience gaps before users do', con: 'Requires mature observability (RED metrics) + on-call rotation. Chaos in immature org = chaos.' },
+  ],
+  bestPractices: [
+    'Circuit breaker on EVERY sync dependency. Failure threshold: 5 consecutive. Reset timeout: 60s. Fallback must be graceful (queue vs cache vs degrade).',
+    'Idempotency key on ALL writes with financial impact. DB UNIQUE constraint + Stripe Idempotency-Key header. Alert if idempotency collision rate > 0.001%.',
+    'Rate limiter must fail CLOSED (block requests) — failing open makes DDoS worse. Global rate limit at CDN layer as first defense.',
+    'Redis: separate cluster for driver locations (volatile-ttl policy) vs general cache (allkeys-lru). Monitor memory_usage/maxmemory ratio; alert at 75%.',
+    'Every async consumer must have dead-letter topic + alert. Use RED metrics (Rate, Errors, Duration) for every dependency.',
+  ],
 };

@@ -313,4 +313,23 @@ export default {
     { key: 'p99_ms',  label: 'P99 ms',   max: 200, color: 'var(--node-comparing)', unit: 'ms', warn: 100, critical: 150 },
     { key: 'drivers', label: 'Drivers',  max: 1500, color: 'var(--pod-running)',   unit: '' },
   ],
+  codeNotes: [
+    { title: 'Bounded Context Communication', content: 'Sync (gRPC) for imperative flows: Rider→Booking (50ms P99). Async (Kafka) for side-effects: Execution→Payment→Notification. No cross-context DB access — always through API.' },
+    { title: 'Rider Context', content: 'Signup/login (OAuth2 + biometry), ride request UI with real-time map, payment method mgmt. Offline-capable via GraphQL local cache. App size < 60MB.' },
+    { title: 'Booking Context', content: 'Redis GEORADIUS for driver location. Pricing Svc computes surge from demand/supply. Kafka for RIDE_REQUESTED event. P99 match time < 50ms.' },
+    { title: 'Payment + Data Contexts', content: 'Async via Kafka decouples charging from trip completion. Idempotency keys prevent double-charge. Data Platform: Kafka → S3 → Spark ETL for ML training.' },
+  ],
+  tradeoffs: [
+    { pro: 'Bounded contexts prevent tight coupling — teams own their domain', con: 'Context boundaries add gRPC/Kafka overhead (~1ms per cross-context call). 6 contexts × 2 hops = 12ms extra.' },
+    { pro: 'Each context independently deployable and scalable', con: 'N+1 problem: each context needs its own k8s deployment + monitoring + on-call. Ops overhead ~$700/context/mo.' },
+    { pro: 'Data ownership eliminates shared-schema coupling', con: 'Cross-context queries require scatter-gather. Booking cannot query Payment data — must go through Payment API.' },
+    { pro: 'Different communication patterns per use case', con: 'Polyglot communication adds complexity: gRPC for sync, Kafka for async, Redis for hot-path. Devs must know 3 protocols.' },
+  ],
+  bestPractices: [
+    'Enforce context boundaries with linter rules: no cross-context DB imports. All inter-context communication through APIs only.',
+    'Each async consumer must have dead-letter topic + alert. Unprocessed events pile up silently if not monitored.',
+    'Circuit breaker on every sync gRPC call. Failure threshold: 5 consecutive failures → open circuit for 60s.',
+    'Use feature flags (LaunchDarkly) for kill switches per context — allows ops to disable broken context without deployment.',
+    'Monitor RED metrics (Rate, Errors, Duration) per context, not per service. Context-level SLO: P99 < 100ms, error rate < 0.1%.',
+  ],
 };

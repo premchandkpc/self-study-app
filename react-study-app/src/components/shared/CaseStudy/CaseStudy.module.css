@@ -11,6 +11,17 @@
   padding-bottom: var(--space-md);
 }
 
+.overviewText {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
 .section {
   margin-bottom: var(--space-2xl);
 }
@@ -22,9 +33,58 @@
   color: var(--text-primary);
 }
 
+.subTitle {
+  margin: 0 0 var(--space-sm) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Tiers */
+.tierList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.tierItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.tierItem:hover {
+  border-color: var(--text-accent);
+}
+
+.tierBadge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: white;
+  background: var(--text-accent);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.tierDesc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Components */
 .componentGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-md);
 }
 
@@ -41,11 +101,12 @@
 
 .componentDesc {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
 
+/* Flow */
 .flowSteps {
   display: flex;
   flex-direction: column;
@@ -56,7 +117,7 @@
   display: flex;
   gap: var(--space-md);
   padding: var(--space-md);
-  background: var(--surface-secondary);
+  background: var(--bg-secondary);
   border-radius: 8px;
   border-left: 4px solid var(--text-accent);
 }
@@ -80,8 +141,263 @@
   color: var(--text-primary);
   line-height: 1.6;
   flex: 1;
+  font-size: 0.85rem;
 }
 
+/* Protocol */
+.protocolGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-md);
+}
+
+.protocolCard {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.monoText {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* Database */
+.rationaleText {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 var(--space-md) 0;
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.tableGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-sm);
+}
+
+.tableCard {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.tableCard:hover {
+  border-color: var(--text-accent);
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.tableName {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tableEngine {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--text-accent) 15%, transparent);
+  color: var(--text-accent);
+}
+
+.tableDesc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.dbMeta {
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Failure modes */
+.failureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-md);
+}
+
+.failureCard {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid #ff6b6b;
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.failureCard:hover {
+  border-color: #ff6b6b;
+}
+
+.failureName {
+  margin: 0 0 var(--space-sm) 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ff6b6b;
+}
+
+.failureDesc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Performance */
+.perfRow {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.perfBox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.perfLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.perfValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-accent);
+  font-family: var(--font-mono);
+}
+
+.perfList {
+  margin-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.perfItem {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-left: 2px solid var(--border);
+}
+
+/* Evolution */
+.evolutionList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.evolutionPhase {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.evolutionPhase:hover {
+  border-color: var(--text-accent);
+}
+
+.phaseBadge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, var(--text-accent), #6c5ce7);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.phaseDesc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Distributed Systems */
+.dsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+}
+
+.dsCard {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid #6c5ce7;
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.dsCard:hover {
+  border-color: #6c5ce7;
+}
+
+.dsConcept {
+  margin: 0 0 var(--space-sm) 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #6c5ce7;
+  font-family: var(--font-mono);
+}
+
+.dsDecision {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Challenges */
 .challengeList {
   margin: 0;
   padding: 0;
@@ -93,12 +409,13 @@
 
 .challengeItem {
   padding: var(--space-md);
-  background: linear-gradient(135deg, var(--surface-secondary) 0%, rgba(255, 255, 255, 0.02) 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(255, 255, 255, 0.02) 100%);
   border-left: 3px solid #ff6b6b;
   border-radius: 4px;
   color: var(--text-primary);
   line-height: 1.6;
   font-weight: 500;
+  font-size: 0.85rem;
 }
 
 @media (max-width: 768px) {
@@ -110,7 +427,11 @@
     font-size: 1.1rem;
   }
 
-  .componentGrid {
+  .componentGrid,
+  .protocolGrid,
+  .failureGrid,
+  .dsGrid,
+  .tableGrid {
     grid-template-columns: 1fr;
   }
 
@@ -121,5 +442,13 @@
 
   .stepNumber {
     align-self: flex-start;
+  }
+
+  .perfRow {
+    flex-direction: column;
+  }
+
+  .evolutionPhase {
+    flex-direction: column;
   }
 }

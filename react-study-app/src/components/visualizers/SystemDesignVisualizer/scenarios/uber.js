@@ -430,4 +430,23 @@ export default {
     { key: 'p99_ms',  label: 'P99 ms',   max: 200, color: 'var(--node-comparing)', unit: 'ms', warn: 100, critical: 150 },
     { key: 'drivers', label: 'Drivers',  max: 50,  color: 'var(--pod-running)',    unit: '' },
   ],
+  codeNotes: [
+    { title: 'Ride Request Lifecycle', content: 'Rider → API Gateway (rate-limit + auth) → Match Svc (GEORADIUS) → Pricing Svc (surge calc) → Response to rider + Kafka RIDE_REQUESTED async for notifications.' },
+    { title: 'Redis GEORADIUS', content: 'GEORADIUS key lng lat radius m WITHDIST WITHCOORD. O(log N) per query. TTL 5s per driver entry. 200M calls/day at Uber scale.' },
+    { title: 'Kafka Event Flow', content: 'Sync for imperative (match + pricing response must return before rider can proceed). Async for side-effects (notifications, payments). Different consumers track offset independently.' },
+    { title: 'PostgreSQL Sharding', content: 'Trips sharded by city_id. Each shard = independent PostgreSQL instance. Read replicas per shard scale reads. Cross-shard queries impossible — app scatters.' },
+  ],
+  tradeoffs: [
+    { pro: 'Redis eliminates DB on hot path — 200M GEORADIUS/day at <2ms', con: 'Redis OOM = all driver locations lost = zero matches (waterfall). Separate cluster mitigates.' },
+    { pro: 'Kafka decouples services — Payment can retry independently', con: 'Async adds ~100ms delivery latency. Not suitable for imperative flows requiring immediate response.' },
+    { pro: 'gRPC sync calls are fast (<5ms) for imperative flows', con: 'Sync creates temporal coupling — if Match is slow, Gateway connections pile up at 200 RPS.' },
+    { pro: 'Sharded PostgreSQL provides unlimited write scaling', con: 'Cross-shard queries impossible. Trip analytics require separate data pipeline (Kafka → S3 → Spark).' },
+  ],
+  bestPractices: [
+    'Use Redis for hot-path data only (driver locations with TTL 5s). Never use as primary data store — data loss on restart acceptable.',
+    'Kafka producers: fire-and-forget for non-critical events, wait-for-ack for payment events. Configure min.insync.replicas=2.',
+    'API Gateway rate limit at 100 req/min per IP + per user ID. Fail CLOSED under load (block requests) to prevent cascading.',
+    'Monitor trip P99 latency; alert if >100ms (indicates service bottleneck). Track per-service error rates separately.',
+    'Idempotency key on every payment write (Stripe Idempotency-Key header + DB UNIQUE constraint on idempotency_key).',
+  ],
 };

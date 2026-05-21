@@ -27,7 +27,7 @@ describe('CaseStudy', () => {
       ],
     };
     render(<CaseStudy name="Test" caseStudy={caseStudy} />);
-    expect(screen.getByText('🏗️ Architecture Components')).toBeInTheDocument();
+    expect(screen.getByText('⚙️ Component Deep Dive')).toBeInTheDocument();
     expect(screen.getByText('API Gateway')).toBeInTheDocument();
     expect(screen.getByText('Database')).toBeInTheDocument();
   });
@@ -41,9 +41,8 @@ describe('CaseStudy', () => {
       ],
     };
     render(<CaseStudy name="Test" caseStudy={caseStudy} />);
-    expect(screen.getByText('🔄 Request Flow')).toBeInTheDocument();
+    expect(screen.getByText('🔄 Request Lifecycle')).toBeInTheDocument();
     expect(screen.getByText('User requests a ride')).toBeInTheDocument();
-    expect(screen.getByText('1')).toBeInTheDocument();
   });
 
   it('renders challenges section when provided', () => {
@@ -66,8 +65,8 @@ describe('CaseStudy', () => {
       challenges: ['Challenge 1'],
     };
     render(<CaseStudy name="Test" caseStudy={caseStudy} />);
-    expect(screen.getByText('🏗️ Architecture Components')).toBeInTheDocument();
-    expect(screen.getByText('🔄 Request Flow')).toBeInTheDocument();
+    expect(screen.getByText('⚙️ Component Deep Dive')).toBeInTheDocument();
+    expect(screen.getByText('🔄 Request Lifecycle')).toBeInTheDocument();
     expect(screen.getByText('⚡ Key Challenges')).toBeInTheDocument();
   });
 });

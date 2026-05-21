@@ -100,4 +100,23 @@ export default {
     { key: 'latency_ms', label: 'Latency',     max: 100, color: 'var(--node-visited)' },
     { key: 'hotShard',   label: 'Hot Shard',   max: 1,  color: 'var(--pod-crash)', warn: 50 },
   ],
+  codeNotes: [
+    { title: 'Modulo Sharding', content: 'Hash(key) % N shards. Simple but adding a shard changes N → all keys remapped. O(N) rebalance cost per shard change.' },
+    { title: 'Consistent Hashing', content: 'Keys hash onto a ring. Each shard owns an arc. Adding a shard only remaps ~1/N of keys. Used by DynamoDB, Cassandra.' },
+    { title: 'Shard Key Selection', content: 'Choose key with high cardinality and uniform access pattern. Bad: user_id (if users sorted → hot shard). Good: hash(user_id). Worse: timestamp (all writes to latest shard).' },
+    { title: 'Resharding', content: 'Add shards → migrate data. Online resharding: 1) add new shard, 2) dual-write to old+new, 3) backfill history, 4) cut reads. Takes hours for TB-scale data.' },
+  ],
+  tradeoffs: [
+    { pro: 'Sharding scales write throughput linearly with shards', con: 'Cross-shard queries impossible — must scatter-gather from all shards (slow).' },
+    { pro: 'Consistent hashing minimizes rebalance on shard add/remove', con: 'Uneven data distribution (hot shards) still possible despite hash uniformity.' },
+    { pro: 'Smaller shards = faster backups, easier maintenance', con: 'Too many shards = connection overhead. 1000 shards × 100 connections = 100K connections.' },
+    { pro: 'No single-node storage bottleneck', con: 'Joins/transactions across shards not possible — app must handle at application layer.' },
+  ],
+  bestPractices: [
+    'Choose shard key with high cardinality and uniform distribution. Avoid monotonically increasing keys (timestamp, auto-increment) — they create hot shards.',
+    'Monitor per-shard request rate and disk usage; alert if any shard differs by >20% from mean — indicates skew.',
+    'Use virtual nodes (vnodes) in Cassandra to spread each shard across many physical nodes — reduces rebalance impact.',
+    'Plan for resharding: pre-split into more shards than needed (e.g., 1024 shards for 10 nodes) to avoid full rebalance on scale-out.',
+    'For relational data, keep JOIN-heavy tables on same shard (co-location). Avoid cross-shard FK references.',
+  ],
 };
