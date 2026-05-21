@@ -1,0 +1,167 @@
+.container {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.description {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.matrixContainer {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  overflow: auto;
+}
+
+.matrix {
+  display: grid;
+  gap: 4px;
+  width: fit-content;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.cell:hover {
+  border-color: #9ca3af;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.cellContent {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+.cellCoord {
+  font-size: 9px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* State-based styling */
+.cell.state-idle {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.cell.state-active {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  color: #1e40af;
+  font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.cell.state-completed {
+  border-color: #10b981;
+  background: #f0fdf4;
+  color: #065f46;
+}
+
+.cell.state-error {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+.cell.state-processing {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  color: #92400e;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.info {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.dimension {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendBadge {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 2px;
+}
+
+.legendBadge.state-idle {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.legendBadge.state-active {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.legendBadge.state-completed {
+  background: #f0fdf4;
+  border-color: #10b981;
+}

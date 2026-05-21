@@ -1,0 +1,160 @@
+.container {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.description {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.flowchartContainer {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.flowchart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.nodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.node {
+  padding: 12px 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  background: white;
+  min-width: 140px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.node:hover {
+  border-color: #9ca3af;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nodeLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  word-break: break-word;
+}
+
+/* Node type shapes */
+.node.type-start,
+.node.type-end {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.node.type-decision {
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  min-width: 100px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.node.type-process {
+  border-radius: 4px;
+}
+
+/* State styling */
+.node.state-idle {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.node.state-active {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  color: #1e40af;
+  font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.node.state-completed {
+  border-color: #10b981;
+  background: #f0fdf4;
+  color: #065f46;
+}
+
+.node.state-error {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+.arrow {
+  font-size: 16px;
+  color: #9ca3af;
+  height: 16px;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #6b7280;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shapeBadge {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d1d5db;
+  background: white;
+}
+
+.shapeBadge.type-start,
+.shapeBadge.type-end {
+  border-radius: 50%;
+}
+
+.shapeBadge.type-process {
+  border-radius: 2px;
+}
+
+.shapeBadge.type-decision {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
