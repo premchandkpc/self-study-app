@@ -198,8 +198,17 @@ export class AlgorithmCompiler {
   _cloneState(data) {
     const cloned = {};
     for (const [key, value] of Object.entries(data)) {
-      if (Array.isArray(value)) cloned[key] = [...value];
-      else cloned[key] = value;
+      if (Array.isArray(value)) {
+        cloned[key] = value.map(v => Array.isArray(v) ? [...v] : v);
+      } else if (value !== null && typeof value === 'object') {
+        try {
+          cloned[key] = JSON.parse(JSON.stringify(value));
+        } catch {
+          cloned[key] = value;
+        }
+      } else {
+        cloned[key] = value;
+      }
     }
     return cloned;
   }

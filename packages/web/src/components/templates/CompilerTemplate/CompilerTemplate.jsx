@@ -10,7 +10,7 @@ import InputPanel from '../../shared/InputPanel/InputPanel';
 import SyntaxEditor from '../../shared/SyntaxEditor/SyntaxEditor';
 import styles from './CompilerTemplate.module.css';
 
-const LANGUAGES = ['javascript', 'python', 'go', 'java', 'rust'];
+const LANGUAGES = ['javascript'];
 
 export default function CompilerTemplate() {
   const { state, dispatch } = useSimulation();
@@ -119,66 +119,30 @@ export default function CompilerTemplate() {
         return;
       }
 
-      if (language === 'javascript') {
-        const algorithmMatch = code.match(/(?:function\s*\w*|const\s+\w+\s*=)\s*\(([^)]*)\)\s*(?:=>)?\s*\{([\s\S]*)\}/);
-        if (!algorithmMatch) {
-          setError('Code must be a function: function(input, tracer) { ... } or const algorithm = (input, tracer) => { ... }');
+      const algorithmMatch = code.match(/(?:function\s+\w+|const\s+\w+)\s*=\s*\(([^)]*)\)\s*(?:=>)?\s*\{([\s\S]*)\}(?:\s*;)?$/m);
+      if (!algorithmMatch) {
+        setError('Code must be: function(input, tracer) { ... } or const algorithm = (input, tracer) => { ... }');
+        setIsCompiling(false);
+        return;
+      }
+
+      try {
+        const fnBody = algorithmMatch[2];
+        const algorithm = new Function('input', 'tracer', fnBody);
+        const compiler = new AlgorithmCompiler();
+        const steps = compiler.compile(algorithm, parsedInputs);
+
+        if (!steps || steps.length === 0) {
+          setError('No steps generated. Make sure to call tracer.step() or tracer.found()');
           setIsCompiling(false);
           return;
         }
 
-        try {
-          const fnBody = algorithmMatch[2];
-          const algorithm = new Function('input', 'tracer', fnBody);
-          const compiler = new AlgorithmCompiler();
-          const steps = compiler.compile(algorithm, parsedInputs);
-
-          if (!steps || steps.length === 0) {
-            setError('No steps generated. Make sure to call tracer.step() or tracer.found()');
-            setIsCompiling(false);
-            return;
-          }
-
-          dispatch({ type: 'RESET' });
-          dispatch({ type: 'SET_STEPS', payload: steps });
-          setHasRun(true);
-        } catch (e) {
-          setError(`Execution error: ${e.message}`);
-        }
-      } else {
-        try {
-          const response = await fetch('http://localhost:4000/api/execute', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ language, code, inputData: parsedInputs }),
-          });
-
-          if (!response.ok) {
-            const err = await response.json();
-            setError(err.error || 'Backend error');
-            setIsCompiling(false);
-            return;
-          }
-
-          const result = await response.json();
-          if (result.error) {
-            setError(`${language} error: ${result.error}`);
-            setIsCompiling(false);
-            return;
-          }
-
-          if (!result.steps || result.steps.length === 0) {
-            setError('No steps generated. Make sure to call tracer.step() or tracer.found()');
-            setIsCompiling(false);
-            return;
-          }
-
-          dispatch({ type: 'RESET' });
-          dispatch({ type: 'SET_STEPS', payload: result.steps });
-          setHasRun(true);
-        } catch (e) {
-          setError(`Backend error: ${e.message}. Make sure API server is running on port 4000.`);
-        }
+        dispatch({ type: 'RESET' });
+        dispatch({ type: 'SET_STEPS', payload: steps });
+        setHasRun(true);
+      } catch (e) {
+        setError(`Execution error: ${e.message}`);
       }
     } catch (e) {
       setError(e.message);
