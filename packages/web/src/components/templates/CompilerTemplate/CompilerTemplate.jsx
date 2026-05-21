@@ -76,6 +76,12 @@ export default function CompilerTemplate() {
 
     try {
       const params = FunctionSignatureParser.parseParams(code);
+      if (!params || params.length === 0) {
+        console.warn('No input parameters extracted from code');
+        setInputSchema([]);
+        return;
+      }
+
       const schema = FunctionSignatureParser.generateSchema(params);
       setInputSchema(schema);
 
@@ -89,6 +95,7 @@ export default function CompilerTemplate() {
         return updated;
       });
     } catch (e) {
+      console.error('Error parsing code:', e);
       setInputSchema([]);
     }
   }, [code]);

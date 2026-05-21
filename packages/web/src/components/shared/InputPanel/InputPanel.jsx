@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styles from './InputPanel.module.css';
 
 /**
@@ -11,13 +11,29 @@ import styles from './InputPanel.module.css';
  */
 export default function InputPanel({ schema, current = {}, onApply }) {
   if (!schema?.length) return null;
+
   const initial = Object.fromEntries(
     schema.map((f) => {
       const val = current[f.key] ?? f.default;
-      return [f.key, Array.isArray(val) ? val.join(', ') : val];
+      const display = Array.isArray(val) ? val.join(', ') : String(val ?? '');
+      return [f.key, display];
     })
   );
   const [vals, setVals] = useState(initial);
+
+  // Update vals when schema or current changes
+  useEffect(() => {
+    if (schema?.length) {
+      const updated = Object.fromEntries(
+        schema.map((f) => {
+          const val = current[f.key] ?? f.default;
+          const display = Array.isArray(val) ? val.join(', ') : String(val ?? '');
+          return [f.key, display];
+        })
+      );
+      setVals(updated);
+    }
+  }, [schema, current]);
 
   const warnings = useMemo(() => {
     const warns = [];
@@ -39,21 +55,25 @@ export default function InputPanel({ schema, current = {}, onApply }) {
 
   function apply() {
     const parsed = {};
-    for (const field of schema) {
-      const raw = vals[field.key];
-      if (field.type === 'number') {
-        const n = parseInt(raw, 10);
-        parsed[field.key] = isNaN(n)
-          ? field.default
-          : Math.max(field.min ?? -Infinity, Math.min(field.max ?? Infinity, n));
-      } else if (field.type === 'array-num') {
-        const arr = String(raw).split(',').map((v) => parseFloat(v.trim())).filter((v) => !isNaN(v));
-        parsed[field.key] = arr.length ? arr : field.default;
-      } else {
-        parsed[field.key] = String(raw).trim() || String(field.default);
+    try {
+      for (const field of schema) {
+        const raw = vals[field.key];
+        if (field.type === 'number') {
+          const n = parseInt(raw, 10);
+          parsed[field.key] = isNaN(n)
+            ? field.default
+            : Math.max(field.min ?? -Infinity, Math.min(field.max ?? Infinity, n));
+        } else if (field.type === 'array-num') {
+          const arr = String(raw).split(',').map((v) => parseFloat(v.trim())).filter((v) => !isNaN(v));
+          parsed[field.key] = arr.length ? arr : field.default;
+        } else {
+          parsed[field.key] = String(raw).trim() || String(field.default);
+        }
       }
+      onApply(parsed);
+    } catch (e) {
+      console.error('Error parsing inputs:', e, { schema, vals });
     }
-    onApply(parsed);
   }
 
   return (
