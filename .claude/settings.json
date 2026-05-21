@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node test-compiler.js)",
+      "Bash(npm -w packages/web install react-simple-code-editor)",
+      "Bash(pkill -f \"vite|npm.*dev\")",
+      "Bash(tee dev.log)"
+    ]
+  }
+}
