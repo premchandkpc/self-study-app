@@ -121,24 +121,7 @@
   flex-shrink: 0;
 }
 
-.codeEditor {
-  flex: 1;
-  padding: var(--space-sm);
-  border: none;
-  background: var(--bg-card);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm);
-  line-height: 1.5;
-  resize: none;
-  outline: none;
-  overflow: auto;
-  min-height: 0;
-}
-
-.codeEditor:focus {
-  outline: none;
-}
+/* Monaco editor is integrated as a component, uses flex: 1 */
 
 /* ── Visualization area ── */
 .vizArea {

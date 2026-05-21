@@ -7,6 +7,7 @@ import { DsaVizRenderer } from '../../renderers/DsaRenderer';
 import StepControls from '../../shared/StepControls/StepControls';
 import VariablesPanel from '../../shared/VariablesPanel/VariablesPanel';
 import InputPanel from '../../shared/InputPanel/InputPanel';
+import SyntaxEditor from '../../shared/SyntaxEditor/SyntaxEditor';
 import styles from './CompilerTemplate.module.css';
 
 const LANGUAGES = ['javascript', 'python', 'go', 'java', 'rust'];
@@ -172,19 +173,8 @@ export default function CompilerTemplate() {
       <div className={styles.body}>
         {/* Code editor */}
         <div className={styles.codePanel}>
-          <div className={styles.codePanelHeader}>algorithm.js</div>
-          <textarea
-            className={styles.codeEditor}
-            value={code}
-            onChange={e => setCode(e.target.value)}
-            placeholder="const algorithm = (input, tracer) => {
-  const { array, target } = input;
-  tracer.step('Init', 'description', { array, target });
-  // ... algorithm code
-  return result;
-};"
-            spellCheck={false}
-          />
+          <div className={styles.codePanelHeader}>algorithm.{language === 'javascript' ? 'js' : language === 'python' ? 'py' : 'java'}</div>
+          <SyntaxEditor code={code} onChange={setCode} language={language} />
         </div>
 
         {/* Visualization area */}
