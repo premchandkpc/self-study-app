@@ -33,7 +33,11 @@ export interface TechnologyContent {
   title: string;
   technology: string;
   description?: string;
-  scenes: Array<{
+  concept?: string;
+  difficulty?: 1 | 2 | 3 | 4 | 5;
+  domain?: string;
+  structure?: any; // For legacy scenarios
+  scenes?: Array<{
     id: string;
     type: PrimitiveType;
     title: string;
@@ -116,4 +120,23 @@ export interface IRLearningUnit {
     misconceptions?: string[];
     keywords?: string[];
   };
+}
+
+export interface LegacyScenario {
+  id: string;
+  label: string;
+  icon?: string;
+  category: string;
+  collectionType: string;
+  code?: string[];
+  language?: string;
+  build(): Array<{
+    id?: string;
+    title?: string;
+    description?: string;
+    state?: any;
+    stages?: any[];
+    opsLog?: Array<{ msg: string; type: string }>;
+    result?: string;
+  }>;
 }

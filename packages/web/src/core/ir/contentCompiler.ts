@@ -8,35 +8,59 @@ import {
   IREdge,
   IRAnimation,
   IRAnimationStep,
+  TechnologyContent,
+  LegacyScenario,
 } from './schema';
-
-export interface TechnologyContent {
-  id: string;
-  title: string;
-  technology: string;
-  domain: string;
-  concept: string;
-  difficulty: 1 | 2 | 3 | 4 | 5;
-  structure: any; // technology-specific structure
-}
+import { ScenarioAdapter } from './adapters/scenarioAdapter';
 
 export class ContentCompiler {
   compile(content: TechnologyContent): IRLearningUnit {
-    const abstractType = this.mapTechnologyToPrimitive(content.technology, content.concept);
+    const abstractType = this.mapTechnologyToPrimitive(
+      content.technology,
+      content.concept || ''
+    );
+
+    // Convert TechnologyContent.scenes to IRScene format if provided
+    let scenes: IRScene[] = [];
+    if (content.scenes) {
+      scenes = content.scenes.map((s) => ({
+        id: s.id,
+        type: s.type,
+        title: s.title,
+        nodes: s.nodes.map((n) => ({
+          id: n.id,
+          type: s.type,
+          label: n.label,
+          state: 'idle' as const,
+          metadata: n.metadata,
+        })),
+        edges: s.edges.map((e) => ({
+          id: `${e.from}-${e.to}`,
+          from: e.from,
+          to: e.to,
+          type: 'flow' as const,
+          label: e.label,
+        })),
+      }));
+    }
 
     return {
       id: content.id,
       title: content.title,
-      concept: content.concept,
-      difficulty: content.difficulty,
+      concept: content.concept || 'default',
+      difficulty: content.difficulty || 3,
       prerequisites: this.inferPrerequisites(content),
-      scenes: this.compileScenes(content, abstractType),
+      scenes: scenes.length > 0 ? scenes : this.compileScenes(content, abstractType),
       interactions: [],
       metadata: {
         technology: content.technology,
-        domain: content.domain,
+        domain: content.domain || 'default',
       },
     };
+  }
+
+  compileLegacy(scenario: LegacyScenario, technology: string): IRLearningUnit {
+    return ScenarioAdapter.fromLegacy(scenario, technology);
   }
 
   private mapTechnologyToPrimitive(
