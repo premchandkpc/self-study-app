@@ -3,8 +3,8 @@ import { SUBTOPIC_ROUTES } from './topics';
 export const ROUTES = {
   HOME:       '/',
   TOPICS:     '/topics',
-  TOPIC:      '/topics/:topicId',
-  VISUALIZER: '/:type',
+  TOPIC:      '/:abbr',
+  VISUALIZER: '/:abbr/:slug',
   INTERVIEW:  '/interview',
 };
 

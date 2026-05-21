@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COLLECTIONS, COLLECTION_CATEGORIES } from '../../core/constants/collections';
+import { getSimulateRouteForVizType } from '../../core/topics/topicRoutes';
+import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
 import styles from './Collections.module.css';
@@ -24,16 +26,13 @@ export default function CollectionDetail({ collectionId }) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.detailHeader}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/collections')}>← Collections</Button>
-        <div className={styles.detailTitle}>
-          <span className={styles.detailIcon}>{collection.icon}</span>
-          <div className={styles.detailMeta}>
-            <h1 className={styles.title}>{collection.label}</h1>
-            <p className={styles.sub}>{collection.desc}</p>
-          </div>
-        </div>
-      </div>
+      <DetailPageHeader
+        backLabel="Collections"
+        onBack={() => navigate('/collections')}
+        icon={collection.icon}
+        title={collection.label}
+        desc={collection.desc}
+      />
 
       <div className={styles.tabs}>
         {COLLECTION_CATEGORIES.map((cat) => {
@@ -95,7 +94,7 @@ export default function CollectionDetail({ collectionId }) {
                     variant="primary"
                     size="sm"
                     icon="▶"
-                    onClick={() => navigate(`/${scenario.vizType}`)}
+                    onClick={() => navigate(getSimulateRouteForVizType(scenario.vizType) || '/topics')}
                   >
                     Simulate
                   </Button>

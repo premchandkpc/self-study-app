@@ -1,58 +1,48 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { TOPICS, VIZ_TYPE_TO_TOPIC } from '../../../core/constants/topics';
-import { SUBTOPIC_ROUTES } from '../../../core/constants/routes';
-import { useAppState } from '../../../core/context/AppStateContext';
+import { ABBR_MAP, TOPICS } from '../../../core/constants/topics';
+import { useUI } from '../../../core/context/UIContext';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { topicId, subtopic, type, scenarioId } = useParams();
-  const { state, actions } = useAppState();
-  const expandedTopics = state.ui.expandedTopics;
-  const sidebarMode = state.ui.sidebarMode;
+  const { topicId, abbr } = useParams();
+  const { state, actions } = useUI();
+  const expandedTopics = state.expandedTopics;
+  const sidebarMode = state.sidebarMode;
 
-  // Resolve current topic: from topicId (old /topics/:topicId) or find by visualizer type (new /:type)
-  const currentTopicId = topicId || (type && VIZ_TYPE_TO_TOPIC[type]);
+  const currentAbbr = abbr || (topicId && TOPICS.find(t => t.id === topicId)?.abbr);
+  const currentTopicId = topicId || (abbr && ABBR_MAP[abbr]?.id);
 
-  // Auto-expand current topic based on URL
   useEffect(() => {
     if (currentTopicId && !expandedTopics[currentTopicId]) {
       actions.setTopicExpanded(currentTopicId);
     }
   }, [currentTopicId, expandedTopics, actions]);
 
-  // Hide sidebar if mode is 'hidden'
-  if (sidebarMode === 'hidden') {
-    return null;
-  }
+  if (sidebarMode === 'hidden') return null;
 
-  // Filter topics: show all or only current
   const visibleTopics = sidebarMode === 'current-topic'
     ? TOPICS.filter((t) => t.id === currentTopicId)
     : TOPICS;
 
-  function handleSelect(topicId, subtopic) {
-    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
-    navigate(route);
+  function handleNav(path) {
+    navigate(path);
   }
 
-  function isActive(topicId, subtopic) {
-    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`];
-    return route ? location.pathname === route : false;
+  function isActive(path) {
+    return location.pathname === path;
   }
 
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.inner}>
-        {!collapsed && (
-          <p className={styles.sectionLabel}>Topics</p>
-        )}
-
+        {!collapsed && <p className={styles.sectionLabel}>Topics</p>}
         <nav className={styles.nav}>
           {visibleTopics.map((topic) => {
             const isExpanded = expandedTopics[topic.id];
+            const topicInfo = ABBR_MAP[topic.abbr];
             return (
               <div key={topic.id} className={styles.topicGroup}>
                 <button
@@ -64,24 +54,23 @@ export default function Sidebar({ collapsed }) {
                   {!collapsed && (
                     <>
                       <span className={styles.topicLabel}>{topic.label}</span>
-                      <span className={`${styles.chevron} ${isExpanded ? styles.open : ''}`}>
-                        ›
-                      </span>
+                      <span className={`${styles.chevron} ${isExpanded ? styles.open : ''}`}>›</span>
                     </>
                   )}
                 </button>
-
-                {!collapsed && isExpanded && (
+                {!collapsed && isExpanded && topicInfo && (
                   <div className={styles.subtopics}>
-                    {topic.subtopics.map((sub) => {
-                      const key = `${topic.id}:${sub}`;
+                    {topicInfo.subtopics.map((sub, i) => {
+                      const slug = sub.scenarioId ||
+                        sub.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                      const path = `/${topic.abbr}/${slug}`;
                       return (
                         <button
-                          key={key}
-                          className={`${styles.subtopicBtn} ${isActive(topic.id, sub) ? styles.active : ''}`}
-                          onClick={() => handleSelect(topic.id, sub)}
+                          key={i}
+                          className={`${styles.subtopicBtn} ${isActive(path) ? styles.active : ''}`}
+                          onClick={() => handleNav(path)}
                         >
-                          {sub}
+                          {sub.name}
                         </button>
                       );
                     })}
@@ -91,13 +80,12 @@ export default function Sidebar({ collapsed }) {
             );
           })}
         </nav>
-
         {!collapsed && (
           <div className={styles.footer}>
             <div className={styles.footerStats}>
               <span>{visibleTopics.length} Topic{visibleTopics.length !== 1 ? 's' : ''}</span>
               <span className={styles.dot}>·</span>
-              <span>{visibleTopics.reduce((acc, t) => acc + t.subtopics.length, 0)} Modules</span>
+              <span>{visibleTopics.reduce((acc, t) => acc + (ABBR_MAP[t.abbr]?.subtopics.length || 0), 0)} Modules</span>
             </div>
           </div>
         )}

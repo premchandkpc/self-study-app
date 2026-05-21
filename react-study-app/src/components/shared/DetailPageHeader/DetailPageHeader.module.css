@@ -1,0 +1,31 @@
+.detailHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.detailTitle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.detailIcon {
+  font-size: 40px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
+  letter-spacing: -1px;
+}
+
+.sub {
+  font-size: var(--font-size-base);
+  color: var(--text-muted);
+  margin: 0;
+}

@@ -61,10 +61,10 @@ export default function Home({ onSelectTopic }) {
             <Button variant="secondary" size="lg" icon="📚" onClick={() => navigate('/study-hub')}>
               Deep Dive Guide
             </Button>
-            <Button variant="secondary" size="lg" icon="🏗️" onClick={() => navigate('/topics/systemdesign')}>
+            <Button variant="secondary" size="lg" icon="🏗️" onClick={() => navigate('/sd')}>
               System Design
             </Button>
-            <Button variant="secondary" size="lg" icon="🎮" onClick={() => navigate('/array')}>
+            <Button variant="secondary" size="lg" icon="🎮" onClick={() => navigate('/dsa/arrays')}>
               Try Visualizer
             </Button>
           </div>

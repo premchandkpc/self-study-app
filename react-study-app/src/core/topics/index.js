@@ -1,9 +1,8 @@
-// Barrel re-export: topics.js now imports from ../topics/
-// This maintains backward compatibility while allowing the split structure to exist
-// All existing imports "from './topics'" continue to work without changes
+// Barrel file: re-exports all public APIs from topics system
+// Drop-in replacement for ../constants/topics.js
 
 export {
-  // Maps
+  // Maps and utilities
   TOPICS,
   TOPIC_DEFS,
   TOPIC_META,
@@ -14,7 +13,9 @@ export {
   ABBR_MAP,
   SLUG_MAP,
   TOPIC_EXPLANATIONS,
+} from './topicMaps.js';
 
+export {
   // Service API
   getTopicById,
   getTopicByAbbr,
@@ -30,7 +31,6 @@ export {
   getSubtopicRoute,
   getSubtopicScenarioId,
   getSubtopicDef,
+} from './topicService.js';
 
-  // Utils
-  slugify,
-} from '../topics/index.js';
+export { slugify } from './topicUtils.js';

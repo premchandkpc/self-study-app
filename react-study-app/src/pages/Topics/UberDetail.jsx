@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { buildSubtopicRoute } from '../../core/topics/topicRoutes';
+import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Button from '../../components/shared/Button/Button';
 import Card, { CardHeader } from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
@@ -59,20 +61,13 @@ export default function UberDetail() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.detailHeader}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/topics/systemdesign')}>
-          ← System Design
-        </Button>
-        <div className={styles.detailTitle}>
-          <span className={styles.detailIcon}>🚗</span>
-          <div>
-            <h1 className={styles.title}>Uber System Design</h1>
-            <p className={styles.sub}>
-              14 components across 5 layers — explore each sub-system below.
-            </p>
-          </div>
-        </div>
-      </div>
+      <DetailPageHeader
+        backLabel="System Design"
+        onBack={() => navigate('/sd')}
+        icon="🚗"
+        title="Uber System Design"
+        desc="14 components across 5 layers — explore each sub-system below."
+      />
 
       <div className={styles.modulesGrid}>
         {UBER_COMPONENTS.map((comp, i) => (
@@ -119,7 +114,7 @@ export default function UberDetail() {
                   variant="primary"
                   size="sm"
                   icon="▶"
-                  onClick={() => navigate(`/${comp.viz}`)}
+                  onClick={() => navigate(buildSubtopicRoute('systemdesign', comp.viz))}
                 >
                   Simulate
                 </Button>

@@ -9,5 +9,6 @@ import raft              from './scenarios/raft.js';
 import uber              from './scenarios/uber.js';
 import uberArchitecture  from './scenarios/uber-architecture.js';
 import uberFailures      from './scenarios/uber-failures.js';
+import whatsapp          from './scenarios/whatsapp.js';
 
-export const SCENARIOS = [lb, cache, cdn, rateLimiter, sharding, replication, messageQueue, raft, uber, uberArchitecture, uberFailures];
+export const SCENARIOS = [lb, cache, cdn, rateLimiter, sharding, replication, messageQueue, raft, uber, uberArchitecture, uberFailures, whatsapp];

@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './core/context/ThemeContext';
-import { AppStateProvider } from './core/context/AppStateContext';
+import { UIProvider } from './core/context/UIContext';
 import MainLayout from './components/layout/MainLayout/MainLayout';
 import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
+import { TOPICS as TOPIC_LIST } from './core/constants/topics';
 
 import Collections from './pages/Collections/Collections';
 import StudyHub from './pages/StudyHub/StudyHub';
@@ -18,9 +19,15 @@ function AppRoutes() {
 
   return (
     <>
-      <MainLayout onSelectTopic={({ topicId }) => navigate(`/topics/${topicId}`)}>
+      <MainLayout onSelectTopic={({ topicId }) => {
+        const t = TOPIC_LIST.find(x => x.id === topicId);
+        navigate(t ? `/${t.abbr}` : `/topics/${topicId}`);
+      }}>
         <Routes>
-          <Route path="/" element={<Home onSelectTopic={({ topicId }) => navigate(`/topics/${topicId}`)} />} />
+          <Route path="/" element={<Home onSelectTopic={({ topicId }) => {
+            const t = TOPIC_LIST.find(x => x.id === topicId);
+            navigate(t ? `/${t.abbr}` : `/topics/${topicId}`);
+          }} />} />
           <Route path="/topics" element={<Topics />} />
           <Route path="/topics/:topicId" element={<Topics />} />
           <Route path="/collections" element={<Collections />} />
@@ -28,8 +35,8 @@ function AppRoutes() {
           <Route path="/study-hub" element={<StudyHub />} />
           <Route path="/interview" element={<InterviewMode />} />
           <Route path="/compiler" element={<CompilerPage />} />
-          <Route path="/:type/:scenarioId" element={<VisualizerPage />} />
-          <Route path="/:type" element={<VisualizerPage />} />
+          <Route path="/:abbr/:slug" element={<VisualizerPage />} />
+          <Route path="/:abbr" element={<VisualizerPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainLayout>
@@ -42,9 +49,9 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <AppStateProvider>
+        <UIProvider>
           <AppRoutes />
-        </AppStateProvider>
+        </UIProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

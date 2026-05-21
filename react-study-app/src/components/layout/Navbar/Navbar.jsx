@@ -1,15 +1,15 @@
 import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../../core/context/ThemeContext';
-import { useAppState } from '../../../core/context/AppStateContext';
+import { useUI } from '../../../core/context/UIContext';
 import { THEME_LABELS } from '../../../core/constants/themes';
 import styles from './Navbar.module.css';
 
 export default function Navbar({ onMenuToggle }) {
   const { theme, setTheme } = useTheme();
-  const { state, actions } = useAppState();
+  const { state, actions } = useUI();
   const navigate = useNavigate();
-  const themeOpen = state.ui.themeOpen;
-  const sidebarMode = state.ui.sidebarMode;
+  const themeOpen = state.themeOpen;
+  const sidebarMode = state.sidebarMode;
 
   const modeIcons = {
     'all': '📋',

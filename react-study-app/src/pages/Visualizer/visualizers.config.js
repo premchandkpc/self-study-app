@@ -164,6 +164,12 @@ export const VISUALIZERS = {
   },
 
   /* ─── System Architecture ──────────────────────────────────────────────── */
+  sd: {
+    label: 'System Design — Uber, WhatsApp, LB, Cache, CDN, Raft',
+    icon: '🏗️',
+    component: lazy(() => import('../../components/visualizers/SystemDesignVisualizer/SystemDesignVisualizer')),
+    desc: 'Uber ride-hailing, WhatsApp messaging, Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election.',
+  },
   systemdesign: {
     label: 'System Design — Uber, LB, Cache, CDN, Raft',
     icon: '🏗️',

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { TOPICS } from '../../core/constants/topics';
 import { TOPIC_META } from '../../core/constants/topicMeta';
-import Button from '../../components/shared/Button/Button';
+import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import StudyGuide from '../../components/shared/StudyGuide/StudyGuide';
 import SubtopicCard from './SubtopicCard';
 import styles from './Topics.module.css';
@@ -22,16 +22,13 @@ export default function TopicDetail({ topicId }) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.detailHeader}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/topics')}>← Topics</Button>
-        <div className={styles.detailTitle}>
-          <span className={styles.detailIcon}>{topic.icon}</span>
-          <div>
-            <h1 className={styles.title}>{topic.label}</h1>
-            <p className={styles.sub}>{meta.desc}</p>
-          </div>
-        </div>
-      </div>
+      <DetailPageHeader
+        backLabel="Topics"
+        onBack={() => navigate('/topics')}
+        icon={topic.icon}
+        title={topic.label}
+        desc={meta.desc}
+      />
 
       {(meta.objectives || meta.keyTopics) && (
         <StudyGuide
@@ -44,7 +41,7 @@ export default function TopicDetail({ topicId }) {
         {topic.subtopics.map((sub, i) => (
           <SubtopicCard
             key={sub}
-            topicId={topicId}
+            topicAbbr={topic.abbr}
             topicIcon={topic.icon}
             subtopic={sub}
             color={meta.color}

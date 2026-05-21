@@ -28,7 +28,7 @@ export default function SystemDesignCases() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/topics/systemdesign')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/sd')}>
           ← System Design
         </Button>
         <h1 className={styles.title}>System Design Case Studies</h1>

@@ -79,14 +79,14 @@
   font-weight: bold;
 }
 
-.complexity {
+.grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--space-md);
   margin: 0;
 }
 
-.complexityItem {
+.gridItem {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
@@ -96,13 +96,13 @@
   border: 1px solid var(--border-color);
 }
 
-.complexityLabel {
+.gridLabel {
   font-weight: 600;
   color: var(--text-primary);
   font-size: 0.9rem;
 }
 
-.complexityValue {
+.gridValue {
   color: var(--text-accent);
   font-family: var(--font-mono);
   font-weight: 500;
@@ -118,7 +118,7 @@
     font-size: 1.4rem;
   }
 
-  .complexity {
+  .grid {
     grid-template-columns: 1fr;
   }
 }

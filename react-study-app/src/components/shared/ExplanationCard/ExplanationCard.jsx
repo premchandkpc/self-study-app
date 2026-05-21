@@ -37,11 +37,25 @@ export default function ExplanationCard({ topic, subtopic, data }) {
         {data.complexity && (
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>⏱️ Complexity</h3>
-            <div className={styles.complexity}>
+            <div className={styles.grid}>
               {Object.entries(data.complexity).map(([key, value]) => (
-                <div key={key} className={styles.complexityItem}>
-                  <span className={styles.complexityLabel}>{key}:</span>
-                  <span className={styles.complexityValue}>{value}</span>
+                <div key={key} className={styles.gridItem}>
+                  <span className={styles.gridLabel}>{key}:</span>
+                  <span className={styles.gridValue}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {data.bote && (
+          <section className={styles.section}>
+            <h3 className={styles.sectionTitle}>📐 Back-of-Envelope</h3>
+            <div className={styles.grid}>
+              {Object.entries(data.bote).map(([key, value]) => (
+                <div key={key} className={styles.gridItem}>
+                  <span className={styles.gridLabel}>{key}:</span>
+                  <span className={styles.gridValue}>{value}</span>
                 </div>
               ))}
             </div>

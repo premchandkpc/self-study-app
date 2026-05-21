@@ -1,12 +1,12 @@
 import Navbar from '../Navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
-import { useAppState } from '../../../core/context/AppStateContext';
+import { useUI } from '../../../core/context/UIContext';
 import styles from './MainLayout.module.css';
 
 export default function MainLayout({ children, onSelectTopic }) {
-  const { state, actions } = useAppState();
-  const sidebarCollapsed = state.ui.sidebarCollapsed;
-  const sidebarMode = state.ui.sidebarMode;
+  const { state, actions } = useUI();
+  const sidebarCollapsed = state.sidebarCollapsed;
+  const sidebarMode = state.sidebarMode;
 
   return (
     <div className={styles.root}>

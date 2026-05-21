@@ -3,43 +3,33 @@ import Card from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
-import { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID } from '../../core/constants/topicMeta';
-import { SUBTOPIC_ROUTES } from '../../core/constants/routes';
+import { buildSubtopicLearnRoute, buildSubtopicRoute, slugify } from '../../core/topics/topicRoutes';
+import { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID, ABBR_MAP } from '../../core/constants/topics';
 import styles from './Topics.module.css';
 
-export default function SubtopicCard({ topicId, topicIcon, subtopic, color, delay = 0 }) {
+export default function SubtopicCard({ topicAbbr, topicIcon, subtopic, color, delay = 0 }) {
   const navigate = useNavigate();
+  const topicData = ABBR_MAP[topicAbbr];
+  const topicId = topicData?.id;
   const vizKey = `${topicId}:${subtopic}`;
-  const vizType = VISUALIZER_MAP[vizKey];
-  const hasViz = !!vizType;
-  const routeKey = `${topicId}:${subtopic}`;
-  const detailRoute = SUBTOPIC_ROUTES[routeKey];
-  const scenarioId = SUBTOPIC_SCENARIO_ID[routeKey];
+  const hasViz = !!VISUALIZER_MAP[vizKey];
+  const scenarioId = SUBTOPIC_SCENARIO_ID[vizKey];
+  const slug = scenarioId || slugify(subtopic);
+  const simulateRoute = buildSubtopicRoute(topicAbbr, slug);
+  const learnRoute = buildSubtopicLearnRoute(topicAbbr, slug);
 
   function handleCardClick() {
-    if (hasViz && scenarioId) {
-      navigate(`/${vizType}/${scenarioId}`);
-    } else if (hasViz) {
-      navigate(`/${vizType}`);
-    } else {
-      navigate(`/topics/${topicId}`);
-    }
+    navigate(learnRoute);
   }
 
   function handleSimulateClick(e) {
     e.stopPropagation();
-    navigate(`/${vizType}/${scenarioId}`);
+    navigate(simulateRoute);
   }
 
   function handleStudyClick(e) {
     e.stopPropagation();
-    if (scenarioId) {
-      navigate(`/${vizType}/${scenarioId}`);
-    } else if (hasViz) {
-      navigate(`/${vizType}`);
-    } else {
-      navigate(`/topics/${topicId}`);
-    }
+    navigate(learnRoute);
   }
 
   return (

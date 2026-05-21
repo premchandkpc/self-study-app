@@ -1,7 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { TOPICS } from '../../core/constants/topics';
-import { TOPIC_META } from '../../core/constants/topicMeta';
-import { TOPIC_EXPLANATIONS } from '../../core/constants/topicExplanations';
+import { TOPICS, ABBR_MAP, TOPIC_EXPLANATIONS } from '../../core/constants/topics';
+import { buildTopicRoute } from '../../core/topics/topicRoutes';
+import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Button from '../../components/shared/Button/Button';
 import ExplanationCard from '../../components/shared/ExplanationCard/ExplanationCard';
 import styles from './Topics.module.css';
@@ -13,8 +13,8 @@ export default function SubtopicDetail() {
   const activeTab = parseInt(searchParams.get('tab') || '0', 10);
 
   const topic = TOPICS.find((t) => t.id === topicId);
-  const meta = TOPIC_META[topicId] || {};
-  const explanations = TOPIC_EXPLANATIONS[topicId];
+  const meta = ABBR_MAP[topic?.abbr]?.meta || {};
+  const explanations = topicId ? TOPIC_EXPLANATIONS[topicId] : null;
 
   if (!topic || !subtopic) {
     return (
@@ -31,66 +31,37 @@ export default function SubtopicDetail() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.detailHeader}>
-        <Button variant="ghost" size="sm" onClick={() => navigate(`/topics/${topicId}`)}>
-          ← {topic.label}
-        </Button>
-        <div className={styles.detailTitle}>
-          <span className={styles.detailIcon}>{topic.icon}</span>
-          <div>
-            <h1 className={styles.title}>{subtopic}</h1>
-            <p className={styles.sub}>{meta.desc}</p>
-          </div>
-        </div>
-      </div>
+      <DetailPageHeader
+        backLabel={topic.label}
+        onBack={() => navigate(buildTopicRoute(topic.abbr))}
+        icon={topic.icon}
+        title={subtopic}
+        desc={meta.desc}
+      />
 
       {hasTabs && (
         <div className={styles.tabNav}>
           {subtopicData.tabs.map((t, i) => (
-            <button
-              key={t.name}
+            <button key={t.name}
               className={`${styles.tabNavBtn} ${i === activeTab ? styles.tabNavBtnActive : ''}`}
-              onClick={() => setSearchParams({ tab: String(i) })}
-            >
-              {t.name}
-            </button>
+              onClick={() => setSearchParams({ tab: String(i) })}>{t.name}</button>
           ))}
         </div>
       )}
 
       {subtopicData && (
         hasTabs && activeTabData ? (
-          <ExplanationCard
-            topic={topicId}
-            subtopic={activeTabData.name}
-            data={activeTabData}
-          />
+          <ExplanationCard topic={topicId} subtopic={activeTabData.name} data={activeTabData} />
         ) : (
-          <ExplanationCard
-            topic={topicId}
-            subtopic={subtopic}
-            data={subtopicData}
-          />
+          <ExplanationCard topic={topicId} subtopic={subtopic} data={subtopicData} />
         )
       )}
 
       <div className={styles.actions}>
-        <Button
-          variant="primary"
-          size="md"
-          icon="▶️"
-          onClick={() => navigate(`/topics`)}
-        >
-          View Visualizer
-        </Button>
-        <Button
-          variant="secondary"
-          size="md"
-          icon="📚"
-          onClick={() => navigate(`/interview`)}
-        >
-          Practice Questions
-        </Button>
+        <Button variant="primary" size="md" icon="▶️"
+          onClick={() => navigate(buildTopicRoute(topic.abbr))}>View Visualizer</Button>
+        <Button variant="secondary" size="md" icon="📚"
+          onClick={() => navigate(`/interview`)}>Practice Questions</Button>
       </div>
     </div>
   );
