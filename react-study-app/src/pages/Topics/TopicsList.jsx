@@ -21,13 +21,7 @@ export default function TopicsList() {
   ];
 
   function handleSubtopicClick(topicId, subtopic) {
-    const routeKey = `${topicId}:${subtopic}`;
-    const route = SUBTOPIC_ROUTES[routeKey];
-    if (route) {
-      navigate(route);
-    } else {
-      navigate(`/topics/${topicId}/${subtopic}/learn`);
-    }
+    navigate(`/topics/${topicId}/${subtopic}/learn`);
   }
 
   return (

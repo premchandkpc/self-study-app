@@ -1,16 +1,16 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TOPICS } from '../../core/constants/topics';
 import { TOPIC_META } from '../../core/constants/topicMeta';
 import { TOPIC_EXPLANATIONS } from '../../core/constants/topicExplanations';
-import { SUBTOPIC_ROUTES } from '../../core/constants/routes';
 import Button from '../../components/shared/Button/Button';
 import ExplanationCard from '../../components/shared/ExplanationCard/ExplanationCard';
-import CaseStudy from '../../components/shared/CaseStudy/CaseStudy';
 import styles from './Topics.module.css';
 
 export default function SubtopicDetail() {
   const navigate = useNavigate();
   const { topicId, subtopic } = useParams();
+  const [activeTab, setActiveTab] = useState(0);
 
   const topic = TOPICS.find((t) => t.id === topicId);
   const meta = TOPIC_META[topicId] || {};
@@ -26,6 +26,8 @@ export default function SubtopicDetail() {
   }
 
   const subtopicData = explanations?.subtopics?.[subtopic];
+  const hasTabs = !!(subtopicData?.tabs?.length);
+  const activeTabData = hasTabs ? subtopicData.tabs[activeTab] : null;
 
   return (
     <div className={styles.page}>
@@ -42,12 +44,34 @@ export default function SubtopicDetail() {
         </div>
       </div>
 
+      {hasTabs && (
+        <div className={styles.tabNav}>
+          {subtopicData.tabs.map((t, i) => (
+            <button
+              key={t.name}
+              className={`${styles.tabNavBtn} ${i === activeTab ? styles.tabNavBtnActive : ''}`}
+              onClick={() => setActiveTab(i)}
+            >
+              {t.name}
+            </button>
+          ))}
+        </div>
+      )}
+
       {subtopicData && (
-        <ExplanationCard
-          topic={topicId}
-          subtopic={subtopic}
-          data={subtopicData}
-        />
+        hasTabs && activeTabData ? (
+          <ExplanationCard
+            topic={topicId}
+            subtopic={activeTabData.name}
+            data={activeTabData}
+          />
+        ) : (
+          <ExplanationCard
+            topic={topicId}
+            subtopic={subtopic}
+            data={subtopicData}
+          />
+        )
       )}
 
       <div className={styles.actions}>

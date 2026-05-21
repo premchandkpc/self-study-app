@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import { VISUALIZERS } from './visualizers.config';
 import Button from '../../components/shared/Button/Button';
@@ -8,8 +8,9 @@ import Loading from '../../components/shared/Loading/Loading';
 import styles from './VisualizerPage.module.css';
 
 export default function VisualizerPage() {
-  const { type } = useParams();
+  const { type, scenarioId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const viz = VISUALIZERS[type];
 
   if (!viz) {
@@ -22,6 +23,7 @@ export default function VisualizerPage() {
   }
 
   const Comp = viz.component;
+  const tabName = location.hash ? decodeURIComponent(location.hash.slice(1)) : null;
 
   return (
     <div className={styles.page}>
@@ -54,7 +56,7 @@ export default function VisualizerPage() {
       <div className={styles.vizWrapper}>
         <SimulationProvider>
           <Suspense fallback={<Loading label="Loading visualizer…" />}>
-            <Comp />
+            <Comp scenarioId={scenarioId} tabName={tabName} />
           </Suspense>
         </SimulationProvider>
       </div>

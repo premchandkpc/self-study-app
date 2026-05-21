@@ -15,9 +15,12 @@ import { useSimulation } from '../context/SimulationContext';
  *   customInputs,   — current parsed inputs for active scenario
  *   rebuild(params) — re-run build with new params and reset steps
  */
-export function useVisualizerScenario(scenarios) {
+export function useVisualizerScenario(scenarios, initialScenarioId) {
   const { state, dispatch } = useSimulation();
-  const [activeId, setActiveId]       = useState(scenarios[0].id);
+  const initialActiveId = initialScenarioId && scenarios.find((s) => s.id === initialScenarioId)
+    ? initialScenarioId
+    : scenarios[0].id;
+  const [activeId, setActiveId]       = useState(initialActiveId);
   const [viz, setViz]                 = useState(null);
   const [inputsMap, setInputsMap]     = useState({});  // persists inputs per scenario id
 
@@ -42,9 +45,9 @@ export function useVisualizerScenario(scenarios) {
   }
 
   useEffect(() => {
-    const first = scenarios[0];
+    const target = scenarios.find((s) => s.id === initialActiveId) ?? scenarios[0];
     dispatch({ type: 'RESET' });
-    dispatch({ type: 'SET_STEPS', payload: first.build({}) });
+    dispatch({ type: 'SET_STEPS', payload: target.build({}) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentional mount-only: scenarios ref is stable, dispatch is stable
 

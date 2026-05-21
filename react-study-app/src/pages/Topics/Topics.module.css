@@ -286,6 +286,60 @@
   text-align: center;
 }
 
+.siblingNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+.siblingNavBtn {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.siblingNavBtn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+.siblingNavBtnActive {
+  background: var(--accent);
+  color: var(--text-on-accent, #fff);
+  border-color: var(--accent);
+}
+
+.tabNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+.tabNavBtn {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tabNavBtn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.tabNavBtnActive {
+  background: var(--accent);
+  color: var(--text-on-accent, #fff);
+  border-color: var(--accent);
+}
+
 .actions {
   display: flex;
   gap: var(--space-md);

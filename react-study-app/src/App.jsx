@@ -26,6 +26,7 @@ function AppRoutes() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/collections/:collectionId" element={<Collections />} />
           <Route path="/study-hub" element={<StudyHub />} />
+          <Route path="/visualizer/:type/:scenarioId" element={<VisualizerPage />} />
           <Route path="/visualizer/:type" element={<VisualizerPage />} />
           <Route path="/interview" element={<InterviewMode />} />
           <Route path="/compiler" element={<CompilerPage />} />

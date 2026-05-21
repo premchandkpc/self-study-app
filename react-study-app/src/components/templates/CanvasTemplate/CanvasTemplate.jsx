@@ -45,8 +45,8 @@ function getLayerColors(index, total) {
   return palette[index % palette.length];
 }
 
-export default function CanvasTemplate({ scenarios }) {
-  const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios);
+export default function CanvasTemplate({ scenarios, initialScenario, initialTab }) {
+  const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios, initialScenario);
   const { state: simState } = useSimulation();
 
   const canvasRef    = useRef(null);
@@ -61,7 +61,8 @@ export default function CanvasTemplate({ scenarios }) {
   const [panning,   setPanning]   = useState(null);
   const [hovered,   setHovered]   = useState(null);
   const [animKey,   setAnimKey]   = useState(0);
-  const [tab,       setTab]       = useState('notes');
+  const initTab = initialTab && TABS.some(t => t.key === initialTab.toLowerCase()) ? initialTab.toLowerCase() : 'notes';
+  const [tab,       setTab]       = useState(initTab);
 
   useEffect(() => { setAnimKey(k => k + 1); }, [simState.currentStep]);
   useEffect(() => { setPositions({}); needsFitRef.current = true; }, [activeId]);
