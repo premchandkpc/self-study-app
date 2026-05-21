@@ -6,27 +6,28 @@ import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import Loading from '../../components/shared/Loading/Loading';
 import { SimulationProvider } from '../../core/context/SimulationContext';
+import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
 
 const ArrayVisualizer = lazy(() => import('../../components/visualizers/ArrayVisualizer/ArrayVisualizer'));
 const GraphVisualizer = lazy(() => import('../../components/visualizers/GraphVisualizer/GraphVisualizer'));
 const KafkaVisualizer = lazy(() => import('../../components/visualizers/KafkaVisualizer/KafkaVisualizer'));
-import { TOPICS } from '../../core/constants/topics';
 import styles from './Home.module.css';
-
-const TOPIC_COUNT = TOPICS.length;
-const VIZ_COUNT = TOPICS.reduce((acc, t) => acc + t.subtopics.length, 0);
-
-const STATS = [
-  { label: 'Topics', value: String(TOPIC_COUNT), icon: '🧩', color: 'blue' },
-  { label: 'Subtopics', value: String(VIZ_COUNT), icon: '🎨', color: 'green' },
-  { label: 'Systems', value: String(TOPIC_COUNT), icon: '🏗️', color: 'yellow' },
-  { label: 'Algorithms', value: '50+', icon: '⚡', color: 'purple' },
-];
 
 export default function Home({ onSelectTopic }) {
   const [searchParams, setSearchParams] = useSearchParams({ demo: 'array' });
   const activeDemo = searchParams.get('demo') || 'array';
   const navigate = useNavigate();
+  const { TOPICS } = useTopicMapsContext();
+
+  const TOPIC_COUNT = TOPICS.length;
+  const VIZ_COUNT = TOPICS.reduce((acc, t) => acc + t.subtopics.length, 0);
+
+  const STATS = [
+    { label: 'Topics', value: String(TOPIC_COUNT), icon: '🧩', color: 'blue' },
+    { label: 'Subtopics', value: String(VIZ_COUNT), icon: '🎨', color: 'green' },
+    { label: 'Systems', value: String(TOPIC_COUNT), icon: '🏗️', color: 'yellow' },
+    { label: 'Algorithms', value: '50+', icon: '⚡', color: 'purple' },
+  ];
 
   return (
     <div className={styles.page}>

@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './core/context/ThemeContext';
 import { UIProvider } from './core/context/UIContext';
+import { TopicMapsProvider, useTopicMapsContext } from './core/context/TopicMapsContext';
 import ErrorBoundary from './components/shared/ErrorBoundary/ErrorBoundary';
 import MainLayout from './components/layout/MainLayout/MainLayout';
 import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
-import { TOPICS as TOPIC_LIST } from './core/constants/topics';
 
 import Collections from './pages/Collections/Collections';
 import StudyHub from './pages/StudyHub/StudyHub';
@@ -17,16 +18,17 @@ import NotFound from './pages/NotFound/NotFound';
 
 function AppRoutes() {
   const navigate = useNavigate();
+  const { TOPICS } = useTopicMapsContext();
 
   return (
     <>
       <MainLayout onSelectTopic={({ topicId }) => {
-        const t = TOPIC_LIST.find(x => x.id === topicId);
+        const t = TOPICS.find(x => x.id === topicId);
         navigate(t ? `/${t.abbr}` : `/topics/${topicId}`);
       }}>
         <Routes>
           <Route path="/" element={<Home onSelectTopic={({ topicId }) => {
-            const t = TOPIC_LIST.find(x => x.id === topicId);
+            const t = TOPICS.find(x => x.id === topicId);
             navigate(t ? `/${t.abbr}` : `/topics/${topicId}`);
           }} />} />
           <Route path="/topics" element={<Topics />} />
@@ -47,16 +49,22 @@ function AppRoutes() {
 }
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <BrowserRouter>
-      <ErrorBoundary>
-        <ThemeProvider>
-          <UIProvider>
-            <AppRoutes />
-          </UIProvider>
-        </ThemeProvider>
-      </ErrorBoundary>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ErrorBoundary>
+          <ThemeProvider>
+            <UIProvider>
+              <TopicMapsProvider>
+                <AppRoutes />
+              </TopicMapsProvider>
+            </UIProvider>
+          </ThemeProvider>
+        </ErrorBoundary>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

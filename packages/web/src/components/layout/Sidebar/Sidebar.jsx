@@ -1,6 +1,6 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { ABBR_MAP, TOPICS } from '../../../core/constants/topics';
+import { useTopicMapsContext } from '../../../core/context/TopicMapsContext';
 import { useUI } from '../../../core/context/UIContext';
 import styles from './Sidebar.module.css';
 
@@ -9,6 +9,7 @@ export default function Sidebar({ collapsed }) {
   const location = useLocation();
   const { topicId, abbr } = useParams();
   const { state, actions } = useUI();
+  const { ABBR_MAP, TOPICS } = useTopicMapsContext();
   const expandedTopics = state.expandedTopics;
   const sidebarMode = state.sidebarMode;
 

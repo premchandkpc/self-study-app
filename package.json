@@ -1,0 +1,21 @@
+{
+  "name": "study-app",
+  "version": "1.0.0",
+  "description": "Full-stack study app with PostgreSQL backend",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm -w packages/api run dev",
+    "dev:web": "npm -w packages/web run dev",
+    "build:web": "npm -w packages/web run build",
+    "migrate": "npm -w packages/api run migrate",
+    "seed": "npm -w packages/api run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
