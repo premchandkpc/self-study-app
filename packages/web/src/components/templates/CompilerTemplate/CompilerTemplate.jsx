@@ -134,7 +134,7 @@ export default function CompilerTemplate() {
 
   return (
     <div className={styles.wrapper}>
-      {/* Top toolbar */}
+      {/* Toolbar */}
       <div className={styles.toolbar}>
         <div className={styles.section}>
           <label className={styles.label}>📚</label>
@@ -162,13 +162,12 @@ export default function CompilerTemplate() {
         {isCompiling && <span className={styles.compiling}>Compiling...</span>}
       </div>
 
-      {/* Main layout: code (left) + viz (right) */}
+      {/* Main: code (left) + viz (right) */}
       <div className={styles.main}>
-        {/* Code panel (left) */}
         <div className={styles.codePanel}>
           <div className={styles.codePanelHeader}>algorithm.js</div>
           <textarea
-            className={`${styles.codeEditor} ${error ? styles.error : ''}`}
+            className={styles.codeEditor}
             value={code}
             onChange={e => setCode(e.target.value)}
             placeholder="const algorithm = (input, tracer) => {
@@ -181,7 +180,6 @@ export default function CompilerTemplate() {
           />
         </div>
 
-        {/* Viz area (right) */}
         <div className={styles.vizSection}>
           {hasRun ? (
             <>
@@ -198,19 +196,15 @@ export default function CompilerTemplate() {
             </>
           ) : (
             <div className={styles.placeholder}>
-              {code.trim() ? 'Set inputs and run →' : 'Load example or write code'}
+              {code.trim() ? 'Set inputs → Run' : 'Load example or write code'}
             </div>
           )}
         </div>
       </div>
 
-      {/* Input panel (bottom) */}
-      {code.trim() && (
-        <>
-          <InputPanel schema={inputSchema} current={inputValues} onApply={handleApply} />
-          {error && <div className={styles.errorBox}>{error}</div>}
-        </>
-      )}
+      {/* Input panel + error */}
+      {code.trim() && <InputPanel schema={inputSchema} current={inputValues} onApply={handleApply} />}
+      {error && <div className={styles.errorBox}>{error}</div>}
     </div>
   );
 }
