@@ -27,9 +27,13 @@ export function useVisualizerScenario(scenarios, initialScenarioId) {
   const active = scenarios.find((s) => s.id === activeId) ?? scenarios[0];
   const customInputs = inputsMap[activeId] ?? {};
 
+  function getSteps(scenario, params = {}) {
+    return scenario.build ? scenario.build(params) : (scenario.steps || []);
+  }
+
   function _load(scenario, params = {}) {
     dispatch({ type: 'RESET' });
-    dispatch({ type: 'SET_STEPS', payload: scenario.build(params) });
+    dispatch({ type: 'SET_STEPS', payload: getSteps(scenario, params) });
   }
 
   function select(id) {
@@ -47,7 +51,7 @@ export function useVisualizerScenario(scenarios, initialScenarioId) {
   useEffect(() => {
     const target = scenarios.find((s) => s.id === initialActiveId) ?? scenarios[0];
     dispatch({ type: 'RESET' });
-    dispatch({ type: 'SET_STEPS', payload: target.build({}) });
+    dispatch({ type: 'SET_STEPS', payload: getSteps(target, {}) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentional mount-only: scenarios ref is stable, dispatch is stable
 

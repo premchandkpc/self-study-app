@@ -13,7 +13,7 @@
 
 .meta {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-md);
 }
 

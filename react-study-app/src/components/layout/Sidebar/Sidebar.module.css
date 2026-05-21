@@ -23,7 +23,7 @@
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--space-md) 0;
+  padding: var(--space-md);
 }
 
 .sectionLabel {
@@ -105,6 +105,9 @@
   text-align: left;
   transition: all var(--transition-fast);
   border-radius: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .subtopicBtn:hover {

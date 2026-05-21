@@ -219,7 +219,7 @@
 /* === TOPICS GRID === */
 .topicsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-md);
 }
 
@@ -237,7 +237,7 @@
 /* === MODES GRID === */
 .modesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-md);
 }
 
@@ -266,10 +266,17 @@
 }
 
 /* === RESPONSIVE === */
+@media (max-width: 1024px) {
+  .topicsGrid { grid-template-columns: repeat(2, 1fr); }
+  .modesGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
   .page { padding: var(--space-md); gap: var(--space-xl); }
   .heroTitle { font-size: var(--font-size-3xl); }
   .stats { grid-template-columns: repeat(2, 1fr); }
+  .topicsGrid { grid-template-columns: 1fr; }
+  .modesGrid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
