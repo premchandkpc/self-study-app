@@ -5,6 +5,7 @@ const AppStateContext = createContext();
 const initialState = {
   ui: {
     sidebarCollapsed: false,
+    sidebarMode: 'all', // 'all' | 'current-topic' | 'hidden'
     expandedTopics: {}, // Start with all collapsed. Click topic to expand + see subtopics.
     themeOpen: false,
     activeVisualizerCategory: null,
@@ -34,6 +35,20 @@ function appStateReducer(state, action) {
         ...state,
         ui: { ...state.ui, sidebarCollapsed: action.payload },
       };
+    case 'SET_SIDEBAR_MODE':
+      return {
+        ...state,
+        ui: { ...state.ui, sidebarMode: action.payload },
+      };
+    case 'CYCLE_SIDEBAR_MODE': {
+      const modes = ['all', 'current-topic', 'hidden'];
+      const currentIndex = modes.indexOf(state.ui.sidebarMode);
+      const nextMode = modes[(currentIndex + 1) % modes.length];
+      return {
+        ...state,
+        ui: { ...state.ui, sidebarMode: nextMode },
+      };
+    }
     case 'TOGGLE_TOPIC_EXPAND':
       return {
         ...state,
@@ -138,6 +153,10 @@ export function AppStateProvider({ children }) {
       toggleSidebar: () => dispatch({ type: 'TOGGLE_SIDEBAR' }),
       setSidebarCollapsed: (collapsed) =>
         dispatch({ type: 'SET_SIDEBAR_COLLAPSED', payload: collapsed }),
+      setSidebarMode: (mode) =>
+        dispatch({ type: 'SET_SIDEBAR_MODE', payload: mode }),
+      cycleSidebarMode: () =>
+        dispatch({ type: 'CYCLE_SIDEBAR_MODE' }),
       toggleTopicExpand: (topicId) =>
         dispatch({ type: 'TOGGLE_TOPIC_EXPAND', payload: topicId }),
       setTopicExpanded: (topicId) =>

@@ -11,6 +11,7 @@ export default function Sidebar({ collapsed }) {
   const { topicId } = useParams();
   const { state, actions } = useAppState();
   const expandedTopics = state.ui.expandedTopics;
+  const sidebarMode = state.ui.sidebarMode;
 
   // Auto-expand current topic based on URL
   useEffect(() => {
@@ -18,6 +19,16 @@ export default function Sidebar({ collapsed }) {
       actions.setTopicExpanded(topicId);
     }
   }, [topicId, expandedTopics, actions]);
+
+  // Hide sidebar if mode is 'hidden'
+  if (sidebarMode === 'hidden') {
+    return null;
+  }
+
+  // Filter topics: show all or only current
+  const visibleTopics = sidebarMode === 'current-topic'
+    ? TOPICS.filter((t) => t.id === topicId)
+    : TOPICS;
 
   function handleSelect(topicId, subtopic) {
     const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
@@ -37,7 +48,7 @@ export default function Sidebar({ collapsed }) {
         )}
 
         <nav className={styles.nav}>
-          {TOPICS.map((topic) => {
+          {visibleTopics.map((topic) => {
             const isExpanded = expandedTopics[topic.id];
             return (
               <div key={topic.id} className={styles.topicGroup}>
@@ -81,9 +92,9 @@ export default function Sidebar({ collapsed }) {
         {!collapsed && (
           <div className={styles.footer}>
             <div className={styles.footerStats}>
-              <span>{TOPICS.length} Topics</span>
+              <span>{visibleTopics.length} Topic{visibleTopics.length !== 1 ? 's' : ''}</span>
               <span className={styles.dot}>·</span>
-              <span>40+ Modules</span>
+              <span>{visibleTopics.reduce((acc, t) => acc + t.subtopics.length, 0)} Modules</span>
             </div>
           </div>
         )}
