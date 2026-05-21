@@ -1,4 +1,5 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { TOPICS } from '../../../core/constants/topics';
 import { SUBTOPIC_ROUTES } from '../../../core/constants/routes';
 import { useAppState } from '../../../core/context/AppStateContext';
@@ -7,8 +8,16 @@ import styles from './Sidebar.module.css';
 export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { topicId } = useParams();
   const { state, actions } = useAppState();
   const expandedTopics = state.ui.expandedTopics;
+
+  // Auto-expand current topic based on URL
+  useEffect(() => {
+    if (topicId && !expandedTopics[topicId]) {
+      actions.setTopicExpanded(topicId);
+    }
+  }, [topicId, expandedTopics, actions]);
 
   function handleSelect(topicId, subtopic) {
     const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
