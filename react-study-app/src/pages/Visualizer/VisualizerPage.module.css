@@ -63,6 +63,70 @@
   margin-bottom: var(--space-xs);
 }
 
+.modeTabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: var(--space-sm);
+}
+
+.modeTab {
+  padding: var(--space-sm) var(--space-lg);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.15s;
+}
+
+.modeTab:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.modeTabActive {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.studyContent {
+  margin-bottom: var(--space-xl);
+}
+
+.tabNav {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: var(--space-xs);
+}
+
+.tabNavBtn {
+  padding: var(--space-xs) var(--space-md);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  transition: all 0.15s;
+}
+
+.tabNavBtn:hover {
+  color: var(--text-primary);
+}
+
+.tabNavBtnActive {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: -2px;
+}
+
 .vizWrapper {
   border-radius: var(--radius-xl);
   overflow: hidden;

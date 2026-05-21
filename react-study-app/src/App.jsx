@@ -5,7 +5,7 @@ import MainLayout from './components/layout/MainLayout/MainLayout';
 import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
-import SubtopicDetail from './pages/Topics/SubtopicDetail';
+
 import Collections from './pages/Collections/Collections';
 import StudyHub from './pages/StudyHub/StudyHub';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
@@ -22,15 +22,14 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<Home onSelectTopic={({ topicId }) => navigate(`/topics/${topicId}`)} />} />
           <Route path="/topics" element={<Topics />} />
-          <Route path="/topics/:topicId/:subtopic/learn" element={<SubtopicDetail />} />
           <Route path="/topics/:topicId" element={<Topics />} />
           <Route path="/collections" element={<Collections />} />
           <Route path="/collections/:collectionId" element={<Collections />} />
           <Route path="/study-hub" element={<StudyHub />} />
-          <Route path="/visualizer/:type/:scenarioId" element={<VisualizerPage />} />
-          <Route path="/visualizer/:type" element={<VisualizerPage />} />
           <Route path="/interview" element={<InterviewMode />} />
           <Route path="/compiler" element={<CompilerPage />} />
+          <Route path="/:type/:scenarioId" element={<VisualizerPage />} />
+          <Route path="/:type" element={<VisualizerPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainLayout>

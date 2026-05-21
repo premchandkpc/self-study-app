@@ -1,6 +1,6 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { TOPICS } from '../../../core/constants/topics';
+import { TOPICS, VIZ_TYPE_TO_TOPIC } from '../../../core/constants/topics';
 import { SUBTOPIC_ROUTES } from '../../../core/constants/routes';
 import { useAppState } from '../../../core/context/AppStateContext';
 import styles from './Sidebar.module.css';
@@ -8,65 +8,39 @@ import styles from './Sidebar.module.css';
 export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { topicId, subtopic } = useParams();
+  const { topicId, subtopic, type, scenarioId } = useParams();
   const { state, actions } = useAppState();
   const expandedTopics = state.ui.expandedTopics;
   const sidebarMode = state.ui.sidebarMode;
 
+  // Resolve current topic: from topicId (old /topics/:topicId) or find by visualizer type (new /:type)
+  const currentTopicId = topicId || (type && VIZ_TYPE_TO_TOPIC[type]);
+
   // Auto-expand current topic based on URL
   useEffect(() => {
-    if (topicId && !expandedTopics[topicId]) {
-      actions.setTopicExpanded(topicId);
+    if (currentTopicId && !expandedTopics[currentTopicId]) {
+      actions.setTopicExpanded(currentTopicId);
     }
-  }, [topicId, expandedTopics, actions]);
+  }, [currentTopicId, expandedTopics, actions]);
 
   // Hide sidebar if mode is 'hidden'
   if (sidebarMode === 'hidden') {
     return null;
   }
 
-  // When viewing specific subtopic, show only that subtopic
-  if (subtopic && topicId) {
-    const topic = TOPICS.find((t) => t.id === topicId);
-    if (topic && topic.subtopics.includes(subtopic)) {
-      return (
-        <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
-          <div className={styles.inner}>
-            {!collapsed && (
-              <p className={styles.sectionLabel}>{topic.label}</p>
-            )}
-            <nav className={styles.nav}>
-              <div className={styles.topicGroup}>
-                <button
-                  className={`${styles.subtopicBtn} ${styles.active}`}
-                  disabled
-                  title={subtopic}
-                >
-                  {subtopic}
-                </button>
-              </div>
-            </nav>
-          </div>
-        </aside>
-      );
-    }
-  }
-
   // Filter topics: show all or only current
   const visibleTopics = sidebarMode === 'current-topic'
-    ? TOPICS.filter((t) => t.id === topicId)
+    ? TOPICS.filter((t) => t.id === currentTopicId)
     : TOPICS;
 
   function handleSelect(topicId, subtopic) {
-    const routeTemplate = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
-    const route = routeTemplate.split(subtopic).join(encodeURIComponent(subtopic));
+    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
     navigate(route);
   }
 
   function isActive(topicId, subtopic) {
-    const routeTemplate = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
-    const route = routeTemplate.split(subtopic).join(encodeURIComponent(subtopic));
-    return location.pathname === route;
+    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`];
+    return route ? location.pathname === route : false;
   }
 
   return (

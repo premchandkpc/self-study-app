@@ -18,20 +18,28 @@ export default function SubtopicCard({ topicId, topicIcon, subtopic, color, dela
 
   function handleCardClick() {
     if (hasViz && scenarioId) {
-      navigate(`/visualizer/${vizType}/${scenarioId}`);
+      navigate(`/${vizType}/${scenarioId}`);
+    } else if (hasViz) {
+      navigate(`/${vizType}`);
     } else {
-      navigate(`/topics/${topicId}/${subtopic}/learn`);
+      navigate(`/topics/${topicId}`);
     }
   }
 
   function handleSimulateClick(e) {
     e.stopPropagation();
-    navigate(`/visualizer/${vizType}/${scenarioId}`);
+    navigate(`/${vizType}/${scenarioId}`);
   }
 
   function handleStudyClick(e) {
     e.stopPropagation();
-    navigate(`/topics/${topicId}/${subtopic}/learn`);
+    if (scenarioId) {
+      navigate(`/${vizType}/${scenarioId}`);
+    } else if (hasViz) {
+      navigate(`/${vizType}`);
+    } else {
+      navigate(`/topics/${topicId}`);
+    }
   }
 
   return (

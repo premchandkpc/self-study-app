@@ -60,7 +60,7 @@ export default function UberDetail() {
   return (
     <div className={styles.page}>
       <div className={styles.detailHeader}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/topics/system-design')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/topics/systemdesign')}>
           ← System Design
         </Button>
         <div className={styles.detailTitle}>
@@ -119,7 +119,7 @@ export default function UberDetail() {
                   variant="primary"
                   size="sm"
                   icon="▶"
-                  onClick={() => navigate(`/visualizer/${comp.viz}`)}
+                  onClick={() => navigate(`/${comp.viz}`)}
                 >
                   Simulate
                 </Button>

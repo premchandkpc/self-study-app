@@ -283,7 +283,7 @@ export const COLLECTIONS = [
   },
 
   {
-    id: 'system-design',
+    id: 'systemdesign',
     label: 'System Design',
     icon: '🏗️',
     color: 'purple',

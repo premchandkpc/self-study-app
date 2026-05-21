@@ -490,7 +490,7 @@ const TOPIC_DEFS = [
     ]
   },
   {
-    id: 'system-design', label: 'System Design', icon: '\uD83C\uDFD7\uFE0F',
+    id: 'systemdesign', label: 'System Design', icon: '\uD83C\uDFD7\uFE0F',
     meta: {
       color: 'yellow',
       desc: 'Design scalable systems supporting millions of users. Uber ride-hailing demonstrates: distributed payments, real-time matching, geospatial queries, message queuing.',
@@ -503,7 +503,7 @@ const TOPIC_DEFS = [
       keyTopics: ['CAP Theorem', 'Sharding Strategies', 'Caching Layers', 'Message Queues']
     },
     subtopics: [
-      { name: 'Uber', visualizer: 'uber', route: '/topics/system-design/Uber/learn', scenarioId: 'uber',
+      { name: 'Uber', visualizer: 'uber', scenarioId: 'uber',
         explanation: 'Uber ride-hailing system design covering end-to-end request flow, service architecture, and failure mode analysis. Technologies: gRPC, Kafka, Redis GEORADIUS, PostgreSQL sharding, WebSocket.',
         useCases: ['System design learning', 'Architecture understanding', 'Resilience engineering'],
         realWorld: 'Uber handles 15M+ trips daily across 70+ countries with 2200+ microservices.',
@@ -922,7 +922,7 @@ const TOPIC_DEFS = [
 ];
 
 const CASESTUDIES = {
-  'system-design': {
+  systemdesign: {
     overview: `Design scalable systems supporting millions of users. Uber ride-hailing demonstrates: distributed payments, real-time matching, geospatial queries, message queuing.`,
     casestudies: {
       Uber: {
@@ -1155,7 +1155,13 @@ function derive(prop) {
       } else if (prop === 'visualizer') {
         result[key] = s.visualizer;
       } else if (prop === 'route') {
-        result[key] = s.route;
+        if (s.visualizer && s.scenarioId) {
+          result[key] = `/${s.visualizer}/${s.scenarioId}`;
+        } else if (s.visualizer) {
+          result[key] = `/${s.visualizer}`;
+        } else {
+          result[key] = `/topics/${t.id}`;
+        }
       } else if (prop === 'scenarioId') {
         result[key] = s.scenarioId;
       }
@@ -1173,11 +1179,22 @@ export const TOPICS = TOPIC_DEFS.map(t => ({
   subtopics: t.subtopics.map(s => s.name),
 }));
 
+export { TOPIC_DEFS };
+
 export const TOPIC_META = Object.fromEntries(
   TOPIC_DEFS.map(t => [t.id, t.meta])
 );
 
 export const VISUALIZER_MAP = derive('visualizer');
+
+// Reverse: visualizer type → topic id
+export const VIZ_TYPE_TO_TOPIC = Object.fromEntries(
+  TOPIC_DEFS.flatMap(t =>
+    t.subtopics
+      .filter(s => s.visualizer)
+      .map(s => [s.visualizer, t.id])
+  )
+);
 
 export const SUBTOPIC_ROUTES = derive('route');
 export const SUBTOPIC_SCENARIO_ID = derive('scenarioId');

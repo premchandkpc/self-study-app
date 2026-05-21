@@ -11,7 +11,7 @@ export default function SystemDesignCases() {
   const navigate = useNavigate();
   const [selectedCase, setSelectedCase] = useState('Uber');
 
-  const caseStudies = TOPIC_EXPLANATIONS['system-design']?.casestudies || {};
+  const caseStudies = TOPIC_EXPLANATIONS['systemdesign']?.casestudies || {};
   const cases = Object.keys(caseStudies);
 
   if (cases.length === 0) {
@@ -28,7 +28,7 @@ export default function SystemDesignCases() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/topics/system-design')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/topics/systemdesign')}>
           ← System Design
         </Button>
         <h1 className={styles.title}>System Design Case Studies</h1>

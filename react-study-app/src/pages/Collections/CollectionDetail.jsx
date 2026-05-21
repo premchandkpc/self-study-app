@@ -95,7 +95,7 @@ export default function CollectionDetail({ collectionId }) {
                     variant="primary"
                     size="sm"
                     icon="▶"
-                    onClick={() => navigate(`/visualizer/${scenario.vizType}`)}
+                    onClick={() => navigate(`/${scenario.vizType}`)}
                   >
                     Simulate
                   </Button>

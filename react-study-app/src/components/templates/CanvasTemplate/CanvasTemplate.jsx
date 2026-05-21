@@ -47,10 +47,13 @@ function getLayerColors(index, total) {
 
 export default function CanvasTemplate({ scenarios, initialScenario, initialTab }) {
   if (!scenarios || !Array.isArray(scenarios) || scenarios.length === 0) {
-    return <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No scenarios available</div>;
+    console.error('[CanvasTemplate] Invalid scenarios:', scenarios);
+    return <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No scenarios available. Check console.</div>;
   }
 
+  console.log('[CanvasTemplate] Loaded', scenarios.length, 'scenarios');
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios, initialScenario);
+  console.log('[CanvasTemplate] Current viz:', { activeId, hasViz: !!viz, steps: active?.steps?.length || 0 });
   const { state: simState } = useSimulation();
 
   const canvasRef    = useRef(null);
