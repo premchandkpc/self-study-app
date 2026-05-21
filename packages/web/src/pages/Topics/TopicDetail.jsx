@@ -40,7 +40,7 @@ export default function TopicDetail({ topicId }) {
       <div className={styles.modulesGrid}>
         {topic.subtopics.map((sub, i) => (
           <SubtopicCard
-            key={sub}
+            key={sub.slug || sub.name}
             topicAbbr={topic.abbr}
             topicIcon={topic.icon}
             subtopic={sub}

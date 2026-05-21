@@ -8,7 +8,7 @@ import styles from './Topics.module.css';
 export default function TopicsList() {
   const navigate = useNavigate();
   const [openTopic, setOpenTopic] = useState(null);
-  const { TOPICS, ABBR_MAP, SUBTOPIC_ROUTES, VISUALIZER_MAP } = useTopicMapsContext();
+  const { TOPICS, ABBR_MAP, SUBTOPIC_ROUTES, VISUALIZER_MAP, TOPIC_META } = useTopicMapsContext();
 
   const learningResources = [
     { icon: '▶️', name: 'Interactive Visualizer', desc: 'Step through algorithms and data structures with full animation control' },
@@ -20,7 +20,7 @@ export default function TopicsList() {
   ];
 
   function handleSubtopicClick(topicAbbr, subtopic) {
-    const slug = slugify(subtopic);
+    const slug = subtopic.slug || slugify(subtopic.name);
     navigate(buildSubtopicLearnRoute(topicAbbr, slug));
   }
 
@@ -56,15 +56,15 @@ export default function TopicsList() {
                   <div className={styles.topicDesc}>{meta.desc}</div>
                   <div className={styles.subtopicList}>
                     {topic.subtopics.map((sub) => {
-                      const vizKey = `${topic.id}:${sub}`;
+                      const vizKey = `${topic.id}:${sub.name}`;
                       const hasViz = !!VISUALIZER_MAP[vizKey];
                       return (
                         <div
-                          key={sub}
+                          key={sub.slug || sub.name}
                           className={`${styles.subtopicItem} ${hasViz ? styles.subtopicClickable : ''}`}
                           onClick={() => hasViz && handleSubtopicClick(topic.abbr, sub)}
                         >
-                          <span className={styles.subtopicName}>{sub}</span>
+                          <span className={styles.subtopicName}>{sub.name}</span>
                           {hasViz && <span className={styles.subtopicBadge}>Sim</span>}
                         </div>
                       );

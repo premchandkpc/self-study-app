@@ -5,17 +5,19 @@ import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import { buildSubtopicLearnRoute, buildSubtopicRoute, slugify } from '../../core/topics/topicRoutes';
 import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
-  const { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID, ABBR_MAP } = useTopicMapsContext();
 import styles from './Topics.module.css';
 
 export default function SubtopicCard({ topicAbbr, topicIcon, subtopic, color, delay = 0 }) {
   const navigate = useNavigate();
+  const { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID, ABBR_MAP } = useTopicMapsContext();
   const topicData = ABBR_MAP[topicAbbr];
   const topicId = topicData?.id;
-  const vizKey = `${topicId}:${subtopic}`;
+  const subtopicName = typeof subtopic === 'string' ? subtopic : subtopic.name;
+  const subtopicSlug = typeof subtopic === 'string' ? slugify(subtopic) : (subtopic.slug || slugify(subtopic.name));
+  const vizKey = `${topicId}:${subtopicName}`;
   const hasViz = !!VISUALIZER_MAP[vizKey];
   const scenarioId = SUBTOPIC_SCENARIO_ID[vizKey];
-  const slug = scenarioId || slugify(subtopic);
+  const slug = scenarioId || subtopicSlug;
   const simulateRoute = buildSubtopicRoute(topicAbbr, slug);
   const learnRoute = buildSubtopicLearnRoute(topicAbbr, slug);
 
@@ -39,7 +41,7 @@ export default function SubtopicCard({ topicAbbr, topicIcon, subtopic, color, de
         onClick={handleCardClick}>
         <div className={styles.moduleTop}>
           <span className={styles.moduleIcon}>{topicIcon}</span>
-          <span className={styles.moduleName}>{subtopic}</span>
+          <span className={styles.moduleName}>{subtopicName}</span>
           {hasViz && <Badge variant={color || 'blue'} size="xs" dot>Live Sim</Badge>}
         </div>
         <div className={styles.moduleActions}>

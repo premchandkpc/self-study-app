@@ -1,46 +1,66 @@
-.PHONY: install dev build preview stop lint clean help
+.PHONY: help dev dev-api dev-web build migrate seed clean docker-up docker-down docker-build lint
 
-APP_DIR := react-study-app
-PORT    := 5173
-
-# ── install ────────────────────────────────────────────────────────────────────
-install:
-	cd $(APP_DIR) && npm install
-
-# ── dev server ─────────────────────────────────────────────────────────────────
+# ── dev ────────────────────────────────────────────────────────────────────
 dev:
-	@-lsof -ti :$(PORT) | xargs kill -9 2>/dev/null || true
-	cd $(APP_DIR) && npm run dev
+	npm run dev
 
-# ── production build ───────────────────────────────────────────────────────────
+dev-api:
+	npm -w packages/api run dev
+
+dev-web:
+	npm -w packages/web run dev
+
+# ── build ──────────────────────────────────────────────────────────────────
 build:
-	cd $(APP_DIR) && npm run build
+	npm -w packages/web run build
 
-# ── preview built dist ─────────────────────────────────────────────────────────
-preview: build
-	cd $(APP_DIR) && npm run preview
+# ── database ───────────────────────────────────────────────────────────────
+migrate:
+	npm -w packages/api run migrate
 
-# ── kill dev server ────────────────────────────────────────────────────────────
-stop:
-	@-lsof -ti :$(PORT) | xargs kill -9 2>/dev/null || true
-	@echo "Stopped port $(PORT)"
+seed:
+	npm -w packages/api run seed
 
-# ── lint (eslint) ──────────────────────────────────────────────────────────────
+# ── docker ─────────────────────────────────────────────────────────────────
+docker-up:
+	docker compose up --build
+
+docker-down:
+	docker compose down
+
+docker-build:
+	docker compose build
+
+# ── lint ───────────────────────────────────────────────────────────────────
 lint:
-	cd $(APP_DIR) && npm run lint
+	npm -w packages/web run lint
 
-# ── remove build artifacts ─────────────────────────────────────────────────────
+# ── cleanup ────────────────────────────────────────────────────────────────
 clean:
-	rm -rf $(APP_DIR)/dist $(APP_DIR)/node_modules/.vite
+	rm -rf node_modules packages/*/node_modules packages/web/dist
+	find . -name ".DS_Store" -delete
 
-# ── help ───────────────────────────────────────────────────────────────────────
+# ── help ───────────────────────────────────────────────────────────────────
 help:
 	@echo ""
-	@echo "  make install   install npm deps"
-	@echo "  make dev       dev server → http://localhost:$(PORT)"
-	@echo "  make build     production build → $(APP_DIR)/dist/"
-	@echo "  make preview   build + serve dist locally"
-	@echo "  make stop      kill port $(PORT)"
-	@echo "  make lint      eslint"
-	@echo "  make clean     remove dist + vite cache"
+	@echo "LOCAL DEVELOPMENT:"
+	@echo "  make dev           Start api + web (parallel)"
+	@echo "  make dev-api       Start api only"
+	@echo "  make dev-web       Start web only"
+	@echo ""
+	@echo "DATABASE:"
+	@echo "  make migrate       Run migrations"
+	@echo "  make seed          Seed database"
+	@echo ""
+	@echo "BUILD:"
+	@echo "  make build         Build web bundle"
+	@echo "  make lint          Run eslint"
+	@echo ""
+	@echo "DOCKER:"
+	@echo "  make docker-up     docker compose up --build"
+	@echo "  make docker-down   docker compose down"
+	@echo "  make docker-build  docker compose build"
+	@echo ""
+	@echo "CLEANUP:"
+	@echo "  make clean         Remove node_modules and build artifacts"
 	@echo ""

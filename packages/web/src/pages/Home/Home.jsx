@@ -180,7 +180,7 @@ export default function Home({ onSelectTopic }) {
                 <CardBody>
                   <div className={styles.subtopicTags}>
                     {topic.subtopics.slice(0, 3).map((sub) => (
-                      <Badge key={sub} variant="default" size="xs">{sub}</Badge>
+                      <Badge key={sub.slug || sub.name} variant="default" size="xs">{sub.name}</Badge>
                     ))}
                     {topic.subtopics.length > 3 && (
                       <Badge variant="default" size="xs">+{topic.subtopics.length - 3}</Badge>

@@ -61,13 +61,13 @@ export default function Sidebar({ collapsed }) {
                 </button>
                 {!collapsed && isExpanded && topicInfo && (
                   <div className={styles.subtopics}>
-                    {topicInfo.subtopics.map((sub, i) => {
+                    {topicInfo.subtopics.map((sub) => {
                       const slug = sub.scenarioId ||
                         sub.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
                       const path = `/${topic.abbr}/${slug}`;
                       return (
                         <button
-                          key={i}
+                          key={sub.slug || sub.name}
                           className={`${styles.subtopicBtn} ${isActive(path) ? styles.active : ''}`}
                           onClick={() => handleNav(path)}
                         >

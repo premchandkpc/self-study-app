@@ -1,0 +1,14 @@
+### Health check
+GET http://localhost:4000/health
+
+### Get all topics
+GET http://localhost:4000/api/topics
+
+### Get specific topic by abbr
+GET http://localhost:4000/api/topics/dsa
+
+### Get subtopic
+GET http://localhost:4000/api/topics/dsa/arrays
+
+### Get all maps (bootstrap)
+GET http://localhost:4000/api/maps
