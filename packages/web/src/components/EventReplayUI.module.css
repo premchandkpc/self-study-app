@@ -1,0 +1,299 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.sessionInfo {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.eventDescription {
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-left: 4px solid #3b82f6;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.eventType {
+  font-weight: 600;
+  color: #3b82f6;
+  margin-right: 8px;
+}
+
+.eventText {
+  color: #6b7280;
+  font-family: 'Courier New', monospace;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timelineTrack {
+  position: relative;
+  height: 40px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.markers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.marker {
+  position: absolute;
+  width: 2px;
+  height: 24px;
+  background: #d1d5db;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+
+.marker:hover {
+  background: #9ca3af;
+  width: 3px;
+}
+
+.activeMarker {
+  background: #3b82f6;
+  width: 4px;
+  height: 28px;
+}
+
+.timeDisplay {
+  font-size: 11px;
+  color: #6b7280;
+  text-align: right;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.playControls {
+  display: flex;
+  gap: 6px;
+}
+
+.button {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.button:hover {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.primaryButton {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.primaryButton:hover {
+  background: #dbeafe;
+  border-color: #2563eb;
+}
+
+.speedControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.speedControl label {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.speedSelect {
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.speedSelect:hover {
+  border-color: #9ca3af;
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.eventListHeader {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.eventListScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.eventListItem {
+  display: grid;
+  grid-template-columns: 24px 1fr 60px;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  background: #f9fafb;
+  border-left: 2px solid transparent;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.eventListItem:hover {
+  background: #f3f4f6;
+  border-left-color: #9ca3af;
+}
+
+.activeEventItem {
+  background: #eff6ff;
+  border-left-color: #3b82f6;
+}
+
+.eventIndex {
+  font-weight: 600;
+  color: #9ca3af;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+.activeEventItem .eventIndex {
+  color: #3b82f6;
+}
+
+.eventListType {
+  font-weight: 500;
+  color: #1f2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eventTime {
+  font-family: 'Courier New', monospace;
+  color: #6b7280;
+  text-align: right;
+  font-size: 10px;
+}
+
+/* Scrollbar styling */
+.eventListScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.eventListScroll::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.eventListScroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.eventListScroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
