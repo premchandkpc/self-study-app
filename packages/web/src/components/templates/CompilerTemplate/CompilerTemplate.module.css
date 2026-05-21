@@ -71,6 +71,29 @@
   border-color: var(--node-active);
 }
 
+.testBtn {
+  padding: 4px 10px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.testBtn:hover:not(:disabled) {
+  background: var(--bg-card);
+  border-color: var(--node-default);
+}
+
+.testBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .compiling {
   font-size: var(--font-size-xs);
   color: var(--node-active);

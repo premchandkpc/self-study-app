@@ -23,6 +23,8 @@ export default function CompilerTemplate() {
   const [isCompiling, setIsCompiling] = useState(false);
 
   const currentStep = state.steps[state.currentStep];
+  const currentExample = Object.values(EXAMPLES).find(ex => ex.code === code);
+  const hasTestCases = currentExample?.testCases?.length > 0;
 
   function loadExample(exampleId) {
     const example = EXAMPLES[exampleId];
@@ -32,6 +34,38 @@ export default function CompilerTemplate() {
     setInputValues(example.defaultInput || {});
     setError('');
     setHasRun(false);
+  }
+
+  async function runTestCases() {
+    if (!currentExample?.testCases) return;
+
+    setError('');
+    setIsCompiling(true);
+    const results = [];
+
+    for (const tc of currentExample.testCases) {
+      await handleApply(tc.input);
+      if (state.steps.length > 0) {
+        const lastStep = state.steps[state.steps.length - 1];
+        const actual = lastStep.result;
+        const expected = tc.expected;
+        results.push({
+          input: tc.input,
+          expected,
+          actual,
+          passed: JSON.stringify(actual) === JSON.stringify(expected),
+        });
+      }
+    }
+
+    setIsCompiling(false);
+    const passed = results.filter(r => r.passed).length;
+    const msg = `${passed}/${results.length} test cases passed`;
+    if (passed === results.length) {
+      setError(`✓ ${msg}`);
+    } else {
+      setError(`✗ ${msg}`);
+    }
   }
 
   useEffect(() => {
@@ -57,14 +91,30 @@ export default function CompilerTemplate() {
     }
   }, [code]);
 
+  function validateCode() {
+    if (!code.trim()) return 'Enter algorithm code';
+
+    if (language === 'javascript') {
+      if (!code.includes('algorithm') && !code.includes('function')) {
+        return 'Code must define an algorithm function';
+      }
+      if (!code.includes('tracer')) {
+        return 'Code should use tracer.step() or tracer.found() to record steps';
+      }
+    }
+
+    return null;
+  }
+
   async function handleApply(parsedInputs) {
     setError('');
     setInputValues(parsedInputs);
     setIsCompiling(true);
 
     try {
-      if (!code.trim()) {
-        setError('Enter algorithm code');
+      const validationError = validateCode();
+      if (validationError) {
+        setError(validationError);
         setIsCompiling(false);
         return;
       }
@@ -72,25 +122,29 @@ export default function CompilerTemplate() {
       if (language === 'javascript') {
         const algorithmMatch = code.match(/(?:function\s*\w*|const\s+\w+\s*=)\s*\(([^)]*)\)\s*(?:=>)?\s*\{([\s\S]*)\}/);
         if (!algorithmMatch) {
-          setError('Algorithm must be a function');
+          setError('Code must be a function: function(input, tracer) { ... } or const algorithm = (input, tracer) => { ... }');
           setIsCompiling(false);
           return;
         }
 
-        const fnBody = algorithmMatch[2];
-        const algorithm = new Function('input', 'tracer', fnBody);
-        const compiler = new AlgorithmCompiler();
-        const steps = compiler.compile(algorithm, parsedInputs);
+        try {
+          const fnBody = algorithmMatch[2];
+          const algorithm = new Function('input', 'tracer', fnBody);
+          const compiler = new AlgorithmCompiler();
+          const steps = compiler.compile(algorithm, parsedInputs);
 
-        if (!steps || steps.length === 0) {
-          setError('No steps generated');
-          setIsCompiling(false);
-          return;
+          if (!steps || steps.length === 0) {
+            setError('No steps generated. Make sure to call tracer.step() or tracer.found()');
+            setIsCompiling(false);
+            return;
+          }
+
+          dispatch({ type: 'RESET' });
+          dispatch({ type: 'SET_STEPS', payload: steps });
+          setHasRun(true);
+        } catch (e) {
+          setError(`Execution error: ${e.message}`);
         }
-
-        dispatch({ type: 'RESET' });
-        dispatch({ type: 'SET_STEPS', payload: steps });
-        setHasRun(true);
       } else {
         try {
           const response = await fetch('http://localhost:4000/api/execute', {
@@ -108,13 +162,13 @@ export default function CompilerTemplate() {
 
           const result = await response.json();
           if (result.error) {
-            setError(result.error);
+            setError(`${language} error: ${result.error}`);
             setIsCompiling(false);
             return;
           }
 
           if (!result.steps || result.steps.length === 0) {
-            setError('No steps generated');
+            setError('No steps generated. Make sure to call tracer.step() or tracer.found()');
             setIsCompiling(false);
             return;
           }
@@ -123,7 +177,7 @@ export default function CompilerTemplate() {
           dispatch({ type: 'SET_STEPS', payload: result.steps });
           setHasRun(true);
         } catch (e) {
-          setError(`Backend error: ${e.message}`);
+          setError(`Backend error: ${e.message}. Make sure API server is running on port 4000.`);
         }
       }
     } catch (e) {
@@ -159,6 +213,12 @@ export default function CompilerTemplate() {
             </button>
           ))}
         </div>
+
+        {hasTestCases && (
+          <button className={styles.testBtn} onClick={runTestCases} disabled={isCompiling}>
+            🧪 Test
+          </button>
+        )}
 
         {isCompiling && <span className={styles.compiling}>Compiling...</span>}
       </div>
