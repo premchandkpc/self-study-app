@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TOPICS, ABBR_MAP, SUBTOPIC_ROUTES } from '../../core/constants/topics';
+import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
 import { buildSubtopicLearnRoute, slugify } from '../../core/topics/topicRoutes';
-import { VISUALIZER_MAP } from '../../core/constants/topics';
 import LearningResources from '../../components/shared/LearningResources/LearningResources';
 import styles from './Topics.module.css';
 
 export default function TopicsList() {
   const navigate = useNavigate();
   const [openTopic, setOpenTopic] = useState(null);
+  const { TOPICS, ABBR_MAP, SUBTOPIC_ROUTES, VISUALIZER_MAP } = useTopicMapsContext();
 
   const learningResources = [
     { icon: '▶️', name: 'Interactive Visualizer', desc: 'Step through algorithms and data structures with full animation control' },

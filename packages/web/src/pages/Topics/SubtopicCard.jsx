@@ -4,7 +4,8 @@ import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import { buildSubtopicLearnRoute, buildSubtopicRoute, slugify } from '../../core/topics/topicRoutes';
-import { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID, ABBR_MAP } from '../../core/constants/topics';
+import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+  const { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID, ABBR_MAP } = useTopicMapsContext();
 import styles from './Topics.module.css';
 
 export default function SubtopicCard({ topicAbbr, topicIcon, subtopic, color, delay = 0 }) {

@@ -1,5 +1,6 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { TOPICS, ABBR_MAP, TOPIC_EXPLANATIONS } from '../../core/constants/topics';
+import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+  const { TOPICS, ABBR_MAP, TOPIC_EXPLANATIONS } = useTopicMapsContext();
 import { buildTopicRoute } from '../../core/topics/topicRoutes';
 import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Button from '../../components/shared/Button/Button';

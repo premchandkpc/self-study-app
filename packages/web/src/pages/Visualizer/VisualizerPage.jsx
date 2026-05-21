@@ -1,8 +1,9 @@
 import { useState, Suspense, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { SimulationProvider } from '../../core/context/SimulationContext';
+import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { useSubtopic } from '../../core/hooks/useSubtopic';
 import { VISUALIZERS } from './visualizers.config';
-import { SLUG_MAP, ABBR_MAP, TOPIC_DEFS } from '../../core/constants/topics';
 import ExplanationCard from '../../components/shared/ExplanationCard/ExplanationCard';
 import Button from '../../components/shared/Button/Button';
 import Card from '../../components/shared/Card/Card';
@@ -17,6 +18,8 @@ export default function VisualizerPage() {
 
   const [mode, setMode] = useState('sim');
   const [subtab, setSubtab] = useState(0);
+  const { SLUG_MAP, ABBR_MAP } = useTopicMapsContext();
+  const { data: subtopicData, isLoading: isSubtopicLoading } = useSubtopic(abbr, slug);
 
   useEffect(() => {
     if (hash === 'learn') setMode('learn');
@@ -110,19 +113,25 @@ export default function VisualizerPage() {
 
       {mode === 'learn' && hasStudy ? (
         <div className={styles.studyContent}>
-          {entry.tabs ? (
-            <>
-              <div className={styles.tabNav}>
-                {entry.tabs.map((t, i) => (
-                  <button key={t.name}
-                    className={`${styles.tabNavBtn} ${i === subtab ? styles.tabNavBtnActive : ''}`}
-                    onClick={() => setSubtab(i)}>{t.name}</button>
-                ))}
-              </div>
-              <ExplanationCard topic={entry.topicId} subtopic={entry.tabs[subtab].name} data={entry.tabs[subtab]} />
-            </>
+          {isSubtopicLoading ? (
+            <Loading label="Loading content…" />
+          ) : subtopicData ? (
+            subtopicData.tabs ? (
+              <>
+                <div className={styles.tabNav}>
+                  {subtopicData.tabs.map((t, i) => (
+                    <button key={t.name}
+                      className={`${styles.tabNavBtn} ${i === subtab ? styles.tabNavBtnActive : ''}`}
+                      onClick={() => setSubtab(i)}>{t.name}</button>
+                  ))}
+                </div>
+                <ExplanationCard topic={subtopicData.topicId} subtopic={subtopicData.tabs[subtab].name} data={subtopicData.tabs[subtab]} />
+              </>
+            ) : (
+              <ExplanationCard topic={subtopicData.topicId} subtopic={subtopicData.name} data={subtopicData} />
+            )
           ) : (
-            <ExplanationCard topic={entry.topicId} subtopic={entry.name} data={entry} />
+            <div style={{ color: 'var(--text-muted)', padding: '20px' }}>Failed to load content</div>
           )}
         </div>
       ) : (
