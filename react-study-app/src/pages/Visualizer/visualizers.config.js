@@ -167,13 +167,13 @@ export const VISUALIZERS = {
   systemdesign: {
     label: 'System Design — Uber, LB, Cache, CDN, Raft',
     icon: '🏗️',
-    component: lazy(() => import('../../components/visualizers/GenericVisualizer/GenericVisualizer')),
+    component: lazy(() => import('../../components/visualizers/SystemDesignVisualizer/SystemDesignVisualizer')),
     desc: 'Uber ride-hailing, Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election.',
   },
   uber: {
     label: 'Uber System Design — Ride Matching, GPS, Surge, Payments',
     icon: '🚗',
-    component: lazy(() => import('../../components/visualizers/GenericVisualizer/GenericVisualizer')),
+    component: lazy(() => import('../../components/visualizers/SystemDesignVisualizer/SystemDesignVisualizer')),
     desc: 'Uber ride-hailing architecture: 14 components (Rider/Driver app, API Gateway, Auth, Ride Match, Location, Pricing, Trip, Payment, Redis, Kafka, PostgreSQL, WebSocket).',
   },
   microservices: {
