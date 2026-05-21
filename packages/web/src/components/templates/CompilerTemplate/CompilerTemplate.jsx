@@ -5,9 +5,8 @@ import { FunctionSignatureParser } from '../../../core/parser/FunctionSignatureP
 import { EXAMPLES } from '../../../data/dsa-examples';
 import { DsaVizRenderer } from '../../renderers/DsaRenderer';
 import StepControls from '../../shared/StepControls/StepControls';
-import CodePanel from '../../shared/CodePanel/CodePanel';
 import VariablesPanel from '../../shared/VariablesPanel/VariablesPanel';
-import InputFormBuilder from '../../shared/InputFormBuilder/InputFormBuilder';
+import InputPanel from '../../shared/InputPanel/InputPanel';
 import styles from './CompilerTemplate.module.css';
 
 const LANGUAGES = ['javascript', 'python', 'go', 'java', 'rust'];
@@ -20,6 +19,7 @@ export default function CompilerTemplate() {
   const [hasRun, setHasRun] = useState(false);
   const [inputSchema, setInputSchema] = useState([]);
   const [inputValues, setInputValues] = useState({});
+  const [isCompiling, setIsCompiling] = useState(false);
 
   const currentStep = state.steps[state.currentStep];
 
@@ -33,7 +33,6 @@ export default function CompilerTemplate() {
     setHasRun(false);
   }
 
-  // Parse code and extract function signature
   useEffect(() => {
     if (!code.trim()) {
       setInputSchema([]);
@@ -45,7 +44,6 @@ export default function CompilerTemplate() {
       const schema = FunctionSignatureParser.generateSchema(params);
       setInputSchema(schema);
 
-      // Initialize input values from schema defaults
       const defaults = {};
       schema.forEach(field => {
         if (!(field.key in inputValues)) {
@@ -54,36 +52,38 @@ export default function CompilerTemplate() {
       });
       setInputValues(prev => ({ ...prev, ...defaults }));
     } catch (e) {
-      // Fail silently; user might still be typing
+      // Fail silently
     }
   }, [code]);
 
-  async function handleRun() {
+  async function handleApply(parsedInputs) {
     setError('');
+    setInputValues(parsedInputs);
+    setIsCompiling(true);
 
     try {
       if (!code.trim()) {
         setError('Enter algorithm code');
+        setIsCompiling(false);
         return;
       }
 
-      const inputData = { ...inputValues };
-
       if (language === 'javascript') {
-        // Client-side execution
         const algorithmMatch = code.match(/(?:function\s*\w*|const\s+\w+\s*=)\s*\(([^)]*)\)\s*(?:=>)?\s*\{([\s\S]*)\}/);
         if (!algorithmMatch) {
-          setError('Algorithm must be a function with (input, tracer) parameters');
+          setError('Algorithm must be a function');
+          setIsCompiling(false);
           return;
         }
 
         const fnBody = algorithmMatch[2];
         const algorithm = new Function('input', 'tracer', fnBody);
         const compiler = new AlgorithmCompiler();
-        const steps = compiler.compile(algorithm, inputData);
+        const steps = compiler.compile(algorithm, parsedInputs);
 
         if (!steps || steps.length === 0) {
-          setError('No steps generated. Check algorithm logic.');
+          setError('No steps generated');
+          setIsCompiling(false);
           return;
         }
 
@@ -91,28 +91,30 @@ export default function CompilerTemplate() {
         dispatch({ type: 'SET_STEPS', payload: steps });
         setHasRun(true);
       } else {
-        // Backend execution
         try {
           const response = await fetch('http://localhost:4000/api/execute', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ language, code, inputData }),
+            body: JSON.stringify({ language, code, inputData: parsedInputs }),
           });
 
           if (!response.ok) {
-            const error = await response.json();
-            setError(error.error || 'Backend error');
+            const err = await response.json();
+            setError(err.error || 'Backend error');
+            setIsCompiling(false);
             return;
           }
 
           const result = await response.json();
           if (result.error) {
             setError(result.error);
+            setIsCompiling(false);
             return;
           }
 
           if (!result.steps || result.steps.length === 0) {
             setError('No steps generated');
+            setIsCompiling(false);
             return;
           }
 
@@ -120,91 +122,94 @@ export default function CompilerTemplate() {
           dispatch({ type: 'SET_STEPS', payload: result.steps });
           setHasRun(true);
         } catch (e) {
-          setError(`Backend error: ${e.message}. Make sure API server is running on port 4000.`);
+          setError(`Backend error: ${e.message}`);
         }
       }
     } catch (e) {
       setError(e.message);
+    } finally {
+      setIsCompiling(false);
     }
   }
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.examplesBar}>
-        <label className={styles.examplesLabel}>📚 Load Example:</label>
-        <select className={styles.examplesSelect} onChange={(e) => e.target.value && loadExample(e.target.value)} defaultValue="">
-          <option value="">Choose an example...</option>
-          {Object.entries(EXAMPLES).map(([id, ex]) => (
-            <option key={id} value={id}>{ex.topic} → {ex.title}</option>
+      {/* Top toolbar */}
+      <div className={styles.toolbar}>
+        <div className={styles.section}>
+          <label className={styles.label}>📚</label>
+          <select className={styles.select} onChange={(e) => e.target.value && loadExample(e.target.value)} defaultValue="">
+            <option value="">Load example...</option>
+            {Object.entries(EXAMPLES).map(([id, ex]) => (
+              <option key={id} value={id}>{ex.title}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.section}>
+          <span className={styles.label}>Lang:</span>
+          {LANGUAGES.map(lang => (
+            <button
+              key={lang}
+              className={`${styles.langBtn} ${language === lang ? styles.active : ''}`}
+              onClick={() => setLanguage(lang)}
+            >
+              {lang}
+            </button>
           ))}
-        </select>
+        </div>
+
+        {isCompiling && <span className={styles.compiling}>Compiling...</span>}
       </div>
 
-      <div className={styles.editorRow}>
-        <div className={styles.editorBox}>
-          <div className={styles.editorLabel}>ALGORITHM CODE</div>
-          <div className={styles.langSelector}>
-            {LANGUAGES.map(lang => (
-              <button
-                key={lang}
-                className={`${styles.langBtn} ${language === lang ? styles.langBtnActive : ''}`}
-                onClick={() => setLanguage(lang)}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
+      {/* Main layout: code (left) + viz (right) */}
+      <div className={styles.main}>
+        {/* Code panel (left) */}
+        <div className={styles.codePanel}>
+          <div className={styles.codePanelHeader}>algorithm.js</div>
           <textarea
-            className={`${styles.editor} ${error ? styles.editorError : ''}`}
+            className={`${styles.codeEditor} ${error ? styles.error : ''}`}
             value={code}
             onChange={e => setCode(e.target.value)}
             placeholder="const algorithm = (input, tracer) => {
-  tracer.step('Init', 'description', { ...state });
-  // ... algorithm code with tracer calls
-  tracer.found(result, { state: { ... } });
+  const { array, target } = input;
+  tracer.step('Init', 'description', { array, target });
+  // ... code
   return result;
 };"
             spellCheck={false}
-            autoCorrect="off"
-            autoCapitalize="off"
           />
         </div>
 
-        <div className={styles.paramsBox}>
-          <div className={styles.paramsTitle}>INPUTS (AUTO-DETECTED)</div>
-          <InputFormBuilder
-            schema={inputSchema}
-            values={inputValues}
-            onChange={setInputValues}
-            onRun={handleRun}
-          />
-        </div>
-      </div>
-
-      {error && <div className={styles.errorBox}>{error}</div>}
-
-      {hasRun && (
-        <>
-          <div className={styles.body}>
-            <div className={styles.vizArea}>
-              <DsaVizRenderer viz={currentStep} />
-            </div>
-            <div className={styles.panels}>
-              <CodePanel code={code.split('\n')} language={language} />
+        {/* Viz area (right) */}
+        <div className={styles.vizSection}>
+          {hasRun ? (
+            <>
+              <div className={styles.vizContainer}>
+                <DsaVizRenderer viz={currentStep} />
+              </div>
               <VariablesPanel
                 vars={Object.fromEntries(
                   Object.entries(currentStep?.variables ?? {}).map(([k, v]) => [k, v.value])
                 )}
                 result={currentStep?.result}
               />
+              <StepControls />
+            </>
+          ) : (
+            <div className={styles.placeholder}>
+              {code.trim() ? 'Set inputs and run →' : 'Load example or write code'}
             </div>
-          </div>
-          <StepControls />
-        </>
-      )}
+          )}
+        </div>
+      </div>
 
-      {!hasRun && (
-        <div className={styles.noSteps}>Write code → Auto-detect inputs → Compile & Run → Step through</div>
+      {/* Input panel (bottom) */}
+      {code.trim() && (
+        <>
+          <InputPanel schema={inputSchema} current={inputValues} onApply={handleApply} />
+          {error && <div className={styles.errorBox}>{error}</div>}
+        </>
       )}
     </div>
   );
