@@ -28,7 +28,7 @@
   border: 1.5px solid var(--cc, var(--border));
   background: color-mix(in srgb, var(--cc, var(--border)) 12%, transparent);
   border-radius: 6px; padding: 6px 10px; min-width: 36px; position: relative;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 .inWin { outline: 2px solid var(--node-comparing); outline-offset: 2px; }
 .cellVal { font-size: 14px; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); }
@@ -38,7 +38,7 @@
 /* ── sort bars ── */
 .sortWrap { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 12px; }
 .barCol   { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; height: 100%; justify-content: flex-end; }
-.bar      { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.25s, background 0.2s; }
+.bar      { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.35s ease-out, background 0.3s ease; }
 .barVal   { font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); }
 
 /* ── linked list ── */
@@ -53,7 +53,7 @@
   border-radius: 8px; padding: 5px 10px; font-family: var(--font-mono);
   font-size: 14px; font-weight: 700; color: var(--text-primary);
   position: relative; display: flex; flex-direction: column; align-items: center; min-width: 36px;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 .llVal       { font-size: 14px; line-height: 1; }
 .llPtr       { font-size: 9px; color: var(--nc, var(--node-active)); font-weight: 700; margin-top: 2px; white-space: nowrap; }
@@ -90,6 +90,7 @@
   background: color-mix(in srgb, var(--cc, var(--border)) 12%, transparent);
   border-radius: 6px; display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--text-primary);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 /* ── hash map ── */
@@ -112,7 +113,7 @@
   background: color-mix(in srgb, var(--cc, var(--border)) 15%, transparent);
   border-radius: 4px; display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-primary);
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 .dpHdr {
   min-width: 34px; height: 22px; padding: 0 2px;
@@ -143,3 +144,37 @@
   border-radius: 6px; display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text-primary);
 }
+
+/* ── animations ── */
+@keyframes cell-highlight {
+  0% { box-shadow: 0 0 0 0 var(--cc, var(--node-active)); opacity: 1; }
+  50% { box-shadow: 0 0 8px 4px color-mix(in srgb, var(--cc, var(--node-active)) 40%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 1; }
+}
+
+@keyframes cell-pulse {
+  0%, 100% { background: color-mix(in srgb, var(--cc, var(--border)) 12%, transparent); }
+  50% { background: color-mix(in srgb, var(--cc, var(--node-active)) 20%, transparent); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 12px 6px color-mix(in srgb, var(--cc, var(--node-active)) 30%, transparent); }
+}
+
+.cell { animation: cell-highlight 0.5s ease-out; }
+.bar { animation: cell-pulse 0.4s ease-in-out; }
+.llNode { animation: cell-highlight 0.5s ease-out; }
+.matCell { animation: cell-pulse 0.4s ease-in-out; }
+.dpCell { animation: cell-pulse 0.4s ease-in-out; }
+.strCell { animation: cell-pulse 0.4s ease-in-out; }

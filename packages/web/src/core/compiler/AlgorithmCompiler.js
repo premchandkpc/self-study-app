@@ -33,7 +33,7 @@ export class AlgorithmCompiler {
         steps.push(this._buildStep(
           'Complete',
           `Result: ${this._formatValue(result)}`,
-          inputData,
+          { ...inputData, result },
           { opsLog: [{ msg: `Result: ${this._formatValue(result)}`, type: 'success' }], result, duration }
         ));
       }
@@ -46,15 +46,16 @@ export class AlgorithmCompiler {
   }
 
   _buildStep(title, description, state, metadata = {}) {
-    const stateClone = this._cloneState(state);
+    const stateClone = this._cloneState(state || {});
     const variables = this._extractVariables(stateClone);
+    const vizStructure = this._generateVizStructure(stateClone);
 
     return {
       title,
       description,
       state: stateClone,
-      variables, // All variables from state
-      ...this._generateVizStructure(stateClone),
+      variables,
+      ...vizStructure,
       opsLog: metadata.opsLog || [{ msg: description, type: 'info' }],
       ...metadata,
     };
@@ -62,14 +63,20 @@ export class AlgorithmCompiler {
 
   _extractVariables(state) {
     const vars = {};
-    for (const [key, value] of Object.entries(state)) {
-      if (!key.startsWith('_')) {
-        vars[key] = {
-          name: key,
-          value,
-          type: this._detectType(value),
-        };
+    if (!state || typeof state !== 'object') return vars;
+
+    try {
+      for (const [key, value] of Object.entries(state)) {
+        if (!key.startsWith('_')) {
+          vars[key] = {
+            name: key,
+            value,
+            type: this._detectType(value),
+          };
+        }
       }
+    } catch (e) {
+      console.error('Error extracting variables:', e);
     }
     return vars;
   }
@@ -135,7 +142,7 @@ export class AlgorithmCompiler {
     if (state.string !== undefined) {
       viz.chars = state.string.split('').map((ch, i) => ({
         char: ch,
-        state: state.palindrome && state.palindrome.includes(ch) ? 'highlight' : 'idle',
+        state: state.palindrome && typeof state.palindrome === 'string' && state.palindrome.includes(ch) ? 'highlight' : 'idle',
       }));
       return viz;
     }
@@ -196,19 +203,42 @@ export class AlgorithmCompiler {
   }
 
   _cloneState(data) {
+    if (!data || typeof data !== 'object') return data;
+
     const cloned = {};
-    for (const [key, value] of Object.entries(data)) {
+    const seen = new WeakSet();
+
+    const deepClone = (value) => {
+      if (value === null || value === undefined) return value;
+      if (typeof value === 'function') return undefined;
+      if (typeof value !== 'object') return value;
+
+      if (seen.has(value)) return undefined;
+      seen.add(value);
+
       if (Array.isArray(value)) {
-        cloned[key] = value.map(v => Array.isArray(v) ? [...v] : v);
-      } else if (value !== null && typeof value === 'object') {
-        try {
-          cloned[key] = JSON.parse(JSON.stringify(value));
-        } catch {
-          cloned[key] = value;
-        }
-      } else {
-        cloned[key] = value;
+        return value.map(v => deepClone(v));
       }
+
+      try {
+        return JSON.parse(JSON.stringify(value));
+      } catch {
+        const obj = {};
+        for (const [k, v] of Object.entries(value)) {
+          if (typeof v !== 'function') {
+            obj[k] = deepClone(v);
+          }
+        }
+        return obj;
+      }
+    };
+
+    try {
+      for (const [key, value] of Object.entries(data)) {
+        cloned[key] = deepClone(value);
+      }
+    } catch (e) {
+      console.error('Error cloning state:', e);
     }
     return cloned;
   }

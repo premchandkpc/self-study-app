@@ -5,7 +5,7 @@ import { FunctionSignatureParser } from '../../../core/parser/FunctionSignatureP
 import { EXAMPLES } from '../../../data/dsa-examples';
 import { DsaVizRenderer } from '../../renderers/DsaRenderer';
 import StepControls from '../../shared/StepControls/StepControls';
-import VariablesPanel from '../../shared/VariablesPanel/VariablesPanel';
+import VariablesChip from '../../shared/VariablesChip/VariablesChip';
 import InputPanel from '../../shared/InputPanel/InputPanel';
 import SyntaxEditor from '../../shared/SyntaxEditor/SyntaxEditor';
 import styles from './CompilerTemplate.module.css';
@@ -43,28 +43,58 @@ export default function CompilerTemplate() {
     setIsCompiling(true);
     const results = [];
 
-    for (const tc of currentExample.testCases) {
-      await handleApply(tc.input);
-      if (state.steps.length > 0) {
-        const lastStep = state.steps[state.steps.length - 1];
-        const actual = lastStep.result;
-        const expected = tc.expected;
-        results.push({
-          input: tc.input,
-          expected,
-          actual,
-          passed: JSON.stringify(actual) === JSON.stringify(expected),
-        });
+    try {
+      const validationError = validateCode();
+      if (validationError) {
+        setError(validationError);
+        setIsCompiling(false);
+        return;
       }
-    }
 
-    setIsCompiling(false);
-    const passed = results.filter(r => r.passed).length;
-    const msg = `${passed}/${results.length} test cases passed`;
-    if (passed === results.length) {
-      setError(`✓ ${msg}`);
-    } else {
-      setError(`✗ ${msg}`);
+      const algorithmMatch = code.match(/(?:function\s+\w+|const\s+\w+)\s*=\s*\(([^)]*)\)\s*(?:=>)?\s*\{([\s\S]*)\}(?:\s*;)?$/m);
+      if (!algorithmMatch) {
+        setError('Code must be: function(input, tracer) { ... } or const algorithm = (input, tracer) => { ... }');
+        setIsCompiling(false);
+        return;
+      }
+
+      for (const tc of currentExample.testCases) {
+        try {
+          const fnBody = algorithmMatch[2];
+          const algorithm = new Function('input', 'tracer', fnBody);
+          const compiler = new AlgorithmCompiler();
+          const steps = compiler.compile(algorithm, tc.input);
+
+          if (steps?.length > 0) {
+            const lastStep = steps[steps.length - 1];
+            const actual = lastStep.result;
+            const expected = tc.expected;
+            results.push({
+              input: tc.input,
+              expected,
+              actual,
+              passed: JSON.stringify(actual) === JSON.stringify(expected),
+            });
+          }
+        } catch (e) {
+          results.push({
+            input: tc.input,
+            expected: tc.expected,
+            actual: null,
+            passed: false,
+          });
+        }
+      }
+
+      const passed = results.filter(r => r.passed).length;
+      const msg = `${passed}/${results.length} test cases passed`;
+      if (passed === results.length) {
+        setError(`✓ ${msg}`);
+      } else {
+        setError(`✗ ${msg}`);
+      }
+    } finally {
+      setIsCompiling(false);
     }
   }
 
@@ -224,7 +254,7 @@ export default function CompilerTemplate() {
               <div className={styles.vizContainer}>
                 <DsaVizRenderer viz={currentStep} />
               </div>
-              <VariablesPanel
+              <VariablesChip
                 vars={Object.fromEntries(
                   Object.entries(currentStep?.variables ?? {}).map(([k, v]) => [k, v.value])
                 )}
