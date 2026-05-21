@@ -3,5 +3,6 @@ import channel   from './scenarios/channel';
 import select_   from './scenarios/select';
 import scheduler from './scenarios/scheduler';
 import mutex     from './scenarios/mutex';
+import grpc      from './scenarios/grpc';
 
-export const SCENARIOS = [goroutine, channel, select_, scheduler, mutex];
+export const SCENARIOS = [goroutine, channel, select_, scheduler, mutex, grpc];
