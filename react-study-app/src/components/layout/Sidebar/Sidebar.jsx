@@ -8,7 +8,7 @@ import styles from './Sidebar.module.css';
 export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { topicId } = useParams();
+  const { topicId, subtopic } = useParams();
   const { state, actions } = useAppState();
   const expandedTopics = state.ui.expandedTopics;
   const sidebarMode = state.ui.sidebarMode;
@@ -23,6 +23,33 @@ export default function Sidebar({ collapsed }) {
   // Hide sidebar if mode is 'hidden'
   if (sidebarMode === 'hidden') {
     return null;
+  }
+
+  // When viewing specific subtopic, show only that subtopic
+  if (subtopic && topicId) {
+    const topic = TOPICS.find((t) => t.id === topicId);
+    if (topic && topic.subtopics.includes(subtopic)) {
+      return (
+        <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
+          <div className={styles.inner}>
+            {!collapsed && (
+              <p className={styles.sectionLabel}>{topic.label}</p>
+            )}
+            <nav className={styles.nav}>
+              <div className={styles.topicGroup}>
+                <button
+                  className={`${styles.subtopicBtn} ${styles.active}`}
+                  disabled
+                  title={subtopic}
+                >
+                  {subtopic}
+                </button>
+              </div>
+            </nav>
+          </div>
+        </aside>
+      );
+    }
   }
 
   // Filter topics: show all or only current
