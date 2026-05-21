@@ -58,12 +58,14 @@ export default function Sidebar({ collapsed }) {
     : TOPICS;
 
   function handleSelect(topicId, subtopic) {
-    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
+    const routeTemplate = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
+    const route = routeTemplate.split(subtopic).join(encodeURIComponent(subtopic));
     navigate(route);
   }
 
   function isActive(topicId, subtopic) {
-    const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
+    const routeTemplate = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
+    const route = routeTemplate.split(subtopic).join(encodeURIComponent(subtopic));
     return location.pathname === route;
   }
 
