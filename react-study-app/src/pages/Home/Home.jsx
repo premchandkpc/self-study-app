@@ -13,10 +13,13 @@ const KafkaVisualizer = lazy(() => import('../../components/visualizers/KafkaVis
 import { TOPICS } from '../../core/constants/topics';
 import styles from './Home.module.css';
 
+const TOPIC_COUNT = TOPICS.length;
+const VIZ_COUNT = TOPICS.reduce((acc, t) => acc + t.subtopics.length, 0);
+
 const STATS = [
-  { label: 'Topics', value: '8', icon: '🧩', color: 'blue' },
-  { label: 'Visualizers', value: '40+', icon: '🎨', color: 'green' },
-  { label: 'Systems', value: '12', icon: '🏗️', color: 'yellow' },
+  { label: 'Topics', value: String(TOPIC_COUNT), icon: '🧩', color: 'blue' },
+  { label: 'Subtopics', value: String(VIZ_COUNT), icon: '🎨', color: 'green' },
+  { label: 'Systems', value: String(TOPIC_COUNT), icon: '🏗️', color: 'yellow' },
   { label: 'Algorithms', value: '50+', icon: '⚡', color: 'purple' },
 ];
 

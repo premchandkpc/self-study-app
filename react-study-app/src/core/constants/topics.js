@@ -3,7 +3,7 @@ export const TOPICS = [
     id: 'dsa',
     label: 'DSA',
     icon: '🧩',
-    subtopics: ['Arrays', 'TwoPointers', 'BinarySearch', 'PrefixSum', 'Matrices', 'LinkedList', 'Graphs', 'Trees', 'DP', 'Strings', 'HashMaps', 'Sets'],
+    subtopics: ['Arrays', 'TwoPointers', 'BinarySearch', 'PrefixSum', 'Matrices', 'LinkedList', 'Graphs', 'Trees', 'Trie', 'Union Find', 'Backtracking', 'DP', 'Strings', 'HashMaps', 'Sets', 'Bubble Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort'],
   },
   {
     id: 'java',
@@ -51,19 +51,13 @@ export const TOPICS = [
     id: 'system-design',
     label: 'System Design',
     icon: '🏗️',
-    subtopics: ['Uber'],
+    subtopics: ['Uber Request Flow', 'Uber Architecture', 'Uber Failure Modes', 'Load Balancer', 'Cache', 'CDN', 'Rate Limiter', 'Sharding', 'Replication', 'Message Queue', 'Raft Consensus'],
   },
   {
     id: 'microservices',
     label: 'Microservices',
     icon: '🔌',
     subtopics: ['Load Balancer', 'Cache', 'CDN', 'Raft', 'Circuit Breaker', 'Service Discovery', 'API Gateway', 'Event-Driven'],
-  },
-  {
-    id: 'sorting',
-    label: 'Sorting',
-    icon: '📶',
-    subtopics: ['Bubble Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort'],
   },
   {
     id: 'database',

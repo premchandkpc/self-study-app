@@ -4,9 +4,8 @@ import MainLayout from './components/layout/MainLayout/MainLayout';
 import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
 import Topics from './pages/Topics/Topics';
-import UberDetail from './pages/Topics/UberDetail';
+import SubtopicDetail from './pages/Topics/SubtopicDetail';
 import Collections from './pages/Collections/Collections';
-import SystemDesignCases from './pages/SystemDesign/SystemDesignCases';
 import StudyHub from './pages/StudyHub/StudyHub';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
@@ -22,8 +21,7 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<Home onSelectTopic={({ topicId }) => navigate(`/topics/${topicId}`)} />} />
           <Route path="/topics" element={<Topics />} />
-          <Route path="/topics/system-design" element={<SystemDesignCases />} />
-          <Route path="/topics/system-design/uber" element={<UberDetail />} />
+          <Route path="/topics/:topicId/:subtopic/learn" element={<SubtopicDetail />} />
           <Route path="/topics/:topicId" element={<Topics />} />
           <Route path="/collections" element={<Collections />} />
           <Route path="/collections/:collectionId" element={<Collections />} />

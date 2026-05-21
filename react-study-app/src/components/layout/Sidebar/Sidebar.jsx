@@ -75,7 +75,7 @@ export default function Sidebar({ collapsed }) {
         {!collapsed && (
           <div className={styles.footer}>
             <div className={styles.footerStats}>
-              <span>14 Topics</span>
+              <span>{TOPICS.length} Topics</span>
               <span className={styles.dot}>·</span>
               <span>40+ Modules</span>
             </div>

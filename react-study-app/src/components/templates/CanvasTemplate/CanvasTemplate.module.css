@@ -1,27 +1,40 @@
-.wrapper { display: flex; flex-direction: column; gap: var(--space-md); }
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
 
+/* ── canvas ── */
 .canvas {
   position: relative;
   min-height: 400px;
   height: 480px;
 
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   overflow: hidden;
   background-color: var(--bg-card);
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 35%, transparent) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 50%, transparent) 1.2px, transparent 1.2px);
   user-select: none;
   touch-action: none;
+
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--text-primary) 4%, transparent),
+    var(--shadow-md);
 }
 
-.svg { width: 100%; height: 100%; display: block; }
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
 /* ── layer bands ── */
 .layer {
   transition: opacity 0.35s ease, fill 0.35s ease;
 }
 .layer:hover {
-  opacity: 0.92 !important;
+  opacity: 0.96 !important;
 }
 .layerLabel {
   font-size: 9px;
@@ -30,6 +43,7 @@
   letter-spacing: 0.8px;
   pointer-events: none;
   transition: opacity 0.35s;
+  font-weight: 600;
 }
 
 /* ── nodes ── */
@@ -38,7 +52,7 @@
   cursor: pointer;
 }
 .nodeGroup:hover {
-  filter: drop-shadow(0 0 6px var(--node-glow-c, var(--node-default)));
+  filter: drop-shadow(0 0 10px var(--node-glow-c, var(--node-default)));
 }
 .nodeGroup:active {
   cursor: move;
@@ -53,10 +67,11 @@
   align-items: center;
   gap: 2px;
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 4px 6px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-raised);
 }
 
 .zBtn {
@@ -70,7 +85,7 @@
   line-height: 1;
   transition: background var(--transition-fast);
 }
-.zBtn:hover { background: var(--bg-hover); }
+.zBtn:hover { background: var(--bg-active); }
 
 .zLabel {
   font-size: 11px;
@@ -96,13 +111,13 @@
   gap: 5px;
   font-size: 10px;
   font-family: var(--font-mono);
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 .legendHint {
   font-size: 9px;
   font-family: var(--font-mono);
-  color: var(--text-muted);
-  opacity: 0.45;
+  color: var(--text-faint);
   margin-left: 6px;
 }
 
@@ -129,10 +144,10 @@
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.ttTitle { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+.ttTitle { font-weight: 700; font-size: 13px; margin-bottom: 6px; color: var(--text-primary); }
 .ttRow   { display: flex; gap: 6px; margin: 3px 0; color: var(--text-muted); }
 .ttRow b { color: var(--text-primary); min-width: 52px; }
-.ttDesc  { margin-top: 6px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.ttDesc  { margin-top: 6px; color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
 .ttWarn  { color: var(--pod-crash); margin-top: 6px; font-weight: 700; }
 .ttHint  { margin-top: 8px; font-size: 10px; color: var(--text-muted); opacity: 0.6; }
 
@@ -140,16 +155,243 @@
 .events { display: flex; flex-direction: column; gap: 4px; }
 .event  {
   display: flex; align-items: center; gap: 8px;
-  padding: 5px 10px; border-radius: var(--radius-xs); font-size: var(--font-size-sm);
+  padding: 5px 10px; border-radius: var(--radius-sm); font-size: var(--font-size-sm);
   font-family: var(--font-mono); background: var(--bg-card);
-  border-left: 2px solid transparent;
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  transition: border-color var(--transition-fast);
 }
 .event.ok { border-left-color: var(--pod-running); }
 .event.warn { border-left-color: var(--node-comparing); }
 .event.error { border-left-color: var(--pod-crash); }
-.event.info { border-left-color: var(--text-muted); }
+.event.info { border-left-color: var(--text-accent); }
+
+.event.ok:hover { border-color: color-mix(in srgb, var(--pod-running) 20%, transparent); }
+.event.warn:hover { border-color: color-mix(in srgb, var(--node-comparing) 20%, transparent); }
+.event.error:hover { border-color: color-mix(in srgb, var(--pod-crash) 20%, transparent); }
+.event.info:hover { border-color: color-mix(in srgb, var(--text-accent) 20%, transparent); }
+
 .evDot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .ev_ok    { color: var(--pod-running); }
 .ev_warn  { color: var(--node-comparing); }
 .ev_error { color: var(--pod-crash); }
-.ev_info  { color: var(--text-muted); }
+.ev_info  { color: var(--text-accent); }
+
+/* ── content section (Notes / Code / Tradeoffs / Best Practices) ── */
+.contentSection {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.contentTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+  padding: 0 var(--space-md);
+  overflow-x: auto;
+}
+
+.contentTab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  font-weight: 500;
+}
+
+.contentTab:hover {
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+}
+
+.contentTabActive {
+  color: var(--text-primary);
+  border-bottom-color: var(--node-active);
+  font-weight: 600;
+}
+
+.contentBody {
+  padding: var(--space-md);
+}
+
+/* ── Notes grid ── */
+.notesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.noteCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.noteCard:hover {
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-accent) 20%, transparent);
+}
+
+.noteCardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.noteCardDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-accent);
+  flex-shrink: 0;
+}
+
+.noteCardTitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.noteCardContent {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Code block ── */
+.codeBlock {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1.65;
+  color: var(--text-primary);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.codeBlock code {
+  font-family: inherit;
+}
+
+/* ── Tradeoffs grid ── */
+.tradeoffsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.tradeoffCard {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.tradeoffCard:hover {
+  border-color: var(--border-strong);
+}
+
+.tradeoffSide {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.tradeoffLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tradeoffCard .tradeoffSide:first-child .tradeoffLabel {
+  color: var(--pod-running);
+}
+
+.tradeoffCard .tradeoffSide:last-child .tradeoffLabel {
+  color: var(--pod-crash);
+}
+
+.tradeoffText {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.tradeoffDivider {
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--border) 15%,
+    var(--border) 85%,
+    transparent
+  );
+}
+
+/* ── Best Practices list ── */
+.practicesList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.practiceItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.practiceItem:hover {
+  border-color: color-mix(in srgb, var(--pod-running) 30%, transparent);
+  background: color-mix(in srgb, var(--pod-running) 4%, var(--bg-secondary));
+}
+
+.practiceCheck {
+  color: var(--pod-running);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}

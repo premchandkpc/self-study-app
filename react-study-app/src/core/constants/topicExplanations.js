@@ -45,6 +45,24 @@ export const TOPIC_EXPLANATIONS = {
         realWorld: 'YouTube: B-trees in database indexes for video metadata lookups.',
         complexity: { bst: 'O(log n) avg, O(n) worst', balanced: 'O(log n) guaranteed' }
       },
+      'Trie': {
+        explanation: `Tree data structure for efficient string prefix operations. Each node represents a character, root is empty. Insert/Search/Delete in O(m) where m=word length. Prefix search enables autocomplete, spell check, IP routing. More memory than hashmap but faster prefix operations.`,
+        useCases: ['Autocomplete', 'Spell checking', 'IP routing (longest prefix match)', 'Dictionary word search'],
+        realWorld: 'Google Search: Autocomplete suggestions powered by trie traversal with frequency-based ranking.',
+        complexity: { search: 'O(m)', insert: 'O(m)', space: 'O(alphabet × nodes)' }
+      },
+      'Union Find': {
+        explanation: `Disjoint Set Union tracks element partitioning. Two operations: find (determine set), union (merge sets). Path compression flattens tree for amortized O(α(n)). Union by rank keeps tree shallow. Used for connected components, cycle detection, Kruskal MST.`,
+        useCases: ['Dynamic connectivity', 'Cycle detection in graphs', 'Kruskal MST algorithm', 'Social network friend groups'],
+        realWorld: 'Facebook: Union-Find determines if two users are in same social circle (connected component).',
+        complexity: { find: 'O(α(n))', union: 'O(α(n))', α: 'Inverse Ackermann, effectively O(1)' }
+      },
+      'Backtracking': {
+        explanation: `Brute-force with pruning: build solution incrementally, abandon (backtrack) when constraint violated. Choose → Explore → Unchoose pattern. N-Queens: place queens row by row, backtrack if attacked. Sudoku: try digits, backtrack if conflict. Permutations: swap and recurse.`,
+        useCases: ['Combinatorial search (N-Queens, Sudoku)', 'Constraint satisfaction', 'Permutations and combinations', 'Maze solving'],
+        realWorld: 'Sudoku solvers: Backtracking with constraint propagation solves any valid 9x9 puzzle in milliseconds.',
+        complexity: { time: 'O(branches^depth) worst', pruning: 'Greatly reduces in practice' }
+      },
       'DP': {
         explanation: `Break problem into overlapping subproblems, store results to avoid recomputation. Two approaches: top-down (memoization) with recursion, bottom-up (tabulation) with iteration. Fibonacci, coin change, knapsack, LCS are classic examples.`,
         useCases: ['Optimization problems', 'Longest sequences', 'Cost minimization', 'Path problems'],
@@ -62,6 +80,30 @@ export const TOPIC_EXPLANATIONS = {
         useCases: ['Deduplication', 'Counting frequencies', 'Grouping', 'Caching', 'Two-sum problems'],
         realWorld: 'WhatsApp: Hash table for storing user accounts, message deduplication, cache for frequently accessed chats.',
         complexity: { avg: 'O(1)', worst: 'O(n)' }
+      },
+      'Bubble Sort': {
+        explanation: `Simple but slow: repeatedly swap adjacent elements if out of order. O(n²) time always. Optimized: stop if no swaps occur (nearly sorted data). Teaching tool: shows comparison & swap visualizations.`,
+        useCases: ['Teaching', 'Nearly sorted data'],
+        realWorld: 'Educational visualizations only - never used in production.',
+        complexity: { time: 'O(n²)', space: 'O(1)', stable: 'Yes' }
+      },
+      'Merge Sort': {
+        explanation: `Divide-and-conquer: split array, recursively sort halves, merge results. O(n log n) guaranteed. Requires O(n) extra space for merging. Stable: equal elements maintain order.`,
+        useCases: ['Sorting linked lists', 'External sorting', 'When stable sort needed'],
+        realWorld: 'Java Arrays.sort() for objects uses merge sort variant.',
+        complexity: { time: 'O(n log n)', space: 'O(n)', stable: 'Yes' }
+      },
+      'Quick Sort': {
+        explanation: `Divide-and-conquer with partitioning: pick pivot, partition into smaller/larger, recursively sort. O(n log n) average, O(n²) worst (bad pivot). In-place: O(log n) space for recursion. Cache-friendly.`,
+        useCases: ['General sorting', 'Quickselect (find kth element)'],
+        realWorld: 'Most popular: Java primitives, C qsort, Python sorted() use variants.',
+        complexity: { time: 'O(n log n) avg, O(n²) worst', space: 'O(log n)', stable: 'No' }
+      },
+      'Heap Sort': {
+        explanation: `Build max heap, repeatedly extract root (largest). O(n log n) guaranteed, in-place. Not stable. Heap invariant: parent >= children. Selection by extracting k times gives top-k in O(n log k) time.`,
+        useCases: ['Top-k selection', 'Priority scheduling', 'Sorting when O(1) space needed'],
+        realWorld: 'Linux kernel: Completely Fair Scheduler uses heap for task priority management.',
+        complexity: { time: 'O(n log n)', space: 'O(1)', stable: 'No' }
       },
     }
   },
@@ -384,37 +426,6 @@ export const TOPIC_EXPLANATIONS = {
         useCases: ['Decoupling producers/consumers', 'Work queues', 'Rate limiting'],
         realWorld: 'YouTube: Upload queue has max 1000 videos. Transcoders (consumers) take from queue, uploaders wait if full.',
         complexity: { throughput: 'Limited by buffer size × producer/consumer speed' }
-      },
-    }
-  },
-
-  sorting: {
-    overview: `Sorting algorithms rearrange elements in order. Choosing right algorithm matters: O(n²) sorts slow for 1M items, while O(n log n) handles it easily. Stability matters: preserves relative order of equal elements.`,
-
-    subtopics: {
-      'Bubble Sort': {
-        explanation: `Simple but slow: repeatedly swap adjacent elements if out of order. O(n²) time always. Optimized: stop if no swaps occur (nearly sorted data). Teaching tool: shows comparison & swap visualizations.`,
-        useCases: ['Teaching', 'Nearly sorted data'],
-        realWorld: 'Educational visualizations only - never used in production.',
-        complexity: { time: 'O(n²)', space: 'O(1)', stable: 'Yes' }
-      },
-      'Merge Sort': {
-        explanation: `Divide-and-conquer: split array, recursively sort halves, merge results. O(n log n) guaranteed. Requires O(n) extra space for merging. Stable: equal elements maintain order.`,
-        useCases: ['Sorting linked lists', 'External sorting', 'When stable sort needed'],
-        realWorld: 'Java Arrays.sort() for objects uses merge sort variant.',
-        complexity: { time: 'O(n log n)', space: 'O(n)', stable: 'Yes' }
-      },
-      'Quick Sort': {
-        explanation: `Divide-and-conquer with partitioning: pick pivot, partition into smaller/larger, recursively sort. O(n log n) average, O(n²) worst (bad pivot). In-place: O(log n) space for recursion. Cache-friendly.`,
-        useCases: ['General sorting', 'Quickselect (find kth element)'],
-        realWorld: 'Most popular: Java primitives, C qsort, Python sorted() use variants.',
-        complexity: { time: 'O(n log n) avg, O(n²) worst', space: 'O(log n)', stable: 'No' }
-      },
-      'Heap Sort': {
-        explanation: `Build max heap, repeatedly extract root (largest). O(n log n) guaranteed, in-place. Not stable. Heap invariant: parent >= children. Selection by extracting k times gives top-k in O(n log k) time.`,
-        useCases: ['Top-k selection', 'Priority queues', 'When guaranteed O(n log n) needed'],
-        realWorld: 'Top-k items from stream using min-heap of size k.',
-        complexity: { time: 'O(n log n)', space: 'O(1)', stable: 'No' }
       },
     }
   },

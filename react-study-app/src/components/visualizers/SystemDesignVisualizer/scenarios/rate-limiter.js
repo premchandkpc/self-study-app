@@ -113,6 +113,25 @@ const LAYERS = [
   { label: 'Backend',       x1: 330, x2: 520, color: 'rgba(60,200,120,0.06)',  border: 'rgba(60,200,120,0.28)'  },
 ];
 
+const codeNotes = [
+  { title: 'Token Bucket', content: 'Each user gets refillable quota (e.g., 100 tokens/min). Token refills at rate / 60 per second. INCR quota:user_id in Redis.' },
+  { title: 'Sliding Window Log', content: 'Track timestamps of each request in a sorted set (ZADD). Remove expired timestamps. Count remaining. More accurate but more memory.' },
+  { title: 'Fixed Window Counter', content: 'Simple counter with TTL (INCR key, EXPIRE key 60). Resets every minute. Cheapest but allows burst at window boundary.' },
+  { title: 'Redis Lua Script', content: 'Atomic check + decrement via EVAL. Prevents race conditions between read and write. Script returns 1 (allow) or 0 (reject).' },
+];
+const tradeoffs = [
+  { pro: 'Token bucket smooths traffic, allows bursts up to limit', con: 'Redis call per request adds ~1ms latency. INCR contention at high RPS.' },
+  { pro: 'Tier-based quotas (premium/std) enable differentiated service', con: 'Token refill rate must be tuned per tier — wrong = over/under-admission.' },
+  { pro: 'Redis Lua script ensures atomic check+decrement', con: 'Lua script execution blocks Redis — < 1µs per call, but slow scripts hurt all operations.' },
+  { pro: 'Multiple algorithms support different use cases', con: 'Sliding window uses 10× more memory than fixed window (store timestamps per user).' },
+];
+const bestPractices = [
+  'Fail CLOSED (block) not OPEN (allow) under load — failing open makes DDoS worse.',
+  'Use Redis pipeline for batch INCR operations to reduce round trips at high RPS.',
+  'Monitor: rate_limiter:rejected / rate_limiter:allowed ratio. Alert if > 50% rejections.',
+  'Client reputation scoring: track failure patterns, not just IP counts (NAT shares IP among legitimate users).',
+];
+
 export default {
   id: 'rate-limiter',
   label: 'Rate Limiter',

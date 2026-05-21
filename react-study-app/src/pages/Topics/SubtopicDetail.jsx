@@ -6,7 +6,6 @@ import { SUBTOPIC_ROUTES } from '../../core/constants/routes';
 import Button from '../../components/shared/Button/Button';
 import ExplanationCard from '../../components/shared/ExplanationCard/ExplanationCard';
 import CaseStudy from '../../components/shared/CaseStudy/CaseStudy';
-import Badge from '../../components/shared/Badge/Badge';
 import styles from './Topics.module.css';
 
 export default function SubtopicDetail() {

@@ -23,10 +23,15 @@ export default function SubtopicCard({ topicId, topicIcon, subtopic, color, dela
     }
   }
 
+  function handleStudyClick(e) {
+    e.stopPropagation();
+    navigate(`/topics/${topicId}/${subtopic}/learn`);
+  }
+
   return (
     <AnimatedBox animation="slide-up" delay={delay}>
       <Card variant="default" hoverable className={styles.moduleCard}
-        onClick={detailRoute ? handleCardClick : undefined}>
+        onClick={handleCardClick}>
         <div className={styles.moduleTop}>
           <span className={styles.moduleIcon}>{topicIcon}</span>
           <span className={styles.moduleName}>{subtopic}</span>
@@ -38,12 +43,12 @@ export default function SubtopicCard({ topicId, topicIcon, subtopic, color, dela
               variant="primary"
               size="sm"
               icon="▶"
-              onClick={() => navigate(`/visualizer/${vizType}`)}
+              onClick={(e) => { e.stopPropagation(); navigate(`/visualizer/${vizType}`); }}
             >
               Simulate
             </Button>
           )}
-          <Button variant="ghost" size="sm" icon="📖">
+          <Button variant="ghost" size="sm" icon="📖" onClick={handleStudyClick}>
             Study
           </Button>
         </div>

@@ -24,6 +24,27 @@ const MIN_ZOOM = 0.15;
 const MAX_ZOOM = 3.5;
 const INIT_PAN = { x: 60, y: 50 };
 
+const TABS = [
+  { key: 'notes', label: 'Design Notes', icon: '📝' },
+  { key: 'code', label: 'Code', icon: '💻' },
+  { key: 'tradeoffs', label: 'Tradeoffs', icon: '⚖️' },
+  { key: 'practices', label: 'Best Practices', icon: '✅' },
+];
+
+function getLayerColors(index, total) {
+  const palette = [
+    { fill: 'rgba(100,140,255,0.12)', border: 'rgba(100,140,255,0.45)' },
+    { fill: 'rgba(255,160,50,0.12)',  border: 'rgba(255,160,50,0.50)' },
+    { fill: 'rgba(60,200,120,0.12)',  border: 'rgba(60,200,120,0.42)' },
+    { fill: 'rgba(80,190,220,0.12)',  border: 'rgba(80,190,220,0.42)' },
+    { fill: 'rgba(190,110,220,0.12)', border: 'rgba(190,110,220,0.42)' },
+    { fill: 'rgba(220,90,90,0.12)',   border: 'rgba(220,90,90,0.42)' },
+    { fill: 'rgba(255,80,120,0.10)',  border: 'rgba(255,80,120,0.40)' },
+    { fill: 'rgba(50,210,180,0.10)',  border: 'rgba(50,210,180,0.40)' },
+  ];
+  return palette[index % palette.length];
+}
+
 export default function CanvasTemplate({ scenarios }) {
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios);
   const { state: simState } = useSimulation();
@@ -40,6 +61,7 @@ export default function CanvasTemplate({ scenarios }) {
   const [panning,   setPanning]   = useState(null);
   const [hovered,   setHovered]   = useState(null);
   const [animKey,   setAnimKey]   = useState(0);
+  const [tab,       setTab]       = useState('notes');
 
   useEffect(() => { setAnimKey(k => k + 1); }, [simState.currentStep]);
   useEffect(() => { setPositions({}); needsFitRef.current = true; }, [activeId]);
@@ -149,6 +171,14 @@ export default function CanvasTemplate({ scenarios }) {
   const fitIcon = String.fromCharCode(0x229E);
 
   const hasConcepts = !!viz.concepts;
+
+  const codeNotes  = viz.codeNotes || [];
+  const codeBlock  = viz.code || [];
+  const tradeoffs  = viz.tradeoffs || [];
+  const practices  = viz.bestPractices || [];
+
+  const hasContent = codeNotes.length > 0 || codeBlock.length > 0 || tradeoffs.length > 0 || practices.length > 0;
+
   const canvasEl = (
     <div
       ref={canvasRef}
@@ -185,26 +215,27 @@ export default function CanvasTemplate({ scenarios }) {
               return active.layers.map((lyr, i) => {
                 const lx = lyr.x1;
                 const lw = lyr.x2 - lyr.x1;
+                const lc = getLayerColors(i, active.layers.length);
                 return (
                   <g key={`lyr-${i}`} pointerEvents="none">
                     <rect
                       x={lx} y={yMin}
                       width={lw} height={layerH}
-                      rx={14} fill={lyr.color}
-                      stroke={lyr.border} strokeWidth={1.5}
+                      rx={14} fill={lyr.color || lc.fill}
+                      stroke={lyr.border || lc.border} strokeWidth={1.5}
                       className={styles.layer}
                     />
                     <text
                       x={lx + lw / 2} y={yMin + 16}
                       textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)"
-                      fill={lyr.border} opacity={0.85} letterSpacing="1"
+                      fill={lyr.border || lc.border} opacity={0.9} letterSpacing="1"
                       className={styles.layerLabel}>
                       {lyr.label.toUpperCase()}
                     </text>
                     <line
                       x1={lx + lw / 2 - 18} y1={yMin + 22}
                       x2={lx + lw / 2 + 18} y2={yMin + 22}
-                      stroke={lyr.border} strokeWidth={0.5} opacity={0.3}
+                      stroke={lyr.border || lc.border} strokeWidth={0.5} opacity={0.4}
                     />
                   </g>
                 );
@@ -235,7 +266,7 @@ export default function CanvasTemplate({ scenarios }) {
                     stroke={stroke}
                     strokeWidth={hot ? 2.5 : 1.5}
                     strokeDasharray={dashArr}
-                    strokeOpacity={isAsync && !hot ? 0.55 : hot ? 1 : 0.8}
+                    strokeOpacity={hot ? 1 : 0.85}
                     markerEnd={hot ? 'url(#ct-arrow-active)' : 'url(#ct-arrow)'}
                     style={{ transition: 'stroke 0.15s, stroke-width 0.15s' }}
                   />
@@ -245,7 +276,7 @@ export default function CanvasTemplate({ scenarios }) {
                     <text x={mx} y={my - 9}
                       textAnchor="middle" fontSize="8" fontFamily="var(--font-mono)"
                       fill={hot ? 'var(--node-active)' : 'var(--text-muted)'}
-                      fontWeight={hot ? 700 : 400} pointerEvents="none">
+                      fontWeight={hot ? 700 : 500} pointerEvents="none">
                       {edge.protocol || edge.label}
                     </text>
                   )}
@@ -274,7 +305,7 @@ export default function CanvasTemplate({ scenarios }) {
                 >
                   <NodeShape
                     type={n.type} cx={pos.x} cy={pos.y} w={NODE_W} h={NODE_H}
-                    fill={`color-mix(in srgb, ${fill} 18%, transparent)`}
+                    fill={`color-mix(in srgb, ${fill} 28%, transparent)`}
                     stroke={fill}
                     strokeWidth={isDrag || n.state === 'active' || isHover ? 2.5 : 1.5}
                     opacity={n.healthy === false ? 0.38 : 1}
@@ -347,14 +378,14 @@ export default function CanvasTemplate({ scenarios }) {
 
         <div className={styles.legend}>
           <span className={styles.legendItem}>
-            <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--border)" strokeWidth="2"/><polygon points="16,1 22,4 16,7" fill="var(--border)"/></svg>
+            <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--edge-default)" strokeWidth="2"/><polygon points="16,1 22,4 16,7" fill="var(--edge-default)"/></svg>
             Sync
           </span>
           <span className={styles.legendItem}>
             <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--kafka-producer)" strokeWidth="2" strokeDasharray="5 3"/><polygon points="16,1 22,4 16,7" fill="var(--kafka-producer)"/></svg>
             Async
           </span>
-          <span className={styles.legendHint}>Drag nodes \u00B7 Scroll zoom \u00B7 Pan bg</span>
+          <span className={styles.legendHint}>Drag nodes · Scroll zoom · Pan bg</span>
         </div>
       </div>
   );
@@ -367,6 +398,80 @@ export default function CanvasTemplate({ scenarios }) {
       {hasConcepts && <ConceptPanel concepts={{ ...(viz.concepts || {}), ...(active.topicContent || {}) }} />}
       <SvgEventsList events={events} max={5} styles={styles} />
       {metrics.length > 0 && <MetricsPanel metrics={metrics} />}
+
+      {hasContent && (
+        <div className={styles.contentSection}>
+          <div className={styles.contentTabs}>
+            {TABS.filter(t => {
+              if (t.key === 'notes') return codeNotes.length > 0;
+              if (t.key === 'code') return codeBlock.length > 0;
+              if (t.key === 'tradeoffs') return tradeoffs.length > 0;
+              if (t.key === 'practices') return practices.length > 0;
+              return false;
+            }).map(t => (
+              <button key={t.key}
+                className={`${styles.contentTab} ${tab === t.key ? styles.contentTabActive : ''}`}
+                onClick={() => setTab(t.key)}
+              >
+                <span>{t.icon}</span>
+                <span>{t.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className={styles.contentBody}>
+            {tab === 'notes' && codeNotes.length > 0 && (
+              <div className={styles.notesGrid}>
+                {codeNotes.map((note, i) => (
+                  <div key={i} className={styles.noteCard}>
+                    <div className={styles.noteCardHeader}>
+                      <span className={styles.noteCardDot} />
+                      <strong className={styles.noteCardTitle}>{note.title}</strong>
+                    </div>
+                    <p className={styles.noteCardContent}>{note.content}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {tab === 'code' && codeBlock.length > 0 && (
+              <pre className={styles.codeBlock}>
+                <code>{codeBlock.join('\n')}</code>
+              </pre>
+            )}
+
+            {tab === 'tradeoffs' && tradeoffs.length > 0 && (
+              <div className={styles.tradeoffsGrid}>
+                {tradeoffs.map((t, i) => (
+                  <div key={i} className={styles.tradeoffCard}>
+                    <div className={styles.tradeoffSide}>
+                      <span className={styles.tradeoffLabel}>Pro</span>
+                      <p className={styles.tradeoffText}>{t.pro}</p>
+                    </div>
+                    <div className={styles.tradeoffDivider} />
+                    <div className={styles.tradeoffSide}>
+                      <span className={styles.tradeoffLabel}>Con</span>
+                      <p className={styles.tradeoffText}>{t.con}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {tab === 'practices' && practices.length > 0 && (
+              <ul className={styles.practicesList}>
+                {practices.map((p, i) => (
+                  <li key={i} className={styles.practiceItem}>
+                    <span className={styles.practiceCheck}>{'\u2713'}</span>
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
       <StepControls />
     </div>
   );
