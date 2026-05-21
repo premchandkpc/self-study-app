@@ -37,6 +37,21 @@
   border-color: var(--node-default);
 }
 
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 var(--space-md);
+  width: 100%;
+  order: -1;
+}
+
+.warning {
+  font-size: var(--font-size-xs);
+  color: var(--pod-warn);
+  font-weight: 500;
+}
+
 .runBtn {
   padding: 5px 14px;
   background: var(--node-default);

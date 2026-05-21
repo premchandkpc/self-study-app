@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import styles from './InputPanel.module.css';
 
 /**
@@ -18,6 +18,20 @@ export default function InputPanel({ schema, current = {}, onApply }) {
     })
   );
   const [vals, setVals] = useState(initial);
+
+  const warnings = useMemo(() => {
+    const warns = [];
+    for (const field of schema) {
+      const raw = vals[field.key];
+      if (field.type === 'array-num') {
+        const arr = String(raw).split(',').map((v) => parseFloat(v.trim())).filter((v) => !isNaN(v));
+        if (!arr.length && String(raw).trim()) {
+          warns.push(`"${field.label}" contains no valid numbers`);
+        }
+      }
+    }
+    return warns;
+  }, [vals, schema]);
 
   function set(key, value) {
     setVals((prev) => ({ ...prev, [key]: value }));
@@ -58,6 +72,13 @@ export default function InputPanel({ schema, current = {}, onApply }) {
           />
         </label>
       ))}
+      {warnings.length > 0 && (
+        <div className={styles.warnings}>
+          {warnings.map((w, i) => (
+            <div key={i} className={styles.warning}>⚠ {w}</div>
+          ))}
+        </div>
+      )}
       <button className={styles.runBtn} onClick={apply}>▶ Run</button>
     </div>
   );
