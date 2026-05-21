@@ -28,6 +28,29 @@ export type EdgeType =
   | 'reference'
   | 'bidirectional';
 
+export interface TechnologyContent {
+  id: string;
+  title: string;
+  technology: string;
+  description?: string;
+  scenes: Array<{
+    id: string;
+    type: PrimitiveType;
+    title: string;
+    nodes: Array<{
+      id: string;
+      label: string;
+      metadata?: Record<string, any>;
+    }>;
+    edges: Array<{
+      from: string;
+      to: string;
+      label?: string;
+    }>;
+  }>;
+  metadata?: Record<string, any>;
+}
+
 export interface IRNode {
   id: string;
   type: PrimitiveType;

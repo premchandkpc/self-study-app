@@ -29,6 +29,7 @@ export function useWorkerPool() {
       const request: CompileRequest = {
         id: `${Date.now()}-${Math.random()}`,
         content,
+        optimize,
       };
 
       return poolRef.current.compile(request, optimize);
