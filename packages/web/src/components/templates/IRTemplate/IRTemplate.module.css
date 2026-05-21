@@ -1,0 +1,106 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 16px;
+  padding: 16px;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.diagramWrap {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: auto;
+  background: #fafafa;
+  padding: 16px;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+}
+
+.sceneInfo {
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  border-left: 3px solid #0ea5e9;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sceneInfo div {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.sceneInfo p {
+  margin: 0;
+  color: #666;
+}
+
+.sceneNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.sceneNav button {
+  padding: 8px 16px;
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.sceneNav button:hover:not(:disabled) {
+  background: #0284c7;
+}
+
+.sceneNav button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.counter {
+  min-width: 80px;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+  font-size: 14px;
+}
