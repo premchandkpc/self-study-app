@@ -1,0 +1,124 @@
+.container {
+  margin: var(--space-xl) 0;
+}
+
+.card {
+  padding: var(--space-lg);
+}
+
+.header {
+  margin-bottom: var(--space-md);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: var(--space-md);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-md) 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.text {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.highlight {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--surface-secondary);
+  border-left: 4px solid var(--text-accent);
+  color: var(--text-primary);
+  border-radius: 4px;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.list {
+  margin: 0;
+  padding-left: var(--space-md);
+  list-style: none;
+}
+
+.list li {
+  margin-bottom: var(--space-sm);
+  padding-left: var(--space-md);
+  position: relative;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.list li:before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--text-accent);
+  font-weight: bold;
+}
+
+.complexity {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin: 0;
+}
+
+.complexityItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  background: var(--surface-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.complexityLabel {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.complexityValue {
+  color: var(--text-accent);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: var(--space-md);
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .complexity {
+    grid-template-columns: 1fr;
+  }
+}

@@ -138,7 +138,61 @@
   margin-bottom: var(--space-xs);
 }
 
+/* Case Study Selector */
+.caseSelector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-xl) 0;
+}
+
+.caseCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.caseCard:hover {
+  transform: translateY(-4px);
+}
+
+.caseCardActive {
+  padding: var(--space-lg);
+  border: 2px solid var(--text-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.caseIcon {
+  font-size: 40px;
+}
+
+.caseName {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-color);
+}
+
 @media (max-width: 640px) {
   .page { padding: var(--space-md); }
   .grid { grid-template-columns: 1fr; }
+  .caseSelector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .actions {
+    flex-direction: column;
+  }
 }

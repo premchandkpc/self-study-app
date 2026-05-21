@@ -16,7 +16,11 @@ export default function SubtopicCard({ topicId, topicIcon, subtopic, color, dela
   const detailRoute = SUBTOPIC_ROUTES[routeKey];
 
   function handleCardClick() {
-    if (detailRoute) navigate(detailRoute);
+    if (detailRoute) {
+      navigate(detailRoute);
+    } else {
+      navigate(`/topics/${topicId}/${subtopic}/learn`);
+    }
   }
 
   return (

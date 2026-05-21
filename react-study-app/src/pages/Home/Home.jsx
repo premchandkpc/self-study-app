@@ -54,6 +54,12 @@ export default function Home({ onSelectTopic }) {
             <Button variant="gradient" size="lg" icon="🚀" onClick={() => navigate('/topics')}>
               Start Learning
             </Button>
+            <Button variant="secondary" size="lg" icon="📚" onClick={() => navigate('/study-hub')}>
+              Deep Dive Guide
+            </Button>
+            <Button variant="secondary" size="lg" icon="🏗️" onClick={() => navigate('/topics/system-design')}>
+              System Design
+            </Button>
             <Button variant="secondary" size="lg" icon="🎮" onClick={() => navigate('/visualizer/array')}>
               Try Visualizer
             </Button>

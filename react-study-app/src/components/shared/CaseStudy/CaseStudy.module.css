@@ -1,0 +1,125 @@
+.container {
+  margin: var(--space-xl) 0;
+}
+
+.title {
+  margin: 0 0 var(--space-xl) 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  border-bottom: 3px solid var(--text-accent);
+  padding-bottom: var(--space-md);
+}
+
+.section {
+  margin-bottom: var(--space-2xl);
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-lg) 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.componentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.componentCard {
+  padding: var(--space-md);
+}
+
+.componentName {
+  margin: 0 0 var(--space-sm) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.componentDesc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.flowSteps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.flowStep {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--surface-secondary);
+  border-radius: 8px;
+  border-left: 4px solid var(--text-accent);
+}
+
+.stepNumber {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-accent);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.stepText {
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.challengeList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.challengeItem {
+  padding: var(--space-md);
+  background: linear-gradient(135deg, var(--surface-secondary) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-left: 3px solid #ff6b6b;
+  border-radius: 4px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .componentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .flowStep {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stepNumber {
+    align-self: flex-start;
+  }
+}
