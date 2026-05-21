@@ -1,8 +1,40 @@
 // Parse function signature with type annotations
 export class FunctionSignatureParser {
-  // Extract parameters from function code, handling type annotations
+  // Extract input fields from destructuring pattern in function body
+  static parseInputFields(code) {
+    // Match: const { fieldName1, fieldName2, ... } = input;
+    const destructMatch = code.match(/const\s*\{\s*([^}]+)\s*\}\s*=\s*input/);
+    if (!destructMatch) return [];
+
+    const fieldsStr = destructMatch[1];
+    return fieldsStr
+      .split(',')
+      .map(f => f.trim())
+      .filter(f => f && !f.startsWith('//'))
+      .map(f => {
+        // Handle: "fieldName" or "fieldName: type" or "fieldName = default"
+        const parts = f.split('=').map(x => x.trim());
+        const [fieldPart, defaultStr] = parts;
+        const [name, typeStr] = fieldPart.split(':').map(x => x.trim());
+
+        return {
+          name: name || '',
+          typeStr: typeStr || null,
+          default: defaultStr || null,
+        };
+      })
+      .filter(f => f.name);
+  }
+
+  // Extract parameters from function code (fallback if no destructuring)
   static parseParams(code) {
-    // Match: function name(p1, p2) or const name = (p1, p2) =>
+    // First try to extract destructured input fields
+    const inputFields = this.parseInputFields(code);
+    if (inputFields.length > 0) {
+      return inputFields;
+    }
+
+    // Fallback: Match function signature parameters
     const fnMatch = code.match(/(?:function\s*\w*\s*|const\s+\w+\s*=\s*)\(([^)]*)\)/);
     if (!fnMatch) return [];
 
@@ -12,7 +44,7 @@ export class FunctionSignatureParser {
     return paramStr
       .split(',')
       .map(p => p.trim())
-      .filter(p => p && !p.startsWith('//'))
+      .filter(p => p && !p.startsWith('//') && p !== 'input' && p !== 'tracer')
       .map(p => {
         // Parse: "name: type = default" or "name: type" or "name = default" or "name"
         const [paramPart, defaultStr] = p.split('=').map(x => x.trim());

@@ -6,7 +6,8 @@
       "Bash(pkill -f \"vite|npm.*dev\")",
       "Bash(tee dev.log)",
       "Bash(pkill -f \"node --watch\")",
-      "Bash(npm -w packages/api run dev)"
+      "Bash(npm -w packages/api run dev)",
+      "Bash(grep -E \"\\\\.\\(jsx|js\\)$\")"
     ]
   }
 }
