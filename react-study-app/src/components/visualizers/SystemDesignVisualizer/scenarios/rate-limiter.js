@@ -139,6 +139,9 @@ export default {
   layers: LAYERS,
   build: buildRateLimiterSteps,
   code: CODE,
+  codeNotes,
+  tradeoffs,
+  bestPractices,
   language: 'JavaScript',
   metrics: [
     { key: 'requests', label: 'Total Req',  max: 200, color: 'var(--node-default)' },

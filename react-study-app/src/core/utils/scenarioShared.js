@@ -4,17 +4,6 @@ export { snap } from './snap';
 export function makeArr(arr) {
   return arr.map((v, i) => ({ value: v, state: 'idle', index: i }));
 }
-export function setCellState(cells, idx, state) {
-  return cells.map((c, i) => (i === idx ? { ...c, state } : c));
-}
-export function setRangeState(cells, lo, hi, state) {
-  return cells.map((c, i) => (i >= lo && i <= hi ? { ...c, state } : c));
-}
-
-// ─── Sort helpers ───────────────────────────────────────────────────────────
-export function makeBar(val, state = 'idle') {
-  return { val, state };
-}
 
 // ─── Matrix helpers ─────────────────────────────────────────────────────────
 export function makeMatrix(values) {
@@ -22,11 +11,6 @@ export function makeMatrix(values) {
 }
 export function cloneMatrix(matrix) {
   return matrix.map((row) => row.map((cell) => ({ ...cell })));
-}
-export function setMatrixCell(matrix, r, c, state) {
-  const m = cloneMatrix(matrix);
-  m[r][c] = { ...m[r][c], state };
-  return m;
 }
 
 // ─── Linked List helpers ────────────────────────────────────────────────────

@@ -32,9 +32,5 @@ export function useSvgHover() {
     };
   }
 
-  function isHovered(kind, data) {
-    return hovered?.kind === kind && hovered?.data === data;
-  }
-
-  return { hovered, setHovered, onHover, bindHover, isHovered };
+  return { hovered, setHovered, onHover, bindHover };
 }

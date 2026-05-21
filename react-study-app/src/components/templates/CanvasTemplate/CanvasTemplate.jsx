@@ -172,10 +172,10 @@ export default function CanvasTemplate({ scenarios }) {
 
   const hasConcepts = !!viz.concepts;
 
-  const codeNotes  = viz.codeNotes || [];
-  const codeBlock  = viz.code || [];
-  const tradeoffs  = viz.tradeoffs || [];
-  const practices  = viz.bestPractices || [];
+  const codeNotes  = active.codeNotes || [];
+  const codeBlock  = active.code || [];
+  const tradeoffs  = active.tradeoffs || [];
+  const practices  = active.bestPractices || [];
 
   const hasContent = codeNotes.length > 0 || codeBlock.length > 0 || tradeoffs.length > 0 || practices.length > 0;
 
