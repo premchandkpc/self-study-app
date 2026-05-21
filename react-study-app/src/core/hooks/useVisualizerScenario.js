@@ -17,6 +17,11 @@ import { useSimulation } from '../context/SimulationContext';
  */
 export function useVisualizerScenario(scenarios, initialScenarioId) {
   const { state, dispatch } = useSimulation();
+
+  if (!scenarios || !Array.isArray(scenarios) || scenarios.length === 0) {
+    throw new Error('useVisualizerScenario requires non-empty scenarios array');
+  }
+
   const initialActiveId = initialScenarioId && scenarios.find((s) => s.id === initialScenarioId)
     ? initialScenarioId
     : scenarios[0].id;
