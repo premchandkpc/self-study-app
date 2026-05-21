@@ -134,7 +134,7 @@ export default function CompilerTemplate() {
 
   return (
     <div className={styles.wrapper}>
-      {/* Toolbar */}
+      {/* Toolbar: examples + language */}
       <div className={styles.toolbar}>
         <div className={styles.section}>
           <label className={styles.label}>📚</label>
@@ -162,8 +162,15 @@ export default function CompilerTemplate() {
         {isCompiling && <span className={styles.compiling}>Compiling...</span>}
       </div>
 
-      {/* Main: code (left) + viz (right) */}
-      <div className={styles.main}>
+      {/* Input panel (if code exists) */}
+      {code.trim() && <InputPanel schema={inputSchema} current={inputValues} onApply={handleApply} />}
+
+      {/* Error message */}
+      {error && <div className={styles.errorBox}>{error}</div>}
+
+      {/* Main: code editor (left) + visualization (right) */}
+      <div className={styles.body}>
+        {/* Code editor */}
         <div className={styles.codePanel}>
           <div className={styles.codePanelHeader}>algorithm.js</div>
           <textarea
@@ -173,14 +180,15 @@ export default function CompilerTemplate() {
             placeholder="const algorithm = (input, tracer) => {
   const { array, target } = input;
   tracer.step('Init', 'description', { array, target });
-  // ... code
+  // ... algorithm code
   return result;
 };"
             spellCheck={false}
           />
         </div>
 
-        <div className={styles.vizSection}>
+        {/* Visualization area */}
+        <div className={styles.vizArea}>
           {hasRun ? (
             <>
               <div className={styles.vizContainer}>
@@ -192,19 +200,17 @@ export default function CompilerTemplate() {
                 )}
                 result={currentStep?.result}
               />
-              <StepControls />
             </>
           ) : (
             <div className={styles.placeholder}>
-              {code.trim() ? 'Set inputs → Run' : 'Load example or write code'}
+              {code.trim() ? 'Set inputs and click Run →' : 'Load example or write code'}
             </div>
           )}
         </div>
       </div>
 
-      {/* Input panel + error */}
-      {code.trim() && <InputPanel schema={inputSchema} current={inputValues} onApply={handleApply} />}
-      {error && <div className={styles.errorBox}>{error}</div>}
+      {/* Step controls (bottom) */}
+      {hasRun && <StepControls />}
     </div>
   );
 }
