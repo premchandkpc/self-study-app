@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TOPICS } from '../../../core/constants/topics';
 import { SUBTOPIC_ROUTES } from '../../../core/constants/routes';
+import { useAppState } from '../../../core/context/AppStateContext';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [expandedTopics, setExpandedTopics] = useState({});
-
-  function toggleExpand(id) {
-    setExpandedTopics((prev) => ({ ...prev, [id]: !prev[id] }));
-  }
+  const { state, actions } = useAppState();
+  const expandedTopics = state.ui.expandedTopics;
 
   function handleSelect(topicId, subtopic) {
     const route = SUBTOPIC_ROUTES[`${topicId}:${subtopic}`] || `/topics/${topicId}`;
@@ -37,7 +34,7 @@ export default function Sidebar({ collapsed }) {
               <div key={topic.id} className={styles.topicGroup}>
                 <button
                   className={styles.topicBtn}
-                  onClick={() => toggleExpand(topic.id)}
+                  onClick={() => actions.toggleTopicExpand(topic.id)}
                   title={collapsed ? topic.label : undefined}
                 >
                   <span className={styles.topicIcon}>{topic.icon}</span>

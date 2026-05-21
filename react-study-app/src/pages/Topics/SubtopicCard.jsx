@@ -3,7 +3,7 @@ import Card from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
-import { VISUALIZER_MAP } from '../../core/constants/topicMeta';
+import { VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID } from '../../core/constants/topicMeta';
 import { SUBTOPIC_ROUTES } from '../../core/constants/routes';
 import styles from './Topics.module.css';
 
@@ -14,9 +14,19 @@ export default function SubtopicCard({ topicId, topicIcon, subtopic, color, dela
   const hasViz = !!vizType;
   const routeKey = `${topicId}:${subtopic}`;
   const detailRoute = SUBTOPIC_ROUTES[routeKey];
+  const scenarioId = SUBTOPIC_SCENARIO_ID[routeKey];
 
   function handleCardClick() {
-    navigate(`/topics/${topicId}/${subtopic}/learn`);
+    if (hasViz && scenarioId) {
+      navigate(`/visualizer/${vizType}/${scenarioId}`);
+    } else {
+      navigate(`/topics/${topicId}/${subtopic}/learn`);
+    }
+  }
+
+  function handleSimulateClick(e) {
+    e.stopPropagation();
+    navigate(`/visualizer/${vizType}/${scenarioId}`);
   }
 
   function handleStudyClick(e) {
@@ -34,12 +44,12 @@ export default function SubtopicCard({ topicId, topicIcon, subtopic, color, dela
           {hasViz && <Badge variant={color || 'blue'} size="xs" dot>Live Sim</Badge>}
         </div>
         <div className={styles.moduleActions}>
-          {hasViz && (
+          {hasViz && scenarioId && (
             <Button
               variant="primary"
               size="sm"
               icon="▶"
-              onClick={(e) => { e.stopPropagation(); navigate(`/visualizer/${vizType}`); }}
+              onClick={handleSimulateClick}
             >
               Simulate
             </Button>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './core/context/ThemeContext';
+import { AppStateProvider } from './core/context/AppStateContext';
 import MainLayout from './components/layout/MainLayout/MainLayout';
 import AgentWidget from './components/shared/AgentWidget/AgentWidget';
 import Home from './pages/Home/Home';
@@ -42,7 +43,9 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <AppRoutes />
+        <AppStateProvider>
+          <AppRoutes />
+        </AppStateProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

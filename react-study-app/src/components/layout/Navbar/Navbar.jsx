@@ -1,13 +1,14 @@
-import { useState } from 'react';
 import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../../core/context/ThemeContext';
+import { useAppState } from '../../../core/context/AppStateContext';
 import { THEME_LABELS } from '../../../core/constants/themes';
 import styles from './Navbar.module.css';
 
 export default function Navbar({ onMenuToggle }) {
   const { theme, setTheme } = useTheme();
+  const { state, actions } = useAppState();
   const navigate = useNavigate();
-  const [themeOpen, setThemeOpen] = useState(false);
+  const themeOpen = state.ui.themeOpen;
 
   return (
     <header className={styles.navbar}>
@@ -37,7 +38,7 @@ export default function Navbar({ onMenuToggle }) {
         <div className={styles.themeSelector}>
           <button
             className={styles.themeBtn}
-            onClick={() => setThemeOpen(!themeOpen)}
+            onClick={() => actions.setThemeOpen(!themeOpen)}
             aria-label="Switch theme"
           >
             🎨 {THEME_LABELS[theme]}
@@ -48,7 +49,7 @@ export default function Navbar({ onMenuToggle }) {
                 <button
                   key={key}
                   className={`${styles.themeOption} ${theme === key ? styles.active : ''}`}
-                  onClick={() => { setTheme(key); setThemeOpen(false); }}
+                  onClick={() => { setTheme(key); actions.setThemeOpen(false); }}
                 >
                   {label}
                 </button>

@@ -56,7 +56,7 @@ export default function VisualizerPage() {
       <div className={styles.vizWrapper}>
         <SimulationProvider>
           <Suspense fallback={<Loading label="Loading visualizer…" />}>
-            <Comp scenarioId={scenarioId} tabName={tabName} />
+            <Comp key={scenarioId || type} scenarioId={scenarioId} tabName={tabName} />
           </Suspense>
         </SimulationProvider>
       </div>

@@ -552,42 +552,42 @@ const TOPIC_DEFS = [
             realWorld: '100B+ messages/day with <100ms P50 delivery latency online. Push notifications wake 1B+ devices daily. Credit-based backpressure prevents OOM on 500K connections/server.',
             complexity: { online_delivery: '<100ms', offline_queue: '48h Kafka', dedup: '24h Redis TTL' } },
         ] },
-      { name: 'Load Balancer', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
-        explanation: `Distributes traffic across servers: round-robin (rotate), least-connections (fewest current), weighted, IP-hash (same user\u2192same server). Health checks: periodically test servers, remove unhealthy ones. Sticky sessions: session affinity.`,
+      { name: 'Load Balancer', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'lb',
+        explanation: `Distributes traffic across servers: round-robin (rotate), least-connections (fewer current), weighted, IP-hash (same user\u2192same server). Health checks: periodically test servers, remove unhealthy ones. Sticky sessions: session affinity.`,
         useCases: ['Scaling web servers', 'High availability', 'Request distribution'],
         realWorld: 'Uber: Load balancer distributes API requests across 1000 backend servers, removes unresponsive ones.',
         complexity: { latency: '<1ms', failover: 'Seconds after health check failure' } },
-      { name: 'Cache', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'Cache', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'cache',
         explanation: 'Store frequently accessed data in fast memory (Redis/Memcached). Cache-aside: app checks cache first, loads on miss. Write-through: write to both cache + DB. Write-behind: write to cache, async write to DB. Eviction: LRU (least recently used), TTL (time-to-live). Cache stampede: thundering herd on cache miss.',
         useCases: ['Read-heavy workloads', 'Database load reduction', 'Low-latency responses'],
         realWorld: 'Instagram: Feed served from Redis cache (millions of reads/sec), DB writes happen asynchronously.',
         complexity: { hit: '<1ms', miss: 'DB query + cache fill', stampede: 'Mutex locking' } },
-      { name: 'CDN', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'CDN', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'cdn',
         explanation: 'Content Delivery Network: cache static assets at edge locations (200+ PoPs worldwide). Geographic routing: user requests nearest edge. Push CDN: upload assets to origin, pull CDN: edge fetches on first request. TTL: cache expiration time. Invalidation: remove cached content before TTL.',
         useCases: ['Static asset delivery', 'Global latency reduction', 'DDoS mitigation'],
         realWorld: 'YouTube: Videos cached at edge PoPs, ~90% of requests served from CDN, <50ms latency globally.',
         complexity: { edge_hit: '<10ms', miss: 'Origin fetch + propagation' } },
-      { name: 'Rate Limiter', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'Rate Limiter', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'rateLimiter',
         explanation: `Controls request rate to prevent abuse. Algorithms: Token Bucket (refillable tokens), Sliding Window Log (timestamp list), Fixed Window Counter (TTL-based). Redis stores counters per user/IP. Response: 429 Too Many Requests with Retry-After header.`,
         useCases: ['API protection', 'DDoS prevention', 'Fair usage enforcement'],
         realWorld: 'Twitter: rate limits API calls per user (15 requests per 15 minutes for standard access).',
         complexity: { check: '~1ms Redis call', storage: 'Per-user counters' } },
-      { name: 'Sharding', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'Sharding', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'sharding',
         explanation: 'Horizontal partitioning: split data across databases. Key-based: hash key % N shards. Range-based: shard by key range (e.g., A-M, N-Z). Directory-based: lookup table maps key to shard. Re-balancing: add/remove shards requires data migration. Consistent hashing: minimizes re-distribution on shard change.',
         useCases: ['Database scaling', 'Write throughput', 'Data distribution'],
         realWorld: 'Instagram: User data sharded by user_id hash across 1000+ database shards.',
         complexity: { lookup: 'O(1) hash', rebalance: 'O(data / shards)' } },
-      { name: 'Replication', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'Replication', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'replication',
         explanation: 'Copy data across servers for fault tolerance. Leader-follower: one leader handles writes, followers replicate. Multi-leader: multiple nodes accept writes (conflict resolution). Quorum: W+R > N for strong consistency. Synchronous: commit after all replicas acknowledge. Asynchronous: leader commits without waiting.',
         useCases: ['High availability', 'Read scaling', 'Disaster recovery'],
         realWorld: 'Uber: Database replication ensures ride data survives AZ failure, read replicas serve analytics queries.',
         complexity: { sync: 'RTT to replicas', async: 'No latency penalty' } },
-      { name: 'Message Queue', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'Message Queue', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'messageQueue',
         explanation: 'Async communication: producer sends message, consumer processes later. Decouples services: producer doesn\u2019t wait for consumer. Kafka/RabbitMQ/SQS. Delivery guarantees: at-most-once, at-least-once, exactly-once. Consumer groups: parallel processing. Dead-letter queue: failed messages.',
         useCases: ['Service decoupling', 'Load leveling', 'Async processing'],
         realWorld: 'Uber: Ride events published to Kafka, consumed by notification, analytics, billing services independently.',
         complexity: { produce: 'Milliseconds', consume: 'At consumer rate', rebalance: 'Seconds' } },
-      { name: 'Raft Consensus', visualizer: 'systemdesign', route: '/visualizer/systemdesign',
+      { name: 'Raft Consensus', visualizer: 'systemdesign', route: '/visualizer/systemdesign', scenarioId: 'raft',
         explanation: `Consensus algorithm: leader elected, followers replicate log. Leader heartbeat: followers detect failure, elect new leader. Log entry replicated to majority before commitment. Strong leader: simplifies reasoning vs Paxos.`,
         useCases: ['Fault-tolerant consensus', 'Distributed databases', 'etcd/Consul'],
         realWorld: 'Kubernetes etcd: stores cluster state using Raft, survives minority node failures.',
@@ -1156,6 +1156,8 @@ function derive(prop) {
         result[key] = s.visualizer;
       } else if (prop === 'route') {
         result[key] = s.route;
+      } else if (prop === 'scenarioId') {
+        result[key] = s.scenarioId;
       }
     }
   }
@@ -1178,6 +1180,7 @@ export const TOPIC_META = Object.fromEntries(
 export const VISUALIZER_MAP = derive('visualizer');
 
 export const SUBTOPIC_ROUTES = derive('route');
+export const SUBTOPIC_SCENARIO_ID = derive('scenarioId');
 
 export const TOPIC_EXPLANATIONS = Object.fromEntries(
   TOPIC_DEFS
