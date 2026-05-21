@@ -79,15 +79,17 @@ export default function CompilerTemplate() {
       const schema = FunctionSignatureParser.generateSchema(params);
       setInputSchema(schema);
 
-      const defaults = {};
-      schema.forEach(field => {
-        if (!(field.key in inputValues)) {
-          defaults[field.key] = field.default;
-        }
+      setInputValues(prev => {
+        const updated = { ...prev };
+        schema.forEach(field => {
+          if (!(field.key in updated)) {
+            updated[field.key] = field.default;
+          }
+        });
+        return updated;
       });
-      setInputValues(prev => ({ ...prev, ...defaults }));
     } catch (e) {
-      // Fail silently
+      setInputSchema([]);
     }
   }, [code]);
 

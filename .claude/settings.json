@@ -7,7 +7,10 @@
       "Bash(tee dev.log)",
       "Bash(pkill -f \"node --watch\")",
       "Bash(npm -w packages/api run dev)",
-      "Bash(grep -E \"\\\\.\\(jsx|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(jsx|js\\)$\")",
+      "Bash(pkill -f \"vite\")",
+      "Bash(npm -w packages/web run dev)",
+      "Bash(node /tmp/test-custom-code.js)"
     ]
   }
 }
