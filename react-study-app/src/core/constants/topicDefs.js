@@ -525,7 +525,7 @@ const TOPIC_DEFS = [
             realWorld: 'Uber: Payment circuit breaker prevents cascading failure during payment service outage in 2022.',
             complexity: { failover: 'Seconds', recovery: 'Minutes' } },
         ] },
-      { name: 'WhatsApp', visualizer: 'systemdesign',
+      { name: 'WhatsApp', visualizer: 'systemdesign', scenarioId: 'whatsapp',
         explanation: 'Real-time messaging at global scale: 2B+ users, 100B msgs/day, E2EE by default. Architecture, storage, encryption, and delivery mechanics for the world\u2019s largest messaging platform.',
         useCases: ['Real-time messaging design', 'Global scale systems', 'E2EE protocols'],
         realWorld: 'WhatsApp: 500+ chat servers, 1.5B persistent WebSocket connections, acquired by Facebook for $19B in 2014.',
