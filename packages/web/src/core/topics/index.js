@@ -1,36 +1,16 @@
-// Barrel file: re-exports all public APIs from topics system
-// Drop-in replacement for ../constants/topics.js
+// After migration to PostgreSQL + React Query, topics data comes from useTopicMapsContext()
+// This barrel maintains some backwards-compatible exports for utilities only
+
+export { slugify } from './topicUtils.js';
 
 export {
-  // Maps and utilities
-  TOPICS,
-  TOPIC_DEFS,
-  TOPIC_META,
-  VISUALIZER_MAP,
-  VIZ_TYPE_TO_TOPIC,
-  SUBTOPIC_ROUTES,
-  SUBTOPIC_SCENARIO_ID,
-  ABBR_MAP,
-  SLUG_MAP,
-  TOPIC_EXPLANATIONS,
-} from './topicMaps.js';
-
-export {
-  // Service API
-  getTopicById,
-  getTopicByAbbr,
-  getSubtopicBySlug,
-  getAllTopics,
-  getTopicMeta,
-  getTopicExplanations,
-  getVisualizerFor,
-  getSimulateRoute,
   buildTopicRoute,
   buildSubtopicRoute,
   buildSubtopicLearnRoute,
-  getSubtopicRoute,
-  getSubtopicScenarioId,
-  getSubtopicDef,
-} from './topicService.js';
+} from './topicRoutes.js';
 
-export { slugify } from './topicUtils.js';
+export { useTopicMaps } from '../hooks/useTopicMaps.js';
+export { useSubtopic } from '../hooks/useSubtopic.js';
+
+// Deprecated: Maps like TOPICS, ABBR_MAP, SLUG_MAP, etc. now come from useTopicMapsContext()
+// All other functions from topicService.js are deprecated - use context hooks instead

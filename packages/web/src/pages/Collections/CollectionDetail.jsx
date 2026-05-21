@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COLLECTIONS, COLLECTION_CATEGORIES } from '../../core/constants/collections';
-import { getSimulateRouteForVizType } from '../../core/topics/topicRoutes';
-  const { VIZ_TYPE_TO_TOPIC } = useTopicMapsContext();
+import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { buildTopicRoute } from '../../core/topics/topicRoutes';
 import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
@@ -10,6 +10,7 @@ import styles from './Collections.module.css';
 
 export default function CollectionDetail({ collectionId }) {
   const navigate = useNavigate();
+  const { VIZ_TYPE_TO_TOPIC, ABBR_MAP } = useTopicMapsContext();
   const collection = COLLECTIONS.find((c) => c.id === collectionId);
   const [activeCategory, setActiveCategory] = useState(COLLECTION_CATEGORIES[0].key);
 
@@ -95,7 +96,12 @@ export default function CollectionDetail({ collectionId }) {
                     variant="primary"
                     size="sm"
                     icon="▶"
-                    onClick={() => navigate(getSimulateRouteForVizType(scenario.vizType) || '/topics')}
+                    onClick={() => {
+                      const topicId = VIZ_TYPE_TO_TOPIC[scenario.vizType];
+                      const topic = ABBR_MAP[topicId];
+                      const route = topic ? buildTopicRoute(topic.abbr) : '/topics';
+                      navigate(route);
+                    }}
                   >
                     Simulate
                   </Button>

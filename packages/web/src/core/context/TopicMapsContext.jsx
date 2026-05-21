@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { useTopicMaps } from '../hooks/useTopicMaps.js';
-import Loading from '../../components/shared/Loading/Loading.js';
+import Loading from '../../components/shared/Loading/Loading';
 
 const TopicMapsContext = createContext(null);
 

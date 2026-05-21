@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TOPIC_EXPLANATIONS } from '../../core/constants/topicExplanations';
 import Button from '../../components/shared/Button/Button';
 import Card from '../../components/shared/Card/Card';
 import CaseStudy from '../../components/shared/CaseStudy/CaseStudy';

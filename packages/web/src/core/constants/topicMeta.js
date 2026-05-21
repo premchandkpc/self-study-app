@@ -1,1 +1,1 @@
-export { TOPIC_META, VISUALIZER_MAP, SUBTOPIC_SCENARIO_ID } from './topics';
+// Deprecated: After migration to PostgreSQL, use useTopicMapsContext() instead
