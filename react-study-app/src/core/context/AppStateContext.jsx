@@ -5,7 +5,7 @@ const AppStateContext = createContext();
 const initialState = {
   ui: {
     sidebarCollapsed: false,
-    expandedTopics: {},
+    expandedTopics: {}, // Start with all collapsed. Click topic to expand + see subtopics.
     themeOpen: false,
     activeVisualizerCategory: null,
   },
