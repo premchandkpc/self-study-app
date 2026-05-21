@@ -1,5 +1,5 @@
-import { lazy, Suspense, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Card, { CardHeader, CardBody } from '../../components/shared/Card/Card';
 import Badge from '../../components/shared/Badge/Badge';
 import Button from '../../components/shared/Button/Button';
@@ -24,7 +24,8 @@ const STATS = [
 ];
 
 export default function Home({ onSelectTopic }) {
-  const [activeDemo, setActiveDemo] = useState('array');
+  const [searchParams, setSearchParams] = useSearchParams({ demo: 'array' });
+  const activeDemo = searchParams.get('demo') || 'array';
   const navigate = useNavigate();
 
   return (
@@ -95,7 +96,7 @@ export default function Home({ onSelectTopic }) {
             <button
               key={tab}
               className={`${styles.demoTab} ${activeDemo === tab ? styles.activeTab : ''}`}
-              onClick={() => setActiveDemo(tab)}
+              onClick={() => setSearchParams({ demo: tab })}
             >
               {tab === 'array' && '📊 Array'}
               {tab === 'graph' && '🕸️ Graph'}

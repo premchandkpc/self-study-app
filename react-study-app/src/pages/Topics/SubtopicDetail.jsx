@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { TOPICS } from '../../core/constants/topics';
 import { TOPIC_META } from '../../core/constants/topicMeta';
 import { TOPIC_EXPLANATIONS } from '../../core/constants/topicExplanations';
@@ -10,7 +9,8 @@ import styles from './Topics.module.css';
 export default function SubtopicDetail() {
   const navigate = useNavigate();
   const { topicId, subtopic } = useParams();
-  const [activeTab, setActiveTab] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams({ tab: '0' });
+  const activeTab = parseInt(searchParams.get('tab') || '0', 10);
 
   const topic = TOPICS.find((t) => t.id === topicId);
   const meta = TOPIC_META[topicId] || {};
@@ -50,7 +50,7 @@ export default function SubtopicDetail() {
             <button
               key={t.name}
               className={`${styles.tabNavBtn} ${i === activeTab ? styles.tabNavBtnActive : ''}`}
-              onClick={() => setActiveTab(i)}
+              onClick={() => setSearchParams({ tab: String(i) })}
             >
               {t.name}
             </button>
