@@ -99,6 +99,23 @@
   gap: var(--space-sm);
 }
 
+.sidebarModeBtn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 6px var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.sidebarModeBtn:hover {
+  border-color: var(--text-accent);
+  color: var(--text-primary);
+}
+
 .themeSelector {
   position: relative;
 }

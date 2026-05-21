@@ -9,6 +9,19 @@ export default function Navbar({ onMenuToggle }) {
   const { state, actions } = useAppState();
   const navigate = useNavigate();
   const themeOpen = state.ui.themeOpen;
+  const sidebarMode = state.ui.sidebarMode;
+
+  const modeIcons = {
+    'all': '📋',
+    'current-topic': '📌',
+    'hidden': '👁️',
+  };
+
+  const modeLabels = {
+    'all': 'All Topics',
+    'current-topic': 'Current Topic',
+    'hidden': 'Hidden',
+  };
 
   return (
     <header className={styles.navbar}>
@@ -35,6 +48,14 @@ export default function Navbar({ onMenuToggle }) {
       </nav>
 
       <div className={styles.right}>
+        <button
+          className={styles.sidebarModeBtn}
+          onClick={() => actions.cycleSidebarMode()}
+          title={`Sidebar: ${modeLabels[sidebarMode]}`}
+          aria-label="Cycle sidebar view mode"
+        >
+          {modeIcons[sidebarMode]}
+        </button>
         <div className={styles.themeSelector}>
           <button
             className={styles.themeBtn}
