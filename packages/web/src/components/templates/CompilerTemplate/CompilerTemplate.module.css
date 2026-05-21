@@ -4,6 +4,16 @@
 .editorRow  { display: grid; grid-template-columns: 1fr 280px; gap: 12px; align-items: start; }
 .editorBox  { display: flex; flex-direction: column; gap: 6px; }
 .editorLabel{ font-size: 11px; font-weight: 700; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.04em; }
+
+.langSelector { display: flex; gap: 4px; margin-bottom: 6px; }
+.langBtn {
+  padding: 4px 10px; font-size: 11px; font-weight: 600;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--text-secondary); cursor: pointer;
+  font-family: var(--font-mono); transition: all 0.15s;
+}
+.langBtn:hover { border-color: var(--text-secondary); }
+.langBtnActive { background: var(--node-active); color: white; border-color: var(--node-active); }
 .editor {
   width: 100%; min-height: 200px; max-height: 360px;
   resize: vertical; padding: 12px;
@@ -29,6 +39,16 @@
   outline: none; box-sizing: border-box;
 }
 .paramInput:focus { border-color: var(--node-active); }
+
+.inputArea {
+  width: 100%; min-height: 140px; max-height: 200px;
+  resize: vertical; padding: 8px;
+  background: var(--bg-card); border: 1.5px solid var(--border);
+  border-radius: 6px; color: var(--text-primary);
+  font-family: var(--font-mono); font-size: 12px; line-height: 1.5;
+  outline: none; box-sizing: border-box;
+}
+.inputArea:focus { border-color: var(--node-active); }
 
 .runBtn {
   margin-top: 4px; padding: 8px 16px;

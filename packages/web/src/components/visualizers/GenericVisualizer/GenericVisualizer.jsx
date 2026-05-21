@@ -1,34 +1,32 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { ensureScenarios, getScenarios, getTemplate } from '@/data/scenarioRegistry';
 import { CanvasTemplate, DSATemplate } from '../../templates';
 import Loading from '../../shared/Loading/Loading';
 
 const TEMPLATES = { CanvasTemplate, DSATemplate };
 
-export default function GenericVisualizer({ scenarioId, tabName }) {
-  const { type } = useParams();
+export default function GenericVisualizer({ visualizerType, scenarioId, tabName }) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     setReady(false);
     setError(null);
-    ensureScenarios(type).then(() => setReady(true)).catch(setError);
-  }, [type]);
+    ensureScenarios(visualizerType).then(() => setReady(true)).catch(setError);
+  }, [visualizerType]);
 
   if (error) return <p>Error loading scenarios: {error.message}</p>;
   if (!ready) return <Loading label="Loading scenarios…" />;
 
-  const scenarios = getScenarios(type);
-  const templateName = getTemplate(type);
+  const scenarios = getScenarios(visualizerType);
+  const templateName = getTemplate(visualizerType);
 
   if (!scenarios || scenarios.length === 0) {
-    return <p>No scenarios found for: {type}</p>;
+    return <p>No scenarios found for: {visualizerType}</p>;
   }
 
   if (!templateName) {
-    return <p>No template configured for: {type}</p>;
+    return <p>No template configured for: {visualizerType}</p>;
   }
 
   const Template = TEMPLATES[templateName];

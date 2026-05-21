@@ -5,6 +5,9 @@ export default function CodePanel({ code = [], language = 'javascript' }) {
   const { state } = useSimulation();
   const activeLine = state.codeLine;
 
+  // Handle both string and array formats
+  const codeLines = typeof code === 'string' ? code.split('\n') : Array.isArray(code) ? code : [];
+
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
@@ -16,7 +19,7 @@ export default function CodePanel({ code = [], language = 'javascript' }) {
         </div>
       </div>
       <pre className={styles.pre}>
-        {code.map((line, i) => {
+        {codeLines.map((line, i) => {
           const lineNum = i + 1;
           const isActive = activeLine === lineNum;
           return (

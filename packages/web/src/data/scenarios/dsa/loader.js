@@ -26,6 +26,8 @@ export async function loadDsaScenarios(vizType) {
       return import('../../../components/visualizers/SetVisualizer/set-engine.js').then(m => m.SCENARIOS);
     case 'dp':
       return import('../../../components/visualizers/DPVisualizer/dp-engine.js').then(m => m.SCENARIOS);
+    case 'twopointers':
+      return import('../../../components/visualizers/TwoPointersVisualizer/twopointers-engine.js').then(m => m.SCENARIOS);
     default:
       return null;
   }

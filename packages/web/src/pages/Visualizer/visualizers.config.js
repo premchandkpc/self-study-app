@@ -8,6 +8,12 @@ export const VISUALIZERS = {
     component: lazy(() => import('../../components/visualizers/GenericVisualizer/GenericVisualizer')),
     desc: 'Sliding window, two pointers, prefix sum queries, binary search. O(n)/O(log n) time.',
   },
+  twopointers: {
+    label: 'Two Pointers — 2Sum Sorted Array, Valid Palindrome',
+    icon: '👈👉',
+    component: lazy(() => import('../../components/visualizers/GenericVisualizer/GenericVisualizer')),
+    desc: 'Two pointer technique: convergent pointers from both ends. 2sum in sorted array, palindrome validation.',
+  },
   matrix: {
     label: 'Matrix — Spiral, Flood Fill, Rotate 90°',
     icon: '🔢',
