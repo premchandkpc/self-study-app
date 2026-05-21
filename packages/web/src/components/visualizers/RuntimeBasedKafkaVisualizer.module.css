@@ -1,0 +1,155 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.loading {
+  padding: 40px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.header p {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  align-items: center;
+}
+
+.sceneSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sceneSelector label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.sceneSelector select {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+}
+
+.sceneSelector select:hover {
+  border-color: #9ca3af;
+}
+
+.stepControls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.stepControls button {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stepControls button:hover:not(:disabled) {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.stepControls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #9ca3af;
+}
+
+.stepInfo {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 100px;
+  text-align: center;
+}
+
+.narration {
+  padding: 12px 16px;
+  background: white;
+  border-left: 4px solid #3b82f6;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.sceneContainer {
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: auto;
+  max-height: 600px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.metricCard {
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.metricValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.metricLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
