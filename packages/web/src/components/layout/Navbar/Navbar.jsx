@@ -44,7 +44,8 @@ export default function Navbar({ onMenuToggle }) {
         <NavItem to="/dsa/arrays" label="DSA" />
         <NavItem to="/dsa/graphs" label="Graphs" />
         <NavItem to="/interview" label="Interview" />
-        <NavItem to="/compiler" label="Compiler" />
+        <NavItem to="/compiler" label="Viz" />
+        <NavItem to="/play" label="Play" />
       </nav>
 
       <div className={styles.right}>

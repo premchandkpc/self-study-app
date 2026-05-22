@@ -14,6 +14,7 @@ import StudyHub from './pages/StudyHub/StudyHub';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
+import PlaygroundPage from './pages/Playground/PlaygroundPage';
 import MarkdownDocPage from './pages/MarkdownDoc/MarkdownDocPage';
 import NotFound from './pages/NotFound/NotFound';
 
@@ -39,6 +40,8 @@ function AppRoutes() {
           <Route path="/study-hub" element={<StudyHub />} />
           <Route path="/interview" element={<InterviewMode />} />
           <Route path="/compiler" element={<CompilerPage />} />
+          <Route path="/play" element={<PlaygroundPage />} />
+          <Route path="/play/:slug" element={<PlaygroundPage />} />
           <Route path="/read/:doc" element={<MarkdownDocPage />} />
           <Route path="/:abbr/:slug" element={<VisualizerPage />} />
           <Route path="/:abbr" element={<VisualizerPage />} />

@@ -12,7 +12,13 @@
       "Bash(npm -w packages/web run dev)",
       "Bash(node /tmp/test-custom-code.js)",
       "Bash(chromium-cli http://localhost:5173/dsa/arrays --screenshot /tmp/visualizer-vars.png --wait 2000)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "mcp__code-review-graph__get_community_tool",
+      "Bash(mv ArrayVisualizer /Users/ramyachowdary/Documents/prem-work/self-study-app/packages/web/src/features/dsa/arrays/)",
+      "Bash(mv LinkedListVisualizer /Users/ramyachowdary/Documents/prem-work/self-study-app/packages/web/src/features/dsa/linked-lists/)",
+      "Bash(mv TreeVisualizer /Users/ramyachowdary/Documents/prem-work/self-study-app/packages/web/src/features/dsa/trees/)",
+      "Bash(mv GraphVisualizer /Users/ramyachowdary/Documents/prem-work/self-study-app/packages/web/src/features/dsa/graphs/)",
+      "Bash(mv StringVisualizer /Users/ramyachowdary/Documents/prem-work/self-study-app/packages/web/src/features/dsa/strings/)"
     ]
   }
 }

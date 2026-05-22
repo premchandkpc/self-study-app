@@ -7,6 +7,7 @@ import topicsRoutes from './routes/topics.js';
 import subtopicsRoutes from './routes/subtopics.js';
 import mapsRoutes from './routes/maps.js';
 import executorRoutes from './executor/index.js';
+import playgroundRoutes from './routes/playground.js';
 import { seedIfEmpty } from './db/seed.js';
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/topics', topicsRoutes);
 app.use('/api/topics', subtopicsRoutes);
 app.use('/api/maps', mapsRoutes);
 app.use('/api', executorRoutes);
+app.use('/api', playgroundRoutes);
 
 // Error handling
 app.use(errorHandler);
