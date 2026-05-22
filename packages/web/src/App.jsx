@@ -12,6 +12,7 @@ import Topics from './pages/Topics/Topics';
 
 import Collections from './pages/Collections/Collections';
 import StudyHub from './pages/StudyHub/StudyHub';
+import TopicPage from './pages/Topic/TopicPage';
 import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
@@ -27,7 +28,7 @@ function AppRoutes() {
     <>
       <MainLayout onSelectTopic={({ topicId }) => {
         const t = TOPICS.find(x => x.id === topicId);
-        navigate(t ? `/${t.abbr}` : `/topics/${topicId}`);
+        navigate(t ? `/topic/${t.abbr}` : `/topics/${topicId}`);
       }}>
         <Routes>
           <Route path="/" element={<Home onSelectTopic={({ topicId }) => {
@@ -39,6 +40,8 @@ function AppRoutes() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/collections/:collectionId" element={<Collections />} />
           <Route path="/study-hub" element={<StudyHub />} />
+          <Route path="/topic/:abbr/:slug" element={<TopicPage />} />
+          <Route path="/topic/:abbr" element={<TopicPage />} />
           <Route path="/interview" element={<InterviewMode />} />
           <Route path="/compiler" element={<CompilerPage />} />
           <Route path="/play" element={<PlaygroundPage />} />

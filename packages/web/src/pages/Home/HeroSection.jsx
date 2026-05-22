@@ -41,7 +41,7 @@ export const HeroSection = memo(function HeroSection() {
           <Button variant="secondary" size="lg" icon="🏗️" onClick={() => navigate('/sd')}>
             System Design
           </Button>
-          <Button variant="secondary" size="lg" icon="🎮" onClick={() => navigate('/dsa/arrays')}>
+          <Button variant="secondary" size="lg" icon="🎮" onClick={() => navigate('/topic/dsa/arrays')}>
             Try Visualizer
           </Button>
         </div>

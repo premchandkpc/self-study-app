@@ -63,7 +63,7 @@ export default function Sidebar({ collapsed }) {
                     {topicInfo.subtopics.map((sub) => {
                       const slug = sub.scenarioId ||
                         sub.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-                      const path = `/${topic.abbr}/${slug}`;
+                      const path = `/topic/${topic.abbr}/${slug}`;
                       return (
                         <button
                           key={sub.slug || sub.name}
