@@ -23,33 +23,29 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: 'react-study-app/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
-        working-directory: react-study-app
         run: npm ci
 
       - name: Run linter
-        working-directory: react-study-app
-        run: npm run lint
+        run: npm -w packages/web run lint
 
-      - name: Build application
-        working-directory: react-study-app
-        run: npm run build
+      - name: Build web application
+        run: npm run build:web
 
       - name: Check build output
-        working-directory: react-study-app
         run: |
-          if [ ! -d "dist" ]; then
+          if [ ! -d "packages/web/dist" ]; then
             echo "Build failed: dist directory not found"
             exit 1
           fi
-          echo "Build successful. Dist size: $(du -sh dist | cut -f1)"
+          echo "Build successful. Dist size: $(du -sh packages/web/dist | cut -f1)"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         if: success()
         with:
           name: build-${{ matrix.node-version }}
-          path: react-study-app/dist
+          path: packages/web/dist
           retention-days: 5

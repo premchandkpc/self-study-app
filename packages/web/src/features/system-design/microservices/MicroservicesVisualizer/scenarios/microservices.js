@@ -1,5 +1,5 @@
 import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { ICONS } from '../../../../sd-types';
+import { ICONS } from '../../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const gatewayNode = _mk('gateway');

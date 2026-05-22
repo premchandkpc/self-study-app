@@ -42,7 +42,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ secrets.DOCKER_USERNAME }}/react-study-app
+            ${{ secrets.DOCKER_USERNAME }}/study-app
             ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
@@ -54,7 +54,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./react-study-app
+          context: ./packages/web
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -64,8 +64,8 @@ jobs:
       - name: Test Docker image (PR only)
         if: github.event_name == 'pull_request'
         run: |
-          docker build -t react-study-app:test ./react-study-app
-          docker run -d --name test-container -p 3000:3000 react-study-app:test
+          docker build -t study-app:test ./packages/web
+          docker run -d --name test-container -p 3000:3000 study-app:test
           sleep 5
           curl -f http://localhost:3000 || exit 1
           docker stop test-container

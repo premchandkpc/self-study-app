@@ -20,27 +20,25 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'react-study-app/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
-        working-directory: react-study-app
         run: npm ci
 
       - name: Build for production
-        working-directory: react-study-app
-        run: npm run build
+        run: npm run build:web
 
       - name: Create deployment artifact
         run: |
-          cd react-study-app
-          tar -czf ../react-study-app-build.tar.gz dist/
-          cd ..
+          cd packages/web
+          tar -czf ../../study-app-build.tar.gz dist/
+          cd ../..
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
           name: production-build
-          path: react-study-app-build.tar.gz
+          path: study-app-build.tar.gz
           retention-days: 30
 
       - name: Deploy to production server
@@ -51,9 +49,9 @@ jobs:
           username: ${{ secrets.DEPLOY_SERVER_USER }}
           key: ${{ secrets.DEPLOY_SERVER_KEY }}
           script: |
-            cd /app/react-study-app
-            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/react-study-app-build.tar.gz
-            tar -xzf react-study-app-build.tar.gz
+            cd /app/study-app
+            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/study-app-build.tar.gz
+            tar -xzf study-app-build.tar.gz
             docker-compose down
             docker-compose up -d --build
 
