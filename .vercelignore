@@ -1,0 +1,9 @@
+packages/api
+.git
+.gitignore
+README.md
+docs
+node_modules
+packages/web/node_modules
+.env.local
+.env.*.local
