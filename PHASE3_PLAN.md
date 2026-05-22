@@ -1,537 +1,368 @@
-# Phase 3: Central Renderer Engine
+# Phase 3: Execution Trace Engine
 
-**Goal**: Build ONE renderer that interprets ALL event types, eliminating algorithm-specific rendering code.
-
-**Duration**: 2-3 weeks
-
-**Key Concept**: Renderer is interpreter, not painter. Events tell renderer WHAT happened, not HOW to draw.
+**Duration**: 3 weeks
+**Goal**: Build a debugger-grade execution trace system — variable tracking, stack frames, state reconstruction, memory graphs.
 
 ---
 
-## Core Idea: Event Interpretation
+## Week 1: Trace Recorder
 
-### Before (Bad) ❌
-```typescript
-// BubbleSort.jsx
-function render() {
-  return array.map((val, i) => (
-    <Div highlighted={compared.includes(i)} 
-         swapping={swapping.includes(i)}>
-      {val}
-    </Div>
-  ))
-}
-
-// QuickSort.jsx - DIFFERENT CODE
-function render() {
-  return array.map((val, i) => (
-    <Div highlighted={partitioned.includes(i)} />
-  ))
-}
-```
-
-### After (Good) ✅
-```typescript
-// EventRenderer.tsx - SAME CODE FOR ALL
-function render(frame: TimelineFrame) {
-  const state = rebuildState(frame.events)
-  return array.map((val, i) => (
-    <Div className={getElementClass(i, state)} />
-  ))
-}
-
-function getElementClass(index: number, state: RenderState): string {
-  if (state.highlighted.includes(index)) return 'highlighted'
-  if (state.swapping.includes(index)) return 'swapping'
-  if (state.sorted.includes(index)) return 'sorted'
-  return ''
-}
-```
-
----
-
-## Architecture
-
-```
-SemanticEvent[] → [EventInterpreter] → RenderState → React → DOM
-```
-
-### Step 1: Event → State Mapping
+### Day 1-2: Execution Frame
 
 ```typescript
-// RenderState is computed FROM events, not maintained separately
-interface RenderState {
-  // Arrays
-  values: number[]
-  compared: Set<number>
-  swapped: Set<number>
-  highlighted: Set<number>
-  sorted: Set<number>
-  
-  // Graphs/Trees
-  nodes: Map<string, NodeState>
-  edges: Map<string, EdgeState>
-  
-  // Generic
-  metadata: Map<string, any>
-}
-
-interface NodeState {
+// src/execution/Frame.ts
+export interface ExecutionFrame {
   id: string
-  visited: boolean
-  exploring: boolean
-  selected: boolean
-  color?: string
-  label?: string
+  parentId?: string           // Caller frame (for recursion)
+  functionName: string
+  file?: string
+  lineNumber: number
+  variables: Map<string, VariableState>
+  stack: ExecutionFrame[]     // Call stack
+  heap: Map<string, HeapObject>
+  startedAt: number
+  completedAt?: number
+  childFrames: string[]       // Sub-calls
 }
 
-interface EdgeState {
-  from: string
-  to: string
-  active: boolean
-  weight?: number
-  color?: string
+export interface VariableState {
+  name: string
+  type: 'primitive' | 'object' | 'array' | 'reference' | 'function'
+  value: any
+  previousValue?: any        // For diff tracking
+  scope: 'local' | 'closure' | 'global' | 'this'
+  immutable: boolean
 }
 
-// Stateless interpreter: given events, compute render state
-function buildRenderState(events: SemanticEvent[]): RenderState {
-  const state: RenderState = {
-    values: [],
-    compared: new Set(),
-    swapped: new Set(),
-    highlighted: new Set(),
-    sorted: new Set(),
-    nodes: new Map(),
-    edges: new Map(),
-    metadata: new Map()
-  }
-  
-  for (const event of events) {
-    switch (event.type) {
-      case 'ARRAY_COMPARE':
-        state.compared = new Set([...(event as ArrayCompareEvent).indices])
-        break
-        
-      case 'ARRAY_SWAP':
-        state.swapped = new Set([...(event as ArraySwapEvent).indices])
-        break
-        
-      case 'ARRAY_SET':
-        state.values[event.index] = event.value
-        break
-        
-      case 'NODE_UPDATE':
-        const nodeEvent = event as NodeUpdateEvent
-        state.nodes.set(nodeEvent.nodeId, {
-          id: nodeEvent.nodeId,
-          ...nodeEvent.updates
-        })
-        break
-        
-      case 'EDGE_CREATE':
-        state.edges.set(`${event.from}-${event.to}`, {
-          from: event.from,
-          to: event.to,
-          active: true
-        })
-        break
-    }
-  }
-  
-  return state
+export interface HeapObject {
+  id: string
+  type: string
+  fields: Map<string, any>
+  references: string[]       // IDs this object references
+  referencedBy: string[]     // IDs referencing this object
+  size: number              // Bytes
+  allocationSite: string    // Where allocated
+}
+```
+
+### Day 3-4: TraceRecorder
+
+```typescript
+// src/execution/TraceRecorder.ts
+export class TraceRecorder {
+  private frames: ExecutionFrame[]
+  private currentFrame: ExecutionFrame | null
+  private heap: Map<string, HeapObject>
+  private eventBus: EventBus
+
+  // Lifecycle
+  startTrace(name: string): void
+  endTrace(): ExecutionTrace
+
+  // Function tracking
+  functionCall(func: string, args: any[]): void
+  functionReturn(result: any): void
+
+  // Variable tracking
+  variableMutated(name: string, oldVal: any, newVal: any): void
+  variableCreated(name: string, val: any): void
+  variableDeleted(name: string): void
+
+  // Memory tracking
+  objectAllocated(obj: HeapObject): void
+  objectFreed(id: string): void
+  referenceChanged(from: string, to: string, added: boolean): void
+
+  // Stack
+  stackPush(frame: ExecutionFrame): void
+  stackPop(): ExecutionFrame | null
+
+  // Diff
+  diffFrames(a: ExecutionFrame, b: ExecutionFrame): VariableDiff[]
+  snapshot(): ExecutionSnapshot
+}
+
+export interface ExecutionTrace {
+  id: string
+  name: string
+  frames: ExecutionFrame[]
+  heap: Map<string, HeapObject>
+  events: RuntimeEvent[]
+  duration: number
+  startedAt: number
+  completedAt: number
+}
+
+export interface VariableDiff {
+  name: string
+  oldValue: any
+  newValue: any
+  scope: string
+}
+```
+
+### Day 5: Trace Replay
+
+```typescript
+// src/execution/TraceReplay.ts
+export class TraceReplay {
+  private trace: ExecutionTrace
+  private currentFrame: number = 0
+
+  constructor(trace: ExecutionTrace)
+
+  // Step through trace
+  nextStep(): ExecutionSnapshot
+  previousStep(): ExecutionSnapshot
+  seekToFrame(frameIndex: number): ExecutionSnapshot
+
+  // State at any point
+  getVariables(): Map<string, VariableState>
+  getCallStack(): ExecutionFrame[]
+  getHeapState(): Map<string, HeapObject>
+
+  // Reconstruction
+  reconstructState(atFrame: number): ExecutionSnapshot
+}
+
+export interface ExecutionSnapshot {
+  frameIndex: number
+  variables: VariableState[]
+  callStack: ExecutionFrame[]
+  heap: HeapObject[]
+  lastEvent: RuntimeEvent | null
 }
 ```
 
 ---
 
-## Renderer Implementation
+## Week 2: Instrumentation
 
-### Array Renderer
-
-```typescript
-// src/core/renderers/ArrayRenderer.tsx
-interface ArrayRendererProps {
-  frame: TimelineFrame
-  initialArray: number[]
-}
-
-function ArrayRenderer({ frame, initialArray }: ArrayRendererProps) {
-  const state = useMemo(
-    () => buildRenderState(frame.events),
-    [frame.events]
-  )
-  
-  return (
-    <div className="array-container">
-      {initialArray.map((val, i) => (
-        <ArrayElement
-          key={i}
-          value={val}
-          index={i}
-          state={state}
-        />
-      ))}
-    </div>
-  )
-}
-
-function ArrayElement({ value, index, state }: any) {
-  const classes = []
-  
-  if (state.compared.has(index)) classes.push('comparing')
-  if (state.swapped.has(index)) classes.push('swapping')
-  if (state.sorted.has(index)) classes.push('sorted')
-  if (state.highlighted.has(index)) classes.push('highlighted')
-  
-  return (
-    <div className={`array-element ${classes.join(' ')}`}>
-      {value}
-    </div>
-  )
-}
-```
-
-### Graph Renderer
+### Day 1-2: AST Instrumentation (Babel)
 
 ```typescript
-// src/core/renderers/GraphRenderer.tsx
-interface GraphRendererProps {
-  frame: TimelineFrame
-  graph: Graph
-}
+// src/execution/instrumentation/BabelInstrumenter.ts
+export class BabelInstrumenter {
+  private recorder: TraceRecorder
 
-function GraphRenderer({ frame, graph }: GraphRendererProps) {
-  const state = useMemo(
-    () => buildRenderState(frame.events),
-    [frame.events]
-  )
-  
-  const layout = computeGraphLayout(graph) // Force-directed or similar
-  
-  return (
-    <svg width={800} height={600}>
-      {/* Edges */}
-      {Array.from(state.edges.values()).map(edge => (
-        <Edge
-          key={`${edge.from}-${edge.to}`}
-          edge={edge}
-          layout={layout}
-          state={state}
-        />
-      ))}
-      
-      {/* Nodes */}
-      {graph.nodes.map(node => (
-        <Node
-          key={node.id}
-          node={node}
-          layout={layout}
-          state={state.nodes.get(node.id)}
-        />
-      ))}
-    </svg>
-  )
-}
-
-function Node({ node, layout, state }: any) {
-  const pos = layout.get(node.id)
-  const nodeState = state || { id: node.id }
-  
-  const fill = nodeState.visited ? '#10b981' :
-               nodeState.exploring ? '#f59e0b' :
-               '#3b82f6'
-  
-  return (
-    <g>
-      <circle
-        cx={pos.x}
-        cy={pos.y}
-        r={30}
-        fill={fill}
-        className={nodeState.selected ? 'selected' : ''}
-      />
-      <text x={pos.x} y={pos.y} textAnchor="middle">
-        {node.id}
-      </text>
-    </g>
-  )
-}
-```
-
-### Tree Renderer
-
-```typescript
-// src/core/renderers/TreeRenderer.tsx
-interface TreeRendererProps {
-  frame: TimelineFrame
-  tree: BinaryTree
-}
-
-function TreeRenderer({ frame, tree }: TreeRendererProps) {
-  const state = useMemo(
-    () => buildRenderState(frame.events),
-    [frame.events]
-  )
-  
-  const layout = computeTreeLayout(tree.root)
-  
-  return (
-    <svg width={800} height={600}>
-      {renderTreeNodes(tree.root, layout, state)}
-    </svg>
-  )
-}
-
-function renderTreeNodes(node: any, layout: any, state: any): JSX.Element[] {
-  if (!node) return []
-  
-  const nodeState = state.nodes.get(node.id) || { id: node.id }
-  const elements: JSX.Element[] = []
-  
-  // Left edge
-  if (node.left) {
-    const leftLayout = layout.get(node.left.id)
-    const nodeLayout = layout.get(node.id)
-    elements.push(
-      <line
-        key={`edge-left-${node.id}`}
-        x1={nodeLayout.x}
-        y1={nodeLayout.y}
-        x2={leftLayout.x}
-        y2={leftLayout.y}
-        stroke="#999"
-      />
-    )
-  }
-  
-  // Right edge
-  if (node.right) {
-    const rightLayout = layout.get(node.right.id)
-    const nodeLayout = layout.get(node.id)
-    elements.push(
-      <line
-        key={`edge-right-${node.id}`}
-        x1={nodeLayout.x}
-        y1={nodeLayout.y}
-        x2={rightLayout.x}
-        y2={rightLayout.y}
-        stroke="#999"
-      />
-    )
-  }
-  
-  // Node
-  const pos = layout.get(node.id)
-  const fill = nodeState.visited ? '#10b981' : '#3b82f6'
-  
-  elements.push(
-    <circle
-      key={`node-${node.id}`}
-      cx={pos.x}
-      cy={pos.y}
-      r={25}
-      fill={fill}
-    />,
-    <text
-      key={`text-${node.id}`}
-      x={pos.x}
-      y={pos.y}
-      textAnchor="middle"
-      dominantBaseline="middle"
-    >
-      {node.value}
-    </text>
-  )
-  
-  // Recurse
-  elements.push(
-    ...renderTreeNodes(node.left, layout, state),
-    ...renderTreeNodes(node.right, layout, state)
-  )
-  
-  return elements
-}
-```
-
----
-
-## Renderer Registry
-
-```typescript
-// src/core/renderers/RendererRegistry.ts
-type RendererComponent = React.ComponentType<{ frame: TimelineFrame; data?: any }>
-
-interface RendererEntry {
-  component: RendererComponent
-  eventTypes: EventType[]
-  description: string
-}
-
-class RendererRegistry {
-  private renderers: Map<string, RendererEntry> = new Map()
-  
-  register(name: string, entry: RendererEntry) {
-    this.renderers.set(name, entry)
-  }
-  
-  getRenderer(name: string): RendererComponent | null {
-    return this.renderers.get(name)?.component ?? null
-  }
-  
-  getRendererForEvents(events: SemanticEvent[]): RendererComponent | null {
-    const eventTypes = new Set(events.map(e => e.type))
-    
-    // Find renderer that handles these event types
-    for (const [, entry] of this.renderers) {
-      if (entry.eventTypes.some(t => eventTypes.has(t))) {
-        return entry.component
+  // Babel plugin that inserts tracing calls
+  createPlugin(): babel.PluginObj {
+    return {
+      visitor: {
+        VariableDeclaration(path) {
+          // Insert: recorder.variableCreated(name, value)
+        },
+        AssignmentExpression(path) {
+          // Insert: recorder.variableMutated(name, old, new)
+        },
+        CallExpression(path) {
+          // Insert: recorder.functionCall(name, args)
+        },
+        ReturnStatement(path) {
+          // Insert: recorder.functionReturn(value)
+        }
       }
     }
-    
-    return null // Fallback to generic
   }
 }
-
-export const rendererRegistry = new RendererRegistry()
-
-rendererRegistry.register('array', {
-  component: ArrayRenderer,
-  eventTypes: ['ARRAY_COMPARE', 'ARRAY_SWAP', 'ARRAY_SET'],
-  description: 'Renders array-based algorithms'
-})
-
-rendererRegistry.register('graph', {
-  component: GraphRenderer,
-  eventTypes: ['NODE_CREATE', 'NODE_UPDATE', 'EDGE_CREATE', 'EDGE_DELETE'],
-  description: 'Renders graph algorithms'
-})
-
-rendererRegistry.register('tree', {
-  component: TreeRenderer,
-  eventTypes: ['NODE_CREATE', 'NODE_UPDATE'],
-  description: 'Renders tree operations'
-})
 ```
 
----
-
-## Generic Visualizer (Auto-Select Renderer)
+### Day 3: Proxy-Based Tracking
 
 ```typescript
-// src/components/visualizers/GenericEventVisualizer.tsx
-interface GenericEventVisualizerProps {
-  title: string
-  events: SemanticEvent[]
-  data?: any // graph, tree, array, etc.
-}
-
-function GenericEventVisualizer({
-  title,
-  events,
-  data
-}: GenericEventVisualizerProps) {
-  const engine = useVisualizationEngine({ events })
-  const Renderer = rendererRegistry.getRendererForEvents(events)
-  
-  if (!Renderer) {
-    return <div>No renderer found for events</div>
+// src/execution/instrumentation/ProxyTracker.ts
+export class ProxyTracker {
+  // Wrap any object to track mutations
+  track<T extends object>(obj: T, name: string): T {
+    return new Proxy(obj, {
+      set(target, prop, value) {
+        const old = target[prop]
+        target[prop] = value
+        TraceRecorder.variableMutated(`${name}.${String(prop)}`, old, value)
+        return true
+      },
+      get(target, prop) {
+        const val = target[prop]
+        if (typeof val === 'object' && val !== null) {
+          // Recursively track nested objects
+          return this.track(val, `${name}.${String(prop)}`)
+        }
+        return val
+      }
+    })
   }
-  
-  return (
-    <div className="visualizer">
-      <h2>{title}</h2>
-      
-      <div className="canvas">
-        <Renderer frame={engine.currentFrame!} data={data} />
-      </div>
-      
-      <div className="controls">
-        <button onClick={engine.play}>Play</button>
-        <button onClick={engine.pause}>Pause</button>
-        <button onClick={engine.nextFrame} disabled={!engine.canAdvance()}>
-          Next
-        </button>
-        <button onClick={engine.previousFrame} disabled={!engine.canRewind()}>
-          Prev
-        </button>
-        <select onChange={(e) => engine.setSpeed(parseFloat(e.target.value))}>
-          <option value="0.5">0.5x</option>
-          <option value="1">1x</option>
-          <option value="2">2x</option>
-        </select>
-      </div>
-      
-      <progress value={engine.progress} max={100} />
-    </div>
-  )
+}
+```
+
+### Day 4-5: Runtime Interception Hooks
+
+```typescript
+// src/execution/instrumentation/RuntimeHooks.ts
+// Monkey-patch runtime functions to trace execution
+
+export class RuntimeHooks {
+  install(): void {
+    // Patch setTimeout — trace async execution
+    const originalSetTimeout = global.setTimeout
+    global.setTimeout = (fn, ms, ...args) => {
+      this.recorder.functionCall('setTimeout', [ms])
+      return originalSetTimeout(() => {
+        this.recorder.functionCall('timeout-callback', args)
+        fn(...args)
+        this.recorder.functionReturn(undefined)
+      }, ms)
+    }
+
+    // Patch Promise — trace async chains
+    // Patch Array methods — trace sort/map/filter
+    // Patch console.log — capture output
+    // Patch fetch — trace network calls
+  }
+
+  uninstall(): void {
+    // Restore originals
+  }
 }
 ```
 
 ---
 
-## Usage: All algorithms use SAME component
+## Week 3: Memory Graph + State Reconstruction
+
+### Day 1-2: Memory Graph
 
 ```typescript
-// Bubble Sort
-<GenericEventVisualizer
-  title="Bubble Sort"
-  events={bubbleSortEvents([3,1,4,1,5])}
-  data={[3,1,4,1,5]}
-/>
+// src/execution/memory/MemoryGraph.ts
+export class MemoryGraph {
+  private objects: Map<string, HeapObject>
 
-// Quick Sort - SAME COMPONENT
-<GenericEventVisualizer
-  title="Quick Sort"
-  events={quickSortEvents([3,1,4,1,5])}
-  data={[3,1,4,1,5]}
-/>
+  // Build graph from heap state
+  buildGraph(): Graph {
+    const g = new Graph()
+    for (const obj of this.objects.values()) {
+      g.addEntity(new Entity(obj.id, 'memory-block', obj.type))
+      for (const ref of obj.references) {
+        g.connect(obj.id, ref, 'references')
+      }
+    }
+    return g
+  }
 
-// DFS - SAME COMPONENT, different renderer
-<GenericEventVisualizer
-  title="Depth-First Search"
-  events={dfsEvents(graph, 'A')}
-  data={graph}
-/>
+  // Diff two heap states
+  diff(before: MemoryGraph, after: MemoryGraph): HeapDiff {
+    // Added, removed, modified objects
+    // Changed references
+    // Memory delta
+  }
 
-// BST - SAME COMPONENT, different renderer
-<GenericEventVisualizer
-  title="Binary Search Tree Insert"
-  events={bstInsertEvents(tree, 42)}
-  data={tree}
-/>
+  // Find memory leaks (objects with no external references)
+  findLeaks(): HeapObject[]
+}
+```
+
+### Day 3-4: State Reconstruction from Events
+
+```typescript
+// src/execution/StateReconstructor.ts
+export class StateReconstructor {
+  // Reconstruct full state at any point from event stream
+  reconstruct(
+    events: RuntimeEvent[],
+    upToEvent: number
+  ): ExecutionSnapshot {
+    const variables = new Map()
+    const heap = new Map()
+
+    for (let i = 0; i <= upToEvent; i++) {
+      const event = events[i]
+      switch (event.type) {
+        case 'VARIABLE_MUTATED':
+          variables.set(event.entityId!, event.newValue)
+          break
+        case 'MEMORY_ALLOCATED':
+          heap.set(event.entityId!, event.metadata)
+          break
+        case 'STACK_PUSHED':
+          // Build stack frame
+          break
+        // etc.
+      }
+    }
+
+    return { frameIndex: upToEvent, variables, heap, callStack: [] }
+  }
+}
+```
+
+### Day 5: Trace Compression
+
+```typescript
+// src/execution/TraceCompressor.ts
+export class TraceCompressor {
+  // Delta encoding — store only changes
+  deltaEncode(trace: ExecutionTrace): DeltaEncodedTrace {
+    const frames: DeltaFrame[] = []
+    let prevState: any = null
+
+    for (const frame of trace.frames) {
+      const current = this.snapshotState(frame)
+      frames.push({
+        index: frame.id,
+        delta: this.computeDelta(prevState, current)
+      })
+      prevState = current
+    }
+
+    return { frames, baseState: prevState }
+  }
+
+  // Run-length encoding for repeated events
+  rleEncode(events: RuntimeEvent[]): CompressedEvent[]
+
+  // Reconstruction
+  reconstructFromDelta(delta: DeltaEncodedTrace): ExecutionTrace
+}
 ```
 
 ---
 
-## Completion Checklist
+## Files Created
 
-- [ ] RenderState interface finalized
-- [ ] buildRenderState() function working
-- [ ] ArrayRenderer complete
-- [ ] GraphRenderer complete
-- [ ] TreeRenderer complete
-- [ ] RendererRegistry implemented
-- [ ] GenericEventVisualizer working
-- [ ] All Phase 2 algorithms working with renderers
-- [ ] CSS/animation smooth
-- [ ] Tests pass
-- [ ] Performance: <16ms per frame
+```
+src/execution/
+├── Frame.ts
+├── TraceRecorder.ts
+├── TraceReplay.ts
+├── StateReconstructor.ts
+├── TraceCompressor.ts
+├── instrumentation/
+│   ├── BabelInstrumenter.ts
+│   ├── ProxyTracker.ts
+│   └── RuntimeHooks.ts
+├── memory/
+│   └── MemoryGraph.ts
+├── __tests__/
+│   ├── TraceRecorder.test.ts
+│   ├── StateReconstructor.test.ts
+│   └── TraceCompressor.test.ts
+└── index.ts
+```
 
 ---
 
-## Success Metrics
+## Success Criteria
 
-✅ **One component renders all algorithms**  
-✅ **Renderers are stateless functions**  
-✅ **Events → state → render (no imperatives)**  
-✅ **60fps animation performance**  
-✅ **No algorithm-specific rendering code**  
+- [ ] TraceRecorder captures variables, stack, heap
+- [ ] StateReconstructor rebuilds state from events
+- [ ] Babel plugin instruments variable mutations
+- [ ] ProxyTracker wraps objects transparently
+- [ ] MemoryGraph builds/diffs heap states
+- [ ] TraceCompressor achieves 10x+ compression
+- [ ] Deterministic replay produces identical traces
+- [ ] Works with Bubble Sort, Kafka, JVM domains
 
 ---
 
 ## Next Phase (Phase 4)
 
-Enhance timeline:
-- Playback reverse (rewind animation)
-- Branching timelines
-- Deterministic replay with different speeds
+With execution traces working: build the generic animation + rendering engine to visualize traces.

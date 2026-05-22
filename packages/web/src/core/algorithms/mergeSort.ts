@@ -1,4 +1,4 @@
-import { SemanticEvent, ArrayCompareEvent, ArraySwapEvent } from '../runtime/events';
+import { SemanticEvent, ArrayCompareEvent } from '../runtime/events';
 
 export function mergeSortEvents(arr: number[]): SemanticEvent[] {
   const events: SemanticEvent[] = [];
@@ -33,14 +33,15 @@ export function mergeSortEvents(arr: number[]): SemanticEvent[] {
 
       frameId++;
       events.push({
-        type: 'ARRAY_SWAP',
+        type: 'ARRAY_SET',
         frameId,
         timestamp: frameId * 300,
-        indices: [k - 1, k],
+        index: k - 1,
+        value: copy[k - 1],
         concept: 'merge_place',
         explanation: `Placing ${copy[k - 1]} in sorted position`,
         importance: 'medium',
-      } as ArraySwapEvent);
+      });
     }
 
     while (i < leftArr.length) {

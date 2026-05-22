@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './core/context/ThemeContext';
 import { UIProvider } from './core/context/UIContext';
@@ -17,12 +17,23 @@ import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
 import PlaygroundPage from './pages/Playground/PlaygroundPage';
+import Phase1DemoPage from './pages/Phase1Demo/Phase1DemoPage';
+import Study2Page from './pages/Study2/Study2Page';
 import MarkdownDocPage from './pages/MarkdownDoc/MarkdownDocPage';
 import NotFound from './pages/NotFound/NotFound';
 
 function AppRoutes() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { TOPICS } = useTopicMapsContext();
+
+  if (location.pathname === '/phase1') {
+    return <Phase1DemoPage />;
+  }
+
+  if (location.pathname === '/study2') {
+    return <Study2Page />;
+  }
 
   return (
     <>
@@ -51,7 +62,7 @@ function AppRoutes() {
           <Route path="/:abbr" element={<VisualizerPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </MainLayout>
+        </MainLayout>
       <AgentWidget />
     </>
   );

@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { bubbleSortEvents } from '@/core/algorithms/bubbleSort';
 import { quickSortEvents } from '@/core/algorithms/quickSort';
 import { mergeSortEvents } from '@/core/algorithms/mergeSort';
 import { linearSearchEvents, binarySearchEvents } from '@/core/algorithms/search';
 import { useVisualizationEngine } from '@/core/hooks/useVisualizationEngine';
-import EventBasedVisualizer from '@/components/visualizers/EventBasedVisualizer';
+import { ArrayRenderer } from '@/core/renderers/ArrayRenderer';
 
 /**
  * Phase 1 Demo: Complete runtime system
@@ -63,37 +63,9 @@ const ALGORITHMS: AlgorithmOption[] = [
   }
 ];
 
-function ArrayRenderer({ frame }: { frame: any }) {
-  if (!frame) return <div>No frame</div>;
-
-  const events = frame.events || [];
-  const compared = new Set<number>();
-  const swapped = new Set<number>();
-
-  // Extract state from events
-  events.forEach((e: any) => {
-    if (e.type === 'ARRAY_COMPARE' && e.indices) {
-      e.indices.forEach((i: number) => compared.add(i));
-    }
-    if (e.type === 'ARRAY_SWAP' && e.indices) {
-      e.indices.forEach((i: number) => swapped.add(i));
-    }
-  });
-
-  // This is simplified - in real app would rebuild full state
-  return (
-    <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-end', height: '200px' }}>
-      {/* Mock rendering - would actually show array */}
-      <div style={{ color: '#666', fontSize: '12px' }}>
-        Frame {frame.frameId} | Events: {events.length}
-      </div>
-    </div>
-  );
-}
 
 export default function Phase1Demo() {
   const [selectedAlgorithmId, setSelectedAlgorithmId] = useState('bubble');
-  const [arraySize, setArraySize] = useState(7);
   const [speed, setSpeed] = useState(1);
 
   const algorithm = useMemo(
@@ -119,10 +91,12 @@ export default function Phase1Demo() {
   });
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-      <h1>Phase 1: Event-Driven Runtime Demo</h1>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '2rem' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ background: 'white', borderRadius: '12px', padding: '2rem', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <h1 style={{ color: '#667eea', marginTop: 0 }}>Phase 1: Event-Driven Runtime Demo</h1>
 
-      <section style={{ marginBottom: '3rem' }}>
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
         <h2>How It Works</h2>
         <ol style={{ lineHeight: '1.8' }}>
           <li><strong>Algorithm:</strong> Produces semantic events (COMPARE, SWAP, etc.)</li>
@@ -133,7 +107,7 @@ export default function Phase1Demo() {
         </ol>
       </section>
 
-      <section style={{ marginBottom: '3rem', border: '1px solid #ddd', padding: '1rem', borderRadius: '8px' }}>
+      <section style={{ marginBottom: '3rem', border: '1px solid #e5e7eb', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb' }}>
         <h2>Algorithm Selection</h2>
 
         <div style={{ marginBottom: '1rem' }}>
@@ -154,7 +128,7 @@ export default function Phase1Demo() {
         <p style={{ color: '#666', fontSize: '0.95rem' }}>{algorithm.description}</p>
       </section>
 
-      <section style={{ marginBottom: '3rem' }}>
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
         <h2>Runtime Statistics</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
           <div style={{ padding: '1rem', background: '#f0f0f0', borderRadius: '4px' }}>
@@ -176,82 +150,39 @@ export default function Phase1Demo() {
         </div>
       </section>
 
-      <section style={{ marginBottom: '3rem' }}>
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
         <h2>Playback Controls</h2>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button
-            onClick={engine.play}
-            disabled={engine.playbackState === 'playing'}
-            style={{
-              padding: '0.5rem 1rem',
-              background: engine.playbackState === 'playing' ? '#ccc' : '#10b981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: engine.playbackState === 'playing' ? 'not-allowed' : 'pointer'
-            }}
-          >
-            ▶ Play
-          </button>
-
-          <button
-            onClick={engine.pause}
-            disabled={engine.playbackState !== 'playing'}
-            style={{
-              padding: '0.5rem 1rem',
-              background: engine.playbackState !== 'playing' ? '#ccc' : '#f59e0b',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: engine.playbackState !== 'playing' ? 'not-allowed' : 'pointer'
-            }}
-          >
-            ⏸ Pause
-          </button>
-
-          <button
-            onClick={engine.previousFrame}
-            disabled={!engine.canRewind()}
-            style={{
-              padding: '0.5rem 1rem',
-              background: !engine.canRewind() ? '#ccc' : '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: !engine.canRewind() ? 'not-allowed' : 'pointer'
-            }}
-          >
-            ← Prev
-          </button>
-
-          <button
-            onClick={engine.nextFrame}
-            disabled={!engine.canAdvance()}
-            style={{
-              padding: '0.5rem 1rem',
-              background: !engine.canAdvance() ? '#ccc' : '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: !engine.canAdvance() ? 'not-allowed' : 'pointer'
-            }}
-          >
-            Next →
-          </button>
-
-          <button
-            onClick={engine.replay}
-            style={{
-              padding: '0.5rem 1rem',
-              background: '#8b5cf6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            ↻ Reset
-          </button>
+          {[
+            { label: '▶ Play', onClick: engine.play, disabled: engine.playbackState === 'playing', bg: '#10b981' },
+            { label: '⏸ Pause', onClick: engine.pause, disabled: engine.playbackState !== 'playing', bg: '#f59e0b' },
+            { label: '← Prev', onClick: engine.previousFrame, disabled: !engine.canRewind(), bg: '#3b82f6' },
+            { label: 'Next →', onClick: engine.nextFrame, disabled: !engine.canAdvance(), bg: '#3b82f6' },
+            { label: '↻ Reset', onClick: engine.replay, disabled: false, bg: '#8b5cf6' }
+          ].map(btn => (
+            <button
+              key={btn.label}
+              onClick={btn.onClick}
+              disabled={btn.disabled}
+              style={{
+                padding: '0.6rem 1.2rem',
+                background: btn.disabled ? '#d1d5db' : btn.bg,
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: btn.disabled ? 'not-allowed' : 'pointer',
+                fontWeight: '500',
+                fontSize: '0.95rem',
+                transition: 'all 0.2s ease',
+                opacity: btn.disabled ? 0.6 : 1,
+                boxShadow: btn.disabled ? 'none' : '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => !btn.disabled && (e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)')}
+              onMouseLeave={(e) => !btn.disabled && (e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)')}
+            >
+              {btn.label}
+            </button>
+          ))}
 
           <div style={{ marginLeft: 'auto' }}>
             <label>
@@ -271,7 +202,7 @@ export default function Phase1Demo() {
         </div>
       </section>
 
-      <section style={{ marginBottom: '3rem' }}>
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
         <h2>Progress</h2>
         <div style={{
           width: '100%',
@@ -294,16 +225,40 @@ export default function Phase1Demo() {
         </div>
       </section>
 
-      <section style={{ marginBottom: '3rem' }}>
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
+        <h2>Visualization</h2>
+        <ArrayRenderer frame={engine.currentFrame} array={data} height={300} />
+
+        <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', background: '#2563eb', borderRadius: '3px' }} />
+            <span style={{ fontSize: '0.9rem' }}>Default</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', background: '#f97316', borderRadius: '3px' }} />
+            <span style={{ fontSize: '0.9rem' }}>Being Compared</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', background: '#dc2626', borderRadius: '3px' }} />
+            <span style={{ fontSize: '0.9rem' }}>Just Swapped</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', background: '#16a34a', borderRadius: '3px' }} />
+            <span style={{ fontSize: '0.9rem' }}>Highlighted</span>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
         <h2>Current Frame Events</h2>
         {engine.currentFrame ? (
           <div style={{ background: '#f9fafb', padding: '1rem', borderRadius: '4px', fontFamily: 'monospace', fontSize: '0.85rem' }}>
             <div><strong>Frame ID:</strong> {engine.currentFrame.frameId}</div>
             <div><strong>Events:</strong> {engine.currentFrame.events.length}</div>
-            <div style={{ marginTop: '0.5rem', color: '#666' }}>
+            <div style={{ marginTop: '0.5rem', color: '#666', maxHeight: '200px', overflowY: 'auto' }}>
               {engine.currentFrame.events.map((e: any, i: number) => (
-                <div key={i}>
-                  [{e.type}] {e.explanation || JSON.stringify(e)}
+                <div key={i} style={{ marginBottom: '0.5rem' }}>
+                  <span style={{ color: '#3b82f6', fontWeight: 'bold' }}>[{e.type}]</span> {e.explanation || JSON.stringify(e)}
                 </div>
               ))}
             </div>
@@ -313,7 +268,7 @@ export default function Phase1Demo() {
         )}
       </section>
 
-      <section style={{ marginBottom: '3rem' }}>
+      <section style={{ marginBottom: '3rem', padding: '1.5rem', borderRadius: '8px', background: '#f9fafb', border: '1px solid #e5e7eb' }}>
         <h2>Key Insight: Event Sourcing</h2>
         <div style={{ background: '#eff6ff', padding: '1rem', borderRadius: '4px', border: '1px solid #bfdbfe' }}>
           <p>
@@ -353,6 +308,8 @@ export default function Phase1Demo() {
           <li>📋 <strong>Phase 6+:</strong> AI, plugins, concept graph</li>
         </ul>
       </section>
+        </div>
+      </div>
     </div>
   );
 }

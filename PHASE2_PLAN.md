@@ -1,367 +1,268 @@
-# Phase 2: Convert Visualizers to Event-Based
+# Phase 2: Semantic Graph + Event Pipeline
 
-**Goal**: Migrate all sorting/basic visualizers from component state to event producers.
-
-**Duration**: 2-3 weeks
+**Duration**: 2 weeks
+**Goal**: Add semantic metadata layer, typed event pipeline, serialization protocol, and graph query system.
 
 ---
 
-## Architecture Pattern
+## Week 1: Semantic Graph System
 
-### Old ❌
+### Day 1-2: SemanticNode + SemanticEdge
+
+Extend base Entity with semantic properties.
+
 ```typescript
-function ArrayVisualizer({ array, algorithm }) {
-  const [state, setState] = useReducer(...)
-  
-  useEffect(() => {
-    algorithm(array, (newState) => setState(newState))
-  }, [])
-  
-  return <div>{/* render state */}</div>
+// src/semantic/SemanticNode.ts
+export interface SemanticNode {
+  // From Entity
+  id: string; kind: EntityKind; type: string
+
+  // Semantic
+  concept: ConceptName
+  category: ConceptCategory
+  complexity: Complexity
+  importance: number  // 0-1
+
+  // Educational
+  interviewRelevant: boolean
+  whyItMatters?: string
+  prerequisites: string[]   // concept IDs
+  relatedConcepts: string[] // concept IDs
+
+  // AI
+  embedding?: number[]
+  keywords: string[]
+  llmPrompt?: string
+}
+
+// Universal concept taxonomy
+type ConceptName =
+  | 'comparison' | 'swapping' | 'partitioning' | 'merging'
+  | 'hashing' | 'rehashing' | 'collision-resolution'
+  | 'replication' | 'partitioning' | 'consensus' | 'election'
+  | 'memory-allocation' | 'garbage-collection' | 'mark-sweep'
+  | 'context-switch' | 'scheduling' | 'deadlock' | 'race-condition'
+  | 'forward-pass' | 'backpropagation' | 'gradient-descent'
+  | 'tcp-handshake' | 'routing' | 'congestion-control'
+  | 'publish-subscribe' | 'consumer-group' | 'offset-commit'
+  | 'raft' | 'paxos' | 'gossip' | 'crdt'
+  | 'custom'
+```
+
+### Day 3-4: SemanticGraph
+
+```typescript
+// src/semantic/SemanticGraph.ts
+export class SemanticGraph {
+  private graph: Graph
+  private conceptIndex: Map<string, SemanticNode[]>
+  private relationshipIndex: Map<string, SemanticEdge[]>
+
+  // Core
+  addNode(node: SemanticNode): void
+  addEdge(from: string, to: string, rel: RelationshipType): void
+
+  // Semantic query
+  findByConcept(concept: ConceptName): SemanticNode[]
+  findPath(from: string, to: string): SemanticNode[]
+  getPrerequisites(id: string): SemanticNode[]
+  getDependents(id: string): SemanticNode[]
+  getLearningPath(start: string, goal: string): SemanticNode[]
+
+  // AI
+  getConceptEmbedding(id: string): number[]
+  semanticSearch(query: string, limit?: number): SemanticNode[]
+
+  // Serialization
+  export(): SemanticGraphSchema
+  static import(schema: SemanticGraphSchema): SemanticGraph
+}
+
+type RelationshipType =
+  | 'prerequisite' | 'depends-on' | 'related-to'
+  | 'implements' | 'extends' | 'specializes'
+  | 'part-of' | 'contains' | 'produces' | 'consumes'
+  | 'synchronizes-with' | 'conflicts-with'
+  | 'flows-to' | 'transforms-to'
+  | 'custom'
+```
+
+### Day 5: Event Semantic Enrichment
+
+```typescript
+// Attach semantic metadata to every event
+export interface SemanticEvent extends RuntimeEvent {
+  // Semantic
+  concept: ConceptName
+  category: ConceptCategory
+  complexity: Complexity
+  importance: number
+  explanation: string
+
+  // Educational
+  interviewRelevant?: boolean
+  whyItMatters?: string
+  learningObjective?: string
+
+  // AI metadata
+  embeddingHint?: string
+  llmContext?: string
 }
 ```
 
-### New ✅
+---
+
+## Week 2: Event Pipeline + Protocol
+
+### Day 1-2: Typed Event Bus
+
 ```typescript
-function ArrayVisualizer({ array, algorithm }) {
-  const events = getEventProducer(algorithm)(array)
-  const engine = useVisualizationEngine({ events })
-  
-  return <EventBasedVisualizer events={events} renderer={ArrayRenderer} />
+// src/runtime/events/EventBus.ts
+export class EventBus {
+  private history: RuntimeEvent[]
+  private subscribers: Map<EventType, Set<EventHandler>>
+
+  // Typed subscription
+  on<T extends RuntimeEvent>(type: EventType, handler: (e: T) => void): void
+  off(type: EventType, handler: EventHandler): void
+
+  // Publish
+  emit(event: RuntimeEvent): void
+
+  // Pipeline
+  addMiddleware(mw: EventMiddleware): void
+  // Middleware can: transform, filter, enrich, log, persist
+
+  // Replay
+  replay(from: number, to: number): RuntimeEvent[]
+  getHistory(filter?: EventFilter): RuntimeEvent[]
+
+  // Metrics
+  getStats(): { total: number; byType: Map<EventType, number> }
+}
+
+type EventMiddleware = (event: RuntimeEvent, next: () => void) => void
+```
+
+Event pipeline stages:
+```
+emit → enrich (add semantic metadata) → validate → persist → notify subscribers → render
+```
+
+### Day 3-4: Serialization Protocol
+
+```typescript
+// src/protocols/Serialization.ts
+// Universal serialization for ALL runtime objects
+
+export interface SerializedFrame {
+  id: number
+  timestamp: number
+  events: SerializedEvent[]
+  state: SerializedGraph
+}
+
+export interface SerializedEvent {
+  type: string
+  frameId: number
+  timestamp: number
+  entityId?: string
+  property?: string
+  oldValue?: any
+  newValue?: any
+  concept?: string
+  explanation?: string
+}
+
+export interface SerializedGraph {
+  nodes: SerializedEntity[]
+  edges: SerializedEdge[]
+  version: number
+}
+
+// Compression
+export function compressFrames(frames: Frame[]): Buffer
+export function decompressFrames(data: Buffer): Frame[]
+```
+
+### Day 5: Protocol Buffers Schema
+
+```protobuf
+// proto/runtime.proto
+syntax = "proto3";
+
+message Entity {
+  string id = 1;
+  string kind = 2;
+  string type = 3;
+  map<string, string> labels = 4;
+  map<string, bytes> properties = 5;
+}
+
+message RuntimeEvent {
+  string id = 1;
+  string type = 2;
+  int64 timestamp = 3;
+  int32 frameId = 4;
+  string entityId = 5;
+  string property = 6;
+  bytes oldValue = 7;
+  bytes newValue = 8;
+  string concept = 9;
+  string explanation = 10;
+}
+
+message Frame {
+  int32 id = 1;
+  int64 timestamp = 2;
+  repeated RuntimeEvent events = 3;
+  Graph state = 4;
+}
+
+message Graph {
+  repeated Entity nodes = 1;
+  repeated Edge edges = 2;
+  int32 version = 3;
 }
 ```
 
 ---
 
-## Task Breakdown
-
-### Week 1: Sorting Algorithms
-
-Convert to event producers (pure functions):
-
-#### Day 1-2: Bubble Sort ✅ (already done)
-- [x] `bubbleSortEvents(arr)`
-- [x] Produces COMPARE, SWAP events
-- [x] Test with multiple arrays
-- [x] Verify event sequence
-
-#### Day 3: Quick Sort
-```typescript
-// src/core/algorithms/quickSort.ts
-export function quickSortEvents(arr: number[]): SemanticEvent[] {
-  const events: SemanticEvent[] = []
-  let frameId = 0
-  const copy = [...arr]
-  
-  function partition(low: number, high: number): number {
-    const pivot = copy[high]
-    let i = low - 1
-    
-    for (let j = low; j < high; j++) {
-      frameId++
-      events.push({
-        type: 'ARRAY_COMPARE',
-        frameId,
-        timestamp: frameId * 300,
-        indices: [j, high],
-        concept: 'partition_compare'
-      })
-      
-      if (copy[j] < pivot) {
-        i++
-        frameId++
-        [copy[i], copy[j]] = [copy[j], copy[i]]
-        events.push({
-          type: 'ARRAY_SWAP',
-          frameId,
-          timestamp: frameId * 300,
-          indices: [i, j]
-        })
-      }
-    }
-    
-    frameId++
-    [copy[i + 1], copy[high]] = [copy[high], copy[i + 1]]
-    events.push({
-      type: 'ARRAY_SWAP',
-      frameId,
-      timestamp: frameId * 300,
-      indices: [i + 1, high]
-    })
-    
-    return i + 1
-  }
-  
-  function quickSort(low: number, high: number) {
-    if (low < high) {
-      const pi = partition(low, high)
-      quickSort(low, pi - 1)
-      quickSort(pi + 1, high)
-    }
-  }
-  
-  quickSort(0, copy.length - 1)
-  return events
-}
-```
-
-#### Day 4: Merge Sort
-```typescript
-// src/core/algorithms/mergeSort.ts
-export function mergeSortEvents(arr: number[]): SemanticEvent[] {
-  const events: SemanticEvent[] = []
-  let frameId = 0
-  const copy = [...arr]
-  
-  function merge(left: number, mid: number, right: number) {
-    const leftArr = copy.slice(left, mid + 1)
-    const rightArr = copy.slice(mid + 1, right + 1)
-    let i = 0, j = 0, k = left
-    
-    while (i < leftArr.length && j < rightArr.length) {
-      frameId++
-      events.push({
-        type: 'ARRAY_COMPARE',
-        frameId,
-        timestamp: frameId * 300,
-        indices: [left + i, mid + 1 + j],
-        concept: 'merge_compare'
-      })
-      
-      if (leftArr[i] <= rightArr[j]) {
-        copy[k++] = leftArr[i++]
-      } else {
-        copy[k++] = rightArr[j++]
-      }
-      
-      frameId++
-      events.push({
-        type: 'ARRAY_SET',
-        frameId,
-        timestamp: frameId * 300,
-        index: k - 1,
-        value: copy[k - 1]
-      })
-    }
-    
-    while (i < leftArr.length) {
-      copy[k++] = leftArr[i++]
-    }
-    while (j < rightArr.length) {
-      copy[k++] = rightArr[j++]
-    }
-  }
-  
-  function mergeSort(left: number, right: number) {
-    if (left < right) {
-      const mid = Math.floor((left + right) / 2)
-      mergeSort(left, mid)
-      mergeSort(mid + 1, right)
-      merge(left, mid, right)
-    }
-  }
-  
-  mergeSort(0, copy.length - 1)
-  return events
-}
-```
-
-#### Day 5: Insertion Sort + Heap Sort
-- `insertionSortEvents()`
-- `heapSortEvents()`
-
-### Week 2: Graph/Tree Algorithms
-
-#### Day 1-2: DFS Event Producer
-```typescript
-// src/core/algorithms/dfs.ts
-export function dfsEvents(graph: Graph, startNode: string): SemanticEvent[] {
-  const events: SemanticEvent[] = []
-  let frameId = 0
-  const visited = new Set<string>()
-  
-  function dfs(node: string) {
-    frameId++
-    events.push({
-      type: 'NODE_UPDATE',
-      frameId,
-      timestamp: frameId * 300,
-      nodeId: node,
-      updates: { visited: true, color: '#3b82f6' },
-      concept: 'node_visit',
-      explanation: `Visiting node ${node}`
-    })
-    visited.add(node)
-    
-    for (const neighbor of graph.getNeighbors(node)) {
-      frameId++
-      events.push({
-        type: 'EDGE_CREATE',
-        frameId,
-        timestamp: frameId * 300,
-        from: node,
-        to: neighbor,
-        concept: 'explore_edge'
-      })
-      
-      if (!visited.has(neighbor)) {
-        dfs(neighbor)
-      }
-    }
-    
-    frameId++
-    events.push({
-      type: 'NODE_UPDATE',
-      frameId,
-      timestamp: frameId * 300,
-      nodeId: node,
-      updates: { visited: true, color: '#10b981' },
-      concept: 'node_complete'
-    })
-  }
-  
-  dfs(startNode)
-  return events
-}
-```
-
-#### Day 3: BFS Event Producer
-- Similar to DFS
-- Queue-based instead of recursion
-- FIFO node visiting
-
-#### Day 4-5: Binary Search Tree Events
-- `bstInsertEvents()`
-- `bstDeleteEvents()`
-- `bstSearchEvents()`
-
-### Week 3: Data Structure Operations
-
-#### Day 1: Array Operations
-- Shift, unshift, push, pop events
-- Insert, delete at index
-
-#### Day 2: Linked List Operations
-- Node creation/deletion
-- Pointer updates
-- List traversal
-
-#### Day 3: Hash Table Operations
-- Insert, delete, lookup
-- Collision handling
-- Rehashing
-
-#### Day 4-5: Priority Queue / Heap
-- Insert event
-- Extract event
-- Heapify events
-
----
-
-## Event Producer File Structure
+## Files Created
 
 ```
-src/core/algorithms/
-├── sorting/
-│   ├── bubbleSort.ts       ✅
-│   ├── quickSort.ts        📝
-│   ├── mergeSort.ts        📝
-│   ├── insertionSort.ts    📝
-│   ├── heapSort.ts         📝
-│   └── index.ts
-├── searching/
-│   ├── linearSearch.ts     📝
-│   ├── binarySearch.ts     📝
-│   └── index.ts
-├── graphs/
-│   ├── dfs.ts              📝
-│   ├── bfs.ts              📝
-│   ├── dijkstra.ts         📝
-│   └── index.ts
-├── trees/
-│   ├── bstOperations.ts    📝
-│   ├── avlOperations.ts    📝
-│   └── index.ts
-└── dataStructures/
-    ├── linkedList.ts       📝
-    ├── hashTable.ts        📝
-    └── index.ts
+src/semantic/
+├── SemanticNode.ts
+├── SemanticEdge.ts
+├── SemanticGraph.ts
+├── concepts.ts          # Concept taxonomy
+└── index.ts
+
+src/runtime/events/
+├── EventBus.ts          # (updated)
+├── EventMiddleware.ts
+└── index.ts
+
+src/protocols/
+├── Serialization.ts
+├── proto/runtime.proto
+└── index.ts
 ```
 
 ---
 
-## Test Strategy
+## Success Criteria
 
-For each algorithm:
-```typescript
-describe('bubbleSortEvents', () => {
-  it('should produce correct event sequence', () => {
-    const arr = [64, 34, 25, 12, 22, 11, 90]
-    const events = bubbleSortEvents(arr)
-    
-    // Verify structure
-    expect(events.length).toBeGreaterThan(0)
-    expect(events[0].type).toBe('ARRAY_COMPARE')
-    
-    // Verify determinism
-    const events2 = bubbleSortEvents(arr)
-    expect(events).toEqual(events2)
-    
-    // Verify frame IDs are sequential
-    for (let i = 0; i < events.length; i++) {
-      expect(events[i].frameId).toBe(i + 1)
-    }
-    
-    // Verify event types are valid
-    events.forEach(e => {
-      expect(['ARRAY_COMPARE', 'ARRAY_SWAP']).toContain(e.type)
-    })
-  })
-})
-```
-
----
-
-## Completion Checklist
-
-- [ ] All sorting algorithms converted
-- [ ] All graph algorithms converted
-- [ ] All tree algorithms converted
-- [ ] All data structure operations converted
-- [ ] 100% test coverage for event producers
-- [ ] Events verified to be deterministic
-- [ ] Events work with Phase 1 runtime
-- [ ] Documentation updated
-- [ ] Performance benchmarked
-
----
-
-## Success Metrics
-
-✅ No imperative rendering in algorithm code  
-✅ Algorithm = pure function → events  
-✅ Same algorithm, different speeds/pauses  
-✅ Perfect replay of any algorithm  
-✅ <10ms to generate events for 1000 elements  
-✅ <100KB memory for typical event streams  
-
----
-
-## Risks
-
-| Risk | Mitigation |
-|------|-----------|
-| Complex algorithms hard to convert | Start simple, build patterns |
-| Events too verbose | Compress metadata in Phase 5 |
-| Frame IDs collision | Use atomic counter, test rigorously |
-| Determinism hard to verify | Comprehensive test suite |
-| Performance regression | Benchmark vs. old system |
+- [ ] SemanticNode covers 50+ concepts
+- [ ] SemanticGraph supports queries, paths, prerequisites
+- [ ] EventBus has middleware pipeline
+- [ ] Events enriched with semantic metadata
+- [ ] Full serialization/deserialization roundtrip
+- [ ] Compression works for 10K+ events
+- [ ] Zero domain-specific code in semantic layer
 
 ---
 
 ## Next Phase (Phase 3)
 
-Once all algorithms produce events:
-- Build **central renderer** that interprets ANY event
-- Same renderer handles: sort, search, graphs, trees, data structures
-- No algorithm-specific rendering code needed
+With semantic graph + event pipeline: build the execution trace engine — variable tracking, stack frames, state reconstruction.

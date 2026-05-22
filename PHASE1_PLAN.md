@@ -1,268 +1,387 @@
-# Phase 1 Implementation Plan: Core Runtime Engine
+# Phase 1: Universal Primitives + Runtime Engine
 
-## Goal
-Transform component-driven visualizers into event-based runtime system.
-
----
-
-## Week 1: Foundation & Setup
-
-### Day 1-2: Initialize Runtime Framework
-- [x] Create `src/core/runtime/` folder structure
-- [x] Implement event types (`events.ts`)
-- [x] Implement timeline engine (`timeline.ts`)
-- [x] Implement playback engine (`playback.ts`)
-- [x] Create main engine (`engine.ts`)
-
-**Deliverable**: Runtime classes testable in isolation
-
-```bash
-npm test -- src/core/runtime/
-```
-
-### Day 3: React Integration
-- [x] Create `useVisualizationEngine` hook
-- [x] Create `EventBasedVisualizer` component
-- [x] Wire event emissions → React state
-
-**Deliverable**: Basic component renders frames
-
-### Day 4-5: Algorithm Conversion (Bubble Sort)
-- [x] Create `bubbleSort.ts` event producer
-- [ ] Test bubble sort produces correct events
-- [ ] Test timeline processes events correctly
-- [ ] Test playback advances through frames
-
-**Deliverable**: Working bubble sort → events → playback
+**Duration**: 2 weeks
+**Goal**: Build foundational primitives and a domain-agnostic runtime engine that ANY system can plug into.
 
 ---
 
-## Week 2: Test & Validate Core System
+## Core Principle
 
-### Day 1-2: Unit Tests
-```typescript
-// Timeline tests
-- currentFrame() returns correct frame
-- nextFrame() increments correctly
-- previousFrame() handles boundaries
-- seekToFrame() finds correct frame
-- getProgress() calculates 0-100%
-
-// Playback tests
-- play() starts animation
-- pause() stops animation
-- setSpeed() changes frame delay
-- callback fires on each frame
-
-// Engine tests
-- addEvent() updates timeline
-- getCurrentFrame() returns current
-- frameUpdate event emits correctly
 ```
-
-**Target**: 80%+ coverage
-
-### Day 3: Integration Tests
-```typescript
-// Scenario: Start bubble sort, play 3 frames, pause, rewind 1, play to end
-- Verify events are correct
-- Verify frame sequence correct
-- Verify no events dropped
-- Verify replay is deterministic
+Everything = Graph of Entities → Events → Frames → Timeline → Engine → Render
+NO feature-specific code in the runtime
 ```
-
-### Day 4-5: React Component Tests
-```typescript
-// Hook tests
-- useVisualizationEngine(events) initializes
-- play/pause/setSpeed work
-- nextFrame/previousFrame work
-- Snapshot updates on frame change
-- callbacks fired correctly
-```
-
-**Deliverable**: Confidence in runtime correctness
 
 ---
 
-## Week 3: Convert Array Visualizer
+## Week 1: Universal Primitives
 
-### Day 1-2: Analyze Current ArrayVisualizer
-- Read existing `ArrayVisualizer.jsx`
-- Document how it currently works
-- Identify rendering logic vs. algorithm logic
+### Day 1-2: Entity System
 
-### Day 3-5: Event-Based Conversion
-- Create `arrayEventProducers.ts`:
-  - `bubbleSortEvents()`
-  - `quickSortEvents()`
-  - `mergesSortEvents()`
-  - `insertionSortEvents()`
+Design the base entity that ALL domains inherit from.
 
-- Update `ArrayVisualizer` to:
-  - Accept events (not raw array)
-  - Use `useVisualizationEngine` hook
-  - Render based on `currentFrame`
-  - Keep existing UI/styles
-
-**Pattern**:
 ```typescript
-// OLD
-function ArrayVisualizer({ algorithm, array }) {
-  const [state, dispatch] = useReducer(...)
-  const animate = () => { /* imperative */ }
+// src/runtime/primitives/Entity.ts
+export class Entity {
+  readonly id: string
+  readonly kind: EntityKind   // 'node' | 'edge' | 'packet' | 'thread' | 'pod' | ...
+  readonly type: string       // 'array-element' | 'broker' | 'producer' | ...
+  labels: Map<string, string>
+  properties: Map<string, any>
+  metadata: EntityMetadata
+
+  constructor(id: string, kind: EntityKind, type: string)
+  set(key: string, val: any): void
+  get(key: string): any
+  clone(): Entity
+  toJSON(): EntitySchema
 }
 
-// NEW
-function ArrayVisualizer({ algorithm, array }) {
-  const events = getEventProducer(algorithm)(array)
-  const { currentFrame, play, pause, ... } = useVisualizationEngine({ events })
-  return <EventBasedVisualizer ... />
+// Entity kinds — universal set that extends to ALL domains
+type EntityKind =
+  | 'node' | 'edge' | 'packet' | 'message'
+  | 'thread' | 'process' | 'pod' | 'service'
+  | 'broker' | 'partition' | 'consumer' | 'producer'
+  | 'memory-block' | 'stack-frame' | 'heap-object'
+  | 'tensor' | 'layer' | 'neuron'
+  | 'lock' | 'queue' | 'semaphore'
+  | 'pipeline-stage' | 'cpu-core'
+  | 'database-page' | 'index' | 'transaction'
+  | 'actor' | 'fiber' | 'coroutine'
+  | 'custom'
+```
+
+**Deliverable**: `Entity` class serializable to JSON, cloneable, extensible.
+
+### Day 3-4: Graph System
+
+```typescript
+// src/runtime/primitives/Graph.ts
+export class Graph {
+  private nodes: Map<string, Entity>
+  private edges: Map<string, Edge>
+  private adjacency: Map<string, Set<string>>
+
+  addEntity(entity: Entity): void
+  removeEntity(id: string): void
+  connect(from: string, to: string, label?: string): Edge
+  disconnect(from: string, to: string): void
+  getNeighbors(id: string): Entity[]
+  subgraph(ids: Set<string>): Graph
+  diff(other: Graph): GraphDiff
+  clone(): Graph
+  toJSON(): GraphSchema
+}
+
+export interface GraphDiff {
+  added: Entity[]
+  removed: string[]
+  modified: { id: string; before: any; after: any }[]
+  edgeChanges: EdgeDelta[]
+}
+
+export interface GraphSchema {
+  nodes: EntitySchema[]
+  edges: EdgeSchema[]
+  metadata: { version: number; createdAt: number }
 }
 ```
 
-**Deliverable**: ArrayVisualizer works with event system
+**Deliverable**: `Graph` class with diff, clone, subgraph, serialization.
+
+### Day 5: Event System
+
+```typescript
+// src/runtime/events/Event.ts
+export interface RuntimeEvent {
+  id: string
+  type: EventType
+  timestamp: number
+  frameId: number
+
+  // What changed
+  entityId?: string
+  property?: string
+  oldValue?: any
+  newValue?: any
+
+  // Semantic
+  concept?: string
+  category?: string
+  importance?: number
+
+  // Trace
+  source?: 'algorithm' | 'user' | 'system' | 'ai' | 'replay'
+  causeEventId?: string
+}
+
+// Universal event types — covers ALL domains
+type EventType =
+  // State
+  | 'ENTITY_CREATED' | 'ENTITY_DELETED'
+  | 'PROPERTY_CHANGED' | 'LABEL_ADDED' | 'LABEL_REMOVED'
+  // Graph
+  | 'NODE_ADDED' | 'NODE_REMOVED'
+  | 'EDGE_ADDED' | 'EDGE_REMOVED'
+  // Flow
+  | 'MESSAGE_SENT' | 'MESSAGE_RECEIVED'
+  | 'PACKET_IN_FLIGHT' | 'PACKET_DROPPED'
+  // Execution
+  | 'FUNCTION_CALL' | 'FUNCTION_RETURN'
+  | 'VARIABLE_MUTATED' | 'STACK_PUSHED' | 'STACK_POPPED'
+  // Concurrency
+  | 'THREAD_STARTED' | 'THREAD_BLOCKED' | 'THREAD_WOKEN'
+  | 'LOCK_ACQUIRED' | 'LOCK_RELEASED'
+  // Memory
+  | 'MEMORY_ALLOCATED' | 'MEMORY_FREED'
+  | 'GC_MARK' | 'GC_SWEEP'
+  // Network
+  | 'REQUEST_SENT' | 'RESPONSE_RECEIVED'
+  | 'CONNECTION_ESTABLISHED' | 'CONNECTION_CLOSED'
+  // AI
+  | 'REASONING_STEP' | 'INFERENCE_COMPLETE'
+  // Custom
+  | 'CUSTOM'
+```
+
+**Deliverable**: `RuntimeEvent` + `EventBus` with pub/sub, filtering, history.
 
 ---
 
-## Week 4: Renderer Engine (Foundation)
+## Week 2: Runtime Engine
 
-### Day 1-3: Generic Renderer Component
-- Create `src/core/renderers/ArrayRenderer.tsx`
-- Interpret `ARRAY_COMPARE`, `ARRAY_SWAP`, `ARRAY_SET` events
-- Highlight compared elements
-- Animate swap operations
-- Update array display
+### Day 1-2: Timeline + Frame Builder
 
 ```typescript
-// ArrayRenderer.tsx
-function ArrayRenderer({ frame }) {
-  const events = frame.events
-  
-  return (
-    <div className="array">
-      {array.map((val, i) => (
-        <div className={getClassName(i, events)}>
-          {val}
-        </div>
-      ))}
-    </div>
-  )
+// src/runtime/timeline/Timeline.ts
+export class Timeline {
+  private frames: Frame[]
+  private eventsBuffer: RuntimeEvent[]
+
+  addEvent(event: RuntimeEvent): void
+  buildFrames(): void
+  getFrame(index: number): Frame | null
+  frameCount(): number
+  seek(frameId: number): Frame | null
+  export(): TimelineSchema
+}
+
+export interface Frame {
+  id: number
+  timestamp: number
+  events: RuntimeEvent[]
+  state: Graph  // Snapshot at this point
+}
+
+export interface TimelineSchema {
+  frames: FrameSchema[]
+  totalDuration: number
+  eventCount: number
 }
 ```
 
-### Day 4-5: Test with Multiple Algorithms
-- Bubble sort → visualizes
-- Quick sort → visualizes  
-- Merge sort → visualizes
-- All use SAME renderer ✅
+### Day 3-4: RuntimeEngine Orchestrator
 
-**Deliverable**: One renderer, many algorithms
+```typescript
+// src/runtime/engine/RuntimeEngine.ts
+export class RuntimeEngine {
+  private graph: Graph
+  private timeline: Timeline
+  private scheduler: Scheduler
+  private eventBus: EventBus
+  private state: EngineState
+
+  constructor(graph: Graph)
+
+  // State machine
+  start(): void
+  pause(): void
+  resume(): void
+  stop(): void
+  reset(): void
+
+  // Event ingestion
+  ingest(event: RuntimeEvent): void
+  ingestBatch(events: RuntimeEvent[]): void
+
+  // Playback
+  play(speed?: number): void
+  seek(frameIndex: number): void
+  stepForward(): void
+  stepBackward(): void
+
+  // Queries
+  getCurrentFrame(): Frame
+  getCurrentGraph(): Graph
+  getTimeline(): Timeline
+  getState(): EngineState
+
+  // Callbacks
+  onFrameChange(cb: (frame: Frame) => void): void
+  onStateChange(cb: (state: EngineState) => void): void
+  onGraphChange(cb: (diff: GraphDiff) => void): void
+
+  // Lifecycle
+  dispose(): void
+}
+
+type EngineState = 'idle' | 'running' | 'paused' | 'completed' | 'error'
+```
+
+### Day 5: Scheduler
+
+```typescript
+// src/runtime/scheduler/Scheduler.ts
+export class Scheduler {
+  private frameDelay: number
+  private speed: number
+  private direction: 1 | -1
+  private animationId: number | null
+  private lastTick: number
+
+  constructor(frameCount: number, frameDelay?: number)
+
+  play(): void
+  pause(): void
+  setSpeed(speed: number): void
+  setDirection(dir: 1 | -1): void
+  seek(frameIndex: number): void
+  reset(): void
+
+  onTick(cb: (frameIndex: number) => void): void
+  dispose(): void
+}
+```
+
+---
+
+## Folder Structure Created
+
+```
+src/runtime/
+├── primitives/
+│   ├── Entity.ts
+│   ├── Graph.ts
+│   └── index.ts
+├── events/
+│   ├── Event.ts
+│   ├── EventBus.ts
+│   └── index.ts
+├── timeline/
+│   ├── Timeline.ts
+│   └── index.ts
+├── engine/
+│   ├── RuntimeEngine.ts
+│   └── index.ts
+├── scheduler/
+│   ├── Scheduler.ts
+│   └── index.ts
+└── index.ts
+```
+
+---
+
+## Architecture Diagram
+
+```
+                    ┌──────────────────┐
+                    │    Domain API    │
+                    │  (Bubble Sort,   │
+                    │   Kafka, JVM...) │
+                    └────────┬─────────┘
+                             │ emits
+                             ▼
+                    ┌──────────────────┐
+                    │    EventBus      │
+                    │  pub/sub/history │
+                    └────────┬─────────┘
+                             │
+                    ┌────────▼─────────┐
+                    │   Timeline       │
+                    │  Frame Builder   │
+                    └────────┬─────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+      ┌────────────┐ ┌────────────┐ ┌────────────┐
+      │  Scheduler │ │  Runtime   │ │   Graph    │
+      │  play/pause│ │  Engine    │ │  State Mgr │
+      │  speed/dir │ │  State     │ │  Snapshot  │
+      └────────────┘ │  Machine   │ └────────────┘
+                     └────────────┘
+                           │
+                           ▼
+                    ┌──────────────────┐
+                    │   Renderer(s)    │
+                    │  Canvas / SVG /  │
+                    │  WebGL / React   │
+                    └──────────────────┘
+```
 
 ---
 
 ## Success Criteria
 
-✅ Runtime classes work standalone  
-✅ Event production is deterministic  
-✅ Playback respects speed/pause  
-✅ React components update smoothly  
-✅ ArrayVisualizer uses new system  
-✅ Multiple sorting algorithms work  
-✅ One renderer handles all events  
-✅ Tests pass, >80% coverage  
-✅ No component re-renders per frame (use snapshots)  
-✅ Replay produces identical sequence  
+- [ ] `Entity` can represent ANY domain object
+- [ ] `Graph` supports CRUD, diff, clone, serialization
+- [ ] `RuntimeEvent` covers all core event types
+- [ ] `EventBus` supports pub/sub + history replay
+- [ ] `Timeline` builds frames from events
+- [ ] `RuntimeEngine` orchestrates full lifecycle
+- [ ] `Scheduler` controls play/pause/speed/direction
+- [ ] Everything serializable to JSON
+- [ ] Zero algorithm-specific code in runtime
+- [ ] Tests for every class
 
 ---
 
-## Risks & Mitigation
+## Test Strategy
+
+```
+describe('Entity')
+- can create any entity kind
+- properties set/get work
+- clone produces independent copy
+- toJSON/fromJSON roundtrip
+
+describe('Graph')
+- add/remove entities
+- connect/disconnect edges
+- diff detects changes
+- subgraph filters correctly
+
+describe('RuntimeEvent')
+- all event types creatable
+- event bus delivers events
+- history replayable
+- events serializable
+
+describe('Timeline')
+- builds frames from events
+- frame seeking works
+- frame boundaries correct
+
+describe('RuntimeEngine')
+- state machine transitions
+- play/pause/reset/stop
+- event ingestion
+- frame callbacks fire
+```
+
+---
+
+## Risks
 
 | Risk | Mitigation |
 |------|-----------|
-| Breaking existing visualizers | Keep old system, parallelize new system |
-| Performance issues with large event streams | Benchmark, use event compression |
-| React state churn on frame updates | Use fine-grained updates, not full snapshot |
-| Animation frame skipping | Measure actual frame timing |
-| Event producer correctness | Comprehensive unit tests |
+| Entity kind explosion | Use string extensibility + registry |
+| Event type inflation | Generic CUSTOM type + semantic tags |
+| Graph memory with large states | Lazy snapshotting, diffs only |
+| Timeline memory with many frames | Frame compression, skip empty frames |
+| Engine complexity | Clear state machine, test every transition |
 
 ---
 
-## Rollback Plan
+## Next Phase (Phase 2)
 
-If Phase 1 fails:
-- Old visualizers still work (not modified)
-- New runtime classes isolated in `src/core/runtime/`
-- Can delete new code without affecting existing
-
----
-
-## Key Metrics
-
-- [ ] Runtime instantiation: <5ms
-- [ ] Event processing: <1ms per event
-- [ ] Frame advancement: 60fps (requestAnimationFrame)
-- [ ] Memory: <5MB for 1000 events
-- [ ] Deterministic replay: 100% match with original
-
----
-
-## Files to Create This Phase
-
-```
-✅ src/core/runtime/
-  ├── events.ts
-  ├── timeline.ts
-  ├── playback.ts
-  ├── engine.ts
-  └── index.ts
-
-✅ src/core/algorithms/
-  └── bubbleSort.ts
-
-✅ src/core/hooks/
-  └── useVisualizationEngine.ts
-
-✅ src/components/visualizers/
-  ├── EventBasedVisualizer.tsx
-  └── EventBasedVisualizer.module.css
-
-📝 src/core/algorithms/
-  └── sortingAlgorithms.ts (Week 3)
-
-📝 src/core/renderers/
-  └── ArrayRenderer.tsx (Week 4)
-
-📝 src/__tests__/
-  └── runtime/ (Week 2)
-```
-
----
-
-## Decision Points
-
-1. **Event Production**: Inline in component or separate files?
-   - **Decision**: Separate files (`src/core/algorithms/`) for reuse & testing
-
-2. **Timeline Storage**: Keep all events in memory?
-   - **Decision**: Yes for Phase 1 (<10K events), optimize in Phase 5+
-
-3. **React State Updates**: Full snapshot or fine-grained?
-   - **Decision**: Fine-grained (currentFrame only) to avoid churn
-
-4. **Playback Timing**: `requestAnimationFrame` or `setInterval`?
-   - **Decision**: `requestAnimationFrame` for 60fps sync
-
-5. **Renderer Architecture**: One big component or micro-components?
-   - **Decision**: One `ArrayRenderer` per type, can compose later
-
----
-
-## Open Questions
-
-- [ ] How to handle user interactions (clicking nodes) while playing?
-- [ ] Should events include rendering hints (color, position)?
-- [ ] How to version event format for future compatibility?
-- [ ] Should WebWorker offloading happen in Phase 1?
-
-Answer during Week 2 implementation.
+With primitives + runtime working: add semantic graph, typed event pipeline, serialization protocol.
