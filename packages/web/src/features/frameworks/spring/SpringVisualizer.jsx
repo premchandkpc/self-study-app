@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../core/hooks/useVisualizerScenario';
 import { SPRING_SCENARIOS, SPRING_CATEGORIES } from './spring-engine';
-import StepControls from '../../../components/shared/StepControls/StepControls';
-import CodePanel from '../../../components/shared/CodePanel/CodePanel';
-import NarrationPanel from '../../../components/shared/NarrationPanel/NarrationPanel';
+import StepControls from '../../components/shared/StepControls/StepControls';
+import CodePanel from '../../components/shared/CodePanel/CodePanel';
+import NarrationPanel from '../../components/shared/NarrationPanel/NarrationPanel';
 import styles from './SpringVisualizer.module.css';
 
 const STATE_COLORS = {

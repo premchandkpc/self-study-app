@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from 'react';
-import { JavaCollectionsCompiler } from '../../../../core/ir';
-import { SceneRenderer } from '../../../../core/ir';
+import { JavaCollectionsCompiler } from '../../core/ir';
+import { SceneRenderer } from '../../core/ir';
 import { JC_SCENARIOS } from './java-collections-engine';
 import styles from './JavaCollectionsVisualizer.module.css';
 

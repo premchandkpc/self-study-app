@@ -1,10 +1,10 @@
-import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './thread-engine';
-import ScenarioToolbar from '../../../components/shared/ScenarioToolbar/ScenarioToolbar';
-import StepControls from '../../../components/shared/StepControls/StepControls';
-import ComplexityPanel from '../../../components/shared/ComplexityPanel/ComplexityPanel';
-import CodePanel from '../../../components/shared/CodePanel/CodePanel';
-import ResultPanel from '../../../components/shared/ResultPanel/ResultPanel';
+import ScenarioToolbar from '../../components/shared/ScenarioToolbar/ScenarioToolbar';
+import StepControls from '../../components/shared/StepControls/StepControls';
+import ComplexityPanel from '../../components/shared/ComplexityPanel/ComplexityPanel';
+import CodePanel from '../../components/shared/CodePanel/CodePanel';
+import ResultPanel from '../../components/shared/ResultPanel/ResultPanel';
 import styles from './ThreadVisualizer.module.css';
 
 const STATE_COLOR = {

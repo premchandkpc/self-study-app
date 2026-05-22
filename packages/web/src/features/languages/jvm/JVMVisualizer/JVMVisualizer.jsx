@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './jvm-engine';
-import ScenarioToolbar from '../../../components/shared/ScenarioToolbar/ScenarioToolbar';
-import StepControls from '../../../components/shared/StepControls/StepControls';
-import NarrationPanel from '../../../components/shared/NarrationPanel/NarrationPanel';
-import ComplexityPanel from '../../../components/shared/ComplexityPanel/ComplexityPanel';
-import CodePanel from '../../../components/shared/CodePanel/CodePanel';
-import MetricsPanel from '../../../components/shared/MetricsPanel/MetricsPanel';
-import ResultPanel from '../../../components/shared/ResultPanel/ResultPanel';
+import ScenarioToolbar from '../../components/shared/ScenarioToolbar/ScenarioToolbar';
+import StepControls from '../../components/shared/StepControls/StepControls';
+import NarrationPanel from '../../components/shared/NarrationPanel/NarrationPanel';
+import ComplexityPanel from '../../components/shared/ComplexityPanel/ComplexityPanel';
+import CodePanel from '../../components/shared/CodePanel/CodePanel';
+import MetricsPanel from '../../components/shared/MetricsPanel/MetricsPanel';
+import ResultPanel from '../../components/shared/ResultPanel/ResultPanel';
 import styles from './JVMVisualizer.module.css';
 
 export default function JVMVisualizer() {

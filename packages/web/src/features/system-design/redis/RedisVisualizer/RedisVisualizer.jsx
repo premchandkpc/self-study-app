@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './redis-engine';
 import { createView } from './viewFactory.jsx';
 import { VisualizerTemplate } from '../../../../components/templates/VisualizerTemplate/VisualizerTemplate';
