@@ -197,7 +197,7 @@ export const VISUALIZERS = {
   spring: {
     label: 'Spring Framework — IoC, MVC, AOP, Transactions, Security, JPA, Cloud',
     icon: '🍃',
-    component: lazy(() => import('../../features/frameworks/spring/SpringVisualizer/SpringVisualizer')),
+    component: lazy(() => import('../../features/frameworks/spring/SpringVisualizer')),
     desc: 'Visual simulations of Spring internals: bean lifecycle & circular deps, MVC request flow & interceptors, JDK/CGLIB proxy & advice chain, @Transactional propagation & rollback rules, security filter chain & JWT, JPA N+1 & fetch strategies, auto-configuration & @Conditional, and Spring Cloud circuit breaker & discovery.',
   },
 
