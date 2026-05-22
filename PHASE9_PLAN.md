@@ -1,542 +1,246 @@
-# Phase 9: Plugin & Extensibility System
+# Phase 9: Plugin + Extension System
 
-**Goal**: Allow third-party developers to add custom algorithms, renderers, concepts.
-
-**Duration**: 1-2 weeks
-
----
-
-## Plugin Architecture
-
-```
-Core Runtime (stable)
-  ↓
-Plugin System (extensible)
-  ├── Algorithm Plugins
-  ├── Renderer Plugins
-  ├── Concept Plugins
-  └── Analyzer Plugins
-```
+**Duration**: 2 weeks
+**Goal**: Build a plugin system for runtime, renderers, AI, and narratives.
 
 ---
 
-## Algorithm Plugin System
+## Week 1: Plugin Architecture
 
-### 1. Plugin Interface
+### Day 1-2: Plugin Interface
 
 ```typescript
-// src/core/plugins/AlgorithmPlugin.ts
-export interface AlgorithmPlugin {
-  name: string
-  version: string
-  description: string
-  author?: string
-  
-  // Core function
-  execute(input: any, options?: any): SemanticEvent[]
-  
+// src/plugins/Plugin.ts
+export interface Plugin {
+  readonly id: string
+  readonly name: string
+  readonly version: string
+  readonly type: PluginType
+
+  // Lifecycle
+  init(runtime: RuntimeEngine): void
+  activate(): void
+  deactivate(): void
+  dispose(): void
+
   // Metadata
-  getMetadata(): {
-    concepts: string[]
-    complexity: string
-    difficulty: 'easy' | 'medium' | 'hard'
-    tags: string[]
-  }
-  
-  // Validation
-  validate(input: any): boolean
-  
-  // Optional hooks
-  onInit?(): void
-  onDestroy?(): void
+  getDependencies(): string[]
+  getPermissions(): Permission[]
+  getConfig(): PluginConfig
 }
 
-// Example custom plugin
-class CustomAlgorithmPlugin implements AlgorithmPlugin {
-  name = 'My Custom Sort'
-  version = '1.0.0'
-  description = 'A unique sorting algorithm'
-  author = 'Developer Name'
-  
-  execute(input: number[]): SemanticEvent[] {
-    const events: SemanticEvent[] = []
-    // Implementation
-    return events
-  }
-  
-  getMetadata() {
-    return {
-      concepts: ['sorting', 'comparison'],
-      complexity: 'O(n log n)',
-      difficulty: 'medium',
-      tags: ['sorting', 'divide-and-conquer']
-    }
-  }
-  
-  validate(input: any): boolean {
-    return Array.isArray(input) && input.every(x => typeof x === 'number')
-  }
-}
+export type PluginType =
+  | 'runtime'          // Extends runtime engine
+  | 'renderer'         // Adds rendering backend
+  | 'animation'        // Adds animation primitives
+  | 'narrative'        // Adds narration engines
+  | 'ai'               // Adds AI providers
+  | 'layout'           // Adds layout algorithms
+  | 'instrumentation'  // Adds tracing methods
+  | 'protocol'         // Adds transport protocols
+  | 'domain'           // Adds domain support
+  | 'concept'          // Adds concept definitions
 ```
 
-### 2. Renderer Plugin System
+### Day 3-4: PluginRegistry
 
 ```typescript
-// src/core/plugins/RendererPlugin.ts
-export interface RendererPlugin {
-  name: string
-  version: string
-  
-  // Factory function
-  createRenderer(container: HTMLElement): IRenderer
-  
-  // Metadata
-  supportedEventTypes: EventType[]
-  priority: number // Higher = preferred
-  
-  onInit?(): void
-  onDestroy?(): void
-}
-
-// Example: Custom 3D renderer plugin
-class WebGL3DRendererPlugin implements RendererPlugin {
-  name = '3D Visualization'
-  version = '1.0.0'
-  supportedEventTypes = ['ARRAY_SWAP', 'NODE_UPDATE', 'ARRAY_COMPARE']
-  priority = 10 // High priority
-  
-  createRenderer(container: HTMLElement): IRenderer {
-    return new WebGL3DRenderer(container)
-  }
-}
-```
-
-### 3. Concept Plugin System
-
-```typescript
-// src/core/plugins/ConceptPlugin.ts
-export interface ConceptPlugin {
-  name: string
-  version: string
-  
-  // Provide concepts
-  getConcepts(): ConceptGraph
-  
-  // Optional: custom concept metadata
-  enrichConcept?(concept: Concept): Concept
-}
-
-// Example: Interview prep concept plugin
-class InterviewConceptPlugin implements ConceptPlugin {
-  name = 'Interview Prep Concepts'
-  version = '1.0.0'
-  
-  getConcepts(): ConceptGraph {
-    return {
-      concepts: new Map([
-        ['array_sorting', {
-          id: 'array_sorting',
-          name: 'Array Sorting',
-          importance: 'critical',
-          // ...
-        }]
-      ])
-    }
-  }
-}
-```
-
-### 4. Plugin Registry
-
-```typescript
-// src/core/plugins/PluginRegistry.ts
+// src/plugins/PluginRegistry.ts
 export class PluginRegistry {
-  private algorithmPlugins: Map<string, AlgorithmPlugin> = new Map()
-  private rendererPlugins: Map<string, RendererPlugin> = new Map()
-  private conceptPlugins: Map<string, ConceptPlugin> = new Map()
-  private analyzerPlugins: Map<string, AnalyzerPlugin> = new Map()
-  
-  // Register plugins
-  registerAlgorithm(id: string, plugin: AlgorithmPlugin): void {
-    if (this.algorithmPlugins.has(id)) {
-      throw new Error(`Algorithm plugin "${id}" already registered`)
-    }
-    plugin.onInit?.()
-    this.algorithmPlugins.set(id, plugin)
-  }
-  
-  registerRenderer(id: string, plugin: RendererPlugin): void {
-    if (this.rendererPlugins.has(id)) {
-      throw new Error(`Renderer plugin "${id}" already registered`)
-    }
-    plugin.onInit?.()
-    this.rendererPlugins.set(id, plugin)
-  }
-  
-  registerConcept(id: string, plugin: ConceptPlugin): void {
-    if (this.conceptPlugins.has(id)) {
-      throw new Error(`Concept plugin "${id}" already registered`)
-    }
-    this.conceptPlugins.set(id, plugin)
-  }
-  
-  // Retrieve plugins
-  getAlgorithm(id: string): AlgorithmPlugin | null {
-    return this.algorithmPlugins.get(id) ?? null
-  }
-  
-  getRenderer(id: string): RendererPlugin | null {
-    return this.rendererPlugins.get(id) ?? null
-  }
-  
-  getAvailableAlgorithms(): AlgorithmPlugin[] {
-    return Array.from(this.algorithmPlugins.values())
-  }
-  
-  getAvailableRenderers(): RendererPlugin[] {
-    return Array.from(this.rendererPlugins.values())
-      .sort((a, b) => b.priority - a.priority)
-  }
-  
-  // Unregister (cleanup)
-  unregisterAlgorithm(id: string): void {
-    const plugin = this.algorithmPlugins.get(id)
-    plugin?.onDestroy?.()
-    this.algorithmPlugins.delete(id)
-  }
-  
-  unregisterRenderer(id: string): void {
-    const plugin = this.rendererPlugins.get(id)
-    plugin?.onDestroy?.()
-    this.rendererPlugins.delete(id)
-  }
-}
+  private plugins: Map<string, Plugin>
+  private activated: Set<string>
+  private dependencies: Map<string, string[]>
 
-export const pluginRegistry = new PluginRegistry()
+  // Registration
+  register(plugin: Plugin): void
+  unregister(id: string): void
+
+  // Activation (resolves dependencies)
+  activate(id: string): void
+  deactivate(id: string): void
+  activateAll(): void
+
+  // Queries
+  getPlugin(id: string): Plugin | undefined
+  getPluginsByType(type: PluginType): Plugin[]
+  isActivated(id: string): boolean
+
+  // Dependency resolution (topological sort)
+  resolveDependencies(id: string): string[]
+  validateDependencies(id: string): ValidationResult
+
+  // Events
+  onActivated(cb: (plugin: Plugin) => void): void
+  onDeactivated(cb: (plugin: Plugin) => void): void
+}
 ```
 
----
-
-## Plugin Loader
+### Day 5: PluginLoader
 
 ```typescript
-// src/core/plugins/PluginLoader.ts
+// src/plugins/PluginLoader.ts
 export class PluginLoader {
-  async loadRemotePlugin(url: string): Promise<AlgorithmPlugin> {
-    const response = await fetch(url)
-    const code = await response.text()
-    
-    // Execute in isolated context
-    const fn = new Function('exports', code)
-    const exports = {}
-    fn(exports)
-    
-    return (exports as any).default
+  private registry: PluginRegistry
+
+  // Load from file
+  async loadFromFile(path: string): Promise<Plugin>
+
+  // Load from URL
+  async loadFromURL(url: string): Promise<Plugin>
+
+  // Load all from directory
+  async loadFromDirectory(dir: string): Promise<Plugin[]>
+
+  // Sandbox — run in isolated context
+  async loadInSandbox(path: string): Promise<SandboxedPlugin>
+
+  // Validate plugin
+  validate(plugin: Plugin): ValidationResult
+}
+
+// Sandboxed execution for untrusted plugins
+export class SandboxedPlugin implements Plugin {
+  private worker: Worker
+
+  async init(runtime: RuntimeEngine): Promise<void> {
+    // Run in Web Worker for isolation
+    this.worker = new Worker('plugin-sandbox.js')
+    this.worker.postMessage({ type: 'init', runtime: runtime.getSnapshot() })
   }
-  
-  async loadLocalPlugin(modulePath: string): Promise<AlgorithmPlugin> {
-    const module = await import(modulePath)
-    return module.default || module
-  }
-  
-  validatePlugin(plugin: any): plugin is AlgorithmPlugin {
-    return (
-      typeof plugin.name === 'string' &&
-      typeof plugin.version === 'string' &&
-      typeof plugin.execute === 'function' &&
-      typeof plugin.getMetadata === 'function' &&
-      typeof plugin.validate === 'function'
-    )
-  }
+
+  // All plugin methods proxy through worker messages
 }
 ```
 
 ---
 
-## Plugin UI
+## Week 2: Plugin Types
+
+### Day 1-2: Domain Plugins
 
 ```typescript
-// src/components/plugins/PluginLibrary.tsx
-export function PluginLibrary() {
-  const [plugins, setPlugins] = useState(pluginRegistry.getAvailableAlgorithms())
-  const [selectedPlugin, setSelectedPlugin] = useState<AlgorithmPlugin | null>(null)
-  
-  const registerNewPlugin = async (url: string) => {
-    try {
-      const loader = new PluginLoader()
-      const plugin = await loader.loadRemotePlugin(url)
-      
-      if (loader.validatePlugin(plugin)) {
-        pluginRegistry.registerAlgorithm(plugin.name, plugin)
-        setPlugins(pluginRegistry.getAvailableAlgorithms())
+// src/plugins/examples/KafkaDomainPlugin.ts
+export class KafkaDomainPlugin implements Plugin {
+  id = 'domain.kafka'
+  name = 'Kafka Domain'
+  version = '1.0.0'
+  type = 'domain'
+
+  init(runtime: RuntimeEngine): void {
+    // Register Kafka entities
+    runtime.getGraph().registerEntityKind('broker')
+    runtime.getGraph().registerEntityKind('partition')
+    runtime.getGraph().registerEntityKind('producer')
+    runtime.getGraph().registerEntityKind('consumer')
+    runtime.getGraph().registerEntityKind('topic')
+
+    // Register Kafka event producers
+    runtime.registerEventProducer('kafka-publish', this.publishProducer)
+    runtime.registerEventProducer('kafka-consume', this.consumeProducer)
+    runtime.registerEventProducer('kafka-rebalance', this.rebalanceProducer)
+
+    // Register Kafka event → concept mapping
+    runtime.getConceptRegistry().registerMapping('kafka-publish', 'publish-subscribe')
+    runtime.getConceptRegistry().registerMapping('kafka-consume', 'consumer-group')
+    runtime.getConceptRegistry().registerMapping('kafka-rebalance', 'partition-rebalance')
+  }
+
+  activate(): void { /* Register Kafka narration templates */ }
+  deactivate(): void { /* Clean up */ }
+}
+```
+
+### Day 3-4: Renderer + Animation Plugins
+
+```typescript
+// src/plugins/examples/ThreeJSRendererPlugin.ts
+export class ThreeJSRendererPlugin implements Plugin {
+  id = 'renderer.threejs'
+  name = 'Three.js 3D Renderer'
+  version = '1.0.0'
+  type = 'renderer'
+
+  init(runtime: RuntimeEngine): void {
+    runtime.getRendererRegistry().register('webgl-3d', {
+      create: (container) => new ThreeJSRenderer(container),
+      capabilities: ['3d', 'shadows', 'particles', 'post-processing'],
+      maxNodes: 100000
+    })
+  }
+}
+
+// src/plugins/examples/ParticleAnimationPlugin.ts
+export class ParticleAnimationPlugin implements Plugin {
+  id = 'animation.particles'
+  name = 'Particle Animation Primitives'
+  version = '1.0.0'
+  type = 'animation'
+
+  init(runtime: RuntimeEngine): void {
+    runtime.getAnimationEngine().registerPrimitive('explode', this.explode)
+    runtime.getAnimationEngine().registerPrimitive('implode', this.implode)
+    runtime.getAnimationEngine().registerPrimitive('fragment', this.fragment)
+    runtime.getAnimationEngine().registerPrimitive('vortex', this.vortex)
+  }
+}
+```
+
+### Day 5: AI + Narrative Plugins
+
+```typescript
+// src/plugins/examples/GPTNarrativePlugin.ts
+export class GPTNarrativePlugin implements Plugin {
+  id = 'narrative.gpt'
+  name = 'GPT Narrative Generator'
+  version = '1.0.0'
+  type = 'narrative'
+
+  init(runtime: RuntimeEngine): void {
+    runtime.getNarrationEngine().registerProvider('gpt', {
+      generateExplanation: async (event) => {
+        const response = await openai.createCompletion({
+          prompt: `Explain this event in 1 sentence: ${JSON.stringify(event)}`,
+          max_tokens: 50
+        })
+        return response.choices[0].text
       }
-    } catch (error) {
-      console.error('Failed to load plugin:', error)
-    }
-  }
-  
-  return (
-    <div className="plugin-library">
-      <h2>Algorithm Plugins</h2>
-      
-      <div className="plugin-list">
-        {plugins.map(plugin => (
-          <div
-            key={plugin.name}
-            className="plugin-card"
-            onClick={() => setSelectedPlugin(plugin)}
-          >
-            <h3>{plugin.name}</h3>
-            <p>{plugin.description}</p>
-            <div className="metadata">
-              <span>{plugin.getMetadata().complexity}</span>
-              <span>{plugin.getMetadata().difficulty}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {selectedPlugin && (
-        <PluginDetail plugin={selectedPlugin} />
-      )}
-      
-      <div className="add-plugin">
-        <input
-          type="url"
-          placeholder="Plugin URL"
-          onBlur={(e) => registerNewPlugin(e.target.value)}
-        />
-        <button>Add Plugin</button>
-      </div>
-    </div>
-  )
-}
-```
-
----
-
-## Marketplace Example
-
-```typescript
-// Plugin marketplace discovery
-const PLUGIN_MARKETPLACE = 'https://plugins.visualization-platform.io/api'
-
-async function discoverPlugins(): Promise<PluginMetadata[]> {
-  const response = await fetch(`${PLUGIN_MARKETPLACE}/plugins`)
-  const plugins = await response.json()
-  return plugins
-}
-
-interface PluginMetadata {
-  id: string
-  name: string
-  version: string
-  author: string
-  downloads: number
-  rating: number
-  url: string
-  tags: string[]
-}
-```
-
----
-
-## Security Considerations
-
-⚠️ **Be Careful!** Loading third-party code is risky.
-
-### Mitigation Strategies
-
-```typescript
-// 1. Code signing
-interface SignedPlugin {
-  plugin: AlgorithmPlugin
-  signature: string
-  publicKey: string
-}
-
-// 2. Sandbox execution
-class SandboxedPluginLoader {
-  async loadPlugin(code: string): Promise<AlgorithmPlugin> {
-    const iframe = document.createElement('iframe')
-    iframe.sandbox.add('allow-scripts')
-    
-    // Load plugin in isolated iframe context
-    // Communicate via postMessage
-  }
-}
-
-// 3. Permissions
-interface PluginPermissions {
-  canAccessNetwork: boolean
-  canAccessStorage: boolean
-  canAccessDOM: boolean
-  maxMemory: number
-  timeout: number
-}
-
-// 4. Audit trail
-class PluginAudit {
-  logPluginExecution(pluginId: string, duration: number, error?: Error): void {
-    // Log all plugin executions
+    })
   }
 }
 ```
 
 ---
 
-## Files to Create
+## Files Created
 
 ```
-src/core/plugins/
-├── AlgorithmPlugin.ts
-├── RendererPlugin.ts
-├── ConceptPlugin.ts
-├── AnalyzerPlugin.ts
+src/plugins/
+├── Plugin.ts
 ├── PluginRegistry.ts
 ├── PluginLoader.ts
-├── PluginSecurity.ts
+├── SandboxedPlugin.ts
+├── examples/
+│   ├── KafkaDomainPlugin.ts
+│   ├── ThreeJSRendererPlugin.ts
+│   ├── ParticleAnimationPlugin.ts
+│   └── GPTNarrativePlugin.ts
 └── index.ts
-
-src/components/plugins/
-├── PluginLibrary.tsx
-├── PluginDetail.tsx
-└── PluginMarketplace.tsx
-
-examples/plugins/
-├── custom-sort-plugin.ts
-├── custom-renderer-plugin.ts
-└── README.md
 ```
-
----
-
-## Example: Third-Party Plugin
-
-```typescript
-// examples/plugins/custom-sort-plugin.ts
-import { AlgorithmPlugin, SemanticEvent } from '@/core/plugins'
-
-class CocktailSortPlugin implements AlgorithmPlugin {
-  name = 'Cocktail Sort'
-  version = '1.0.0'
-  description = 'Bidirectional bubble sort'
-  author = 'Plugin Developer'
-  
-  execute(arr: number[]): SemanticEvent[] {
-    const events: SemanticEvent[] = []
-    let frameId = 0
-    const copy = [...arr]
-    
-    let start = 0
-    let end = copy.length - 1
-    let swapped = true
-    
-    while (swapped && start < end) {
-      swapped = false
-      
-      // Forward pass
-      for (let i = start; i < end; i++) {
-        frameId++
-        events.push({
-          type: 'ARRAY_COMPARE',
-          frameId,
-          timestamp: frameId * 300,
-          indices: [i, i + 1],
-          concepts: ['comparison']
-        })
-        
-        if (copy[i] > copy[i + 1]) {
-          [copy[i], copy[i + 1]] = [copy[i + 1], copy[i]]
-          frameId++
-          events.push({
-            type: 'ARRAY_SWAP',
-            frameId,
-            timestamp: frameId * 300,
-            indices: [i, i + 1],
-            concepts: ['swap']
-          })
-          swapped = true
-        }
-      }
-      
-      end--
-      
-      // Backward pass
-      for (let i = end; i > start; i--) {
-        frameId++
-        events.push({
-          type: 'ARRAY_COMPARE',
-          frameId,
-          timestamp: frameId * 300,
-          indices: [i - 1, i],
-          concepts: ['comparison']
-        })
-        
-        if (copy[i - 1] > copy[i]) {
-          [copy[i - 1], copy[i]] = [copy[i], copy[i - 1]]
-          frameId++
-          events.push({
-            type: 'ARRAY_SWAP',
-            frameId,
-            timestamp: frameId * 300,
-            indices: [i - 1, i],
-            concepts: ['swap']
-          })
-          swapped = true
-        }
-      }
-      
-      start++
-    }
-    
-    return events
-  }
-  
-  getMetadata() {
-    return {
-      concepts: ['sorting', 'bidirectional', 'optimization'],
-      complexity: 'O(n²)',
-      difficulty: 'medium',
-      tags: ['sorting', 'comparison-based']
-    }
-  }
-  
-  validate(input: any): boolean {
-    return Array.isArray(input) && input.every(x => typeof x === 'number')
-  }
-}
-
-// Export for registration
-export default CocktailSortPlugin
-```
-
----
-
-## Completion Checklist
-
-- [ ] Plugin interfaces defined
-- [ ] PluginRegistry implemented
-- [ ] PluginLoader working
-- [ ] Plugin validation
-- [ ] Example plugins created
-- [ ] Plugin UI/marketplace
-- [ ] Security measures
-- [ ] Documentation
-- [ ] Example plugins shared
 
 ---
 
 ## Success Criteria
 
-✅ **Third-party algorithms work seamlessly**  
-✅ **Plugin discovery via marketplace**  
-✅ **Security validated**  
-✅ **Easy plugin development**  
-✅ **Community plugins available**  
+- [ ] Plugin interface works for all 8 plugin types
+- [ ] PluginRegistry resolves dependencies topologically
+- [ ] PluginLoader loads from file, URL, directory
+- [ ] SandboxedPlugin runs untrusted code safely
+- [ ] Domain plugins add entities/events/concepts
+- [ ] Renderer plugins register new backends
+- [ ] Animation plugins add new primitives
+- [ ] AI plugins provide custom LLM providers
+- [x] Plugin lifecycle (init/activate/deactivate/dispose) works
 
 ---
-
-## Next Phase (Phase 10)
-
-Build semantic concept graph for AI learning.
+## ✅ Completed May 2026
+Plugin interface with 10 types, PluginRegistry with dep resolution and topological activation, PluginLoader with validate, SandboxedPlugin, 4 example plugins (KafkaDomain, ThreeJS, ParticleAnimation, GPTNarrative).

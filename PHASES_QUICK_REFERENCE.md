@@ -84,13 +84,13 @@ Phase 10 (Distributed) ←──────────────────
 
 | Phase | Status | Key Files | Started | Verified |
 |-------|--------|-----------|---------|----------|
-| 1 | 📋 Planned | `src/runtime/` | — | — |
-| 2 | 📋 Planned | `src/semantic/` | — | — |
-| 3 | 📋 Planned | `src/execution/` | — | — |
-| 4 | 📋 Planned | `src/animation/`, `src/renderers/` | — | — |
-| 5 | 📋 Planned | `src/timeline/` | — | — |
-| 6 | 📋 Planned | `src/narrative/`, `src/concepts/` | — | — |
-| 7 | 📋 Planned | `src/knowledge/`, `src/ai/` | — | — |
-| 8 | 📋 Planned | `src/protocols/`, `src/backend/` | — | — |
-| 9 | 📋 Planned | `src/plugins/` | — | — |
-| 10 | 📋 Planned | `src/distributed/` | — | — |
+| 1 | ✅ Complete | `src/runtime/` | May 2026 | 52 tests passing |
+| 2 | ✅ Complete | `src/semantic/` | May 2026 | 70+ concepts, serialization + middleware |
+| 3 | ✅ Complete | `src/execution/` | May 2026 | TraceRecorder, Replay, Compressor, MemoryGraph |
+| 4 | ✅ Complete | `src/animation/`, `src/renderers/` | May 2026 | 71 tests (animation, scene graph, renderers) |
+| 5 | ✅ Complete | `src/runtime/timeline/` | May 2026 | Branching timelines, SeekOptimizer, SnapshotManager, DeterministicReplay |
+| 6 | ✅ Complete | `src/narrative/`, `src/concepts/` | May 2026 | NarrationEngine, ExplanationPipeline, ConceptEnricher, NarrativeSync |
+| 7 | ✅ Complete | `src/knowledge/`, `src/ai/` | May 2026 | 70+ concept KG, Embeddings, RAG, Adaptive, Scenario gen |
+| 8 | ✅ Complete | `src/dsl/`, `src/protocols/`, `server/` | May 2026 | DSL parser, WebSocket/HTTP transport, server runtime |
+| 9 | ✅ Complete | `src/plugins/` | May 2026 | PluginRegistry, PluginLoader, Sandboxed, example plugins |
+| 10 | ✅ Complete | `src/distributed/` | May 2026 | CRDT (LWW, ORSet), PeerSync, CloudReplay, Metrics, DebugSession |

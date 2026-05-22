@@ -18,7 +18,7 @@ import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
 import PlaygroundPage from './pages/Playground/PlaygroundPage';
 import Phase1DemoPage from './pages/Phase1Demo/Phase1DemoPage';
-import Study2Page from './pages/Study2/Study2Page';
+import RuntimeDemoPage from './pages/RuntimeDemo/RuntimeDemoPage';
 import MarkdownDocPage from './pages/MarkdownDoc/MarkdownDocPage';
 import NotFound from './pages/NotFound/NotFound';
 
@@ -31,8 +31,8 @@ function AppRoutes() {
     return <Phase1DemoPage />;
   }
 
-  if (location.pathname === '/study2') {
-    return <Study2Page />;
+  if (location.pathname === '/runtime') {
+    return <RuntimeDemoPage />;
   }
 
   return (

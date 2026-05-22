@@ -322,16 +322,16 @@ src/runtime/
 
 ## Success Criteria
 
-- [ ] `Entity` can represent ANY domain object
-- [ ] `Graph` supports CRUD, diff, clone, serialization
-- [ ] `RuntimeEvent` covers all core event types
-- [ ] `EventBus` supports pub/sub + history replay
-- [ ] `Timeline` builds frames from events
-- [ ] `RuntimeEngine` orchestrates full lifecycle
-- [ ] `Scheduler` controls play/pause/speed/direction
-- [ ] Everything serializable to JSON
-- [ ] Zero algorithm-specific code in runtime
-- [ ] Tests for every class
+- [x] `Entity` can represent ANY domain object
+- [x] `Graph` supports CRUD, diff, clone, serialization
+- [x] `RuntimeEvent` covers all core event types
+- [x] `EventBus` supports pub/sub + history replay
+- [x] `Timeline` builds frames from events
+- [x] `RuntimeEngine` orchestrates full lifecycle
+- [x] `Scheduler` controls play/pause/speed/direction
+- [x] Everything serializable to JSON
+- [x] Zero algorithm-specific code in runtime
+- [x] Tests for every class
 
 ---
 

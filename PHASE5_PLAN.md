@@ -275,4 +275,8 @@ src/timeline/
 - [ ] BranchingTimeline supports fork/merge/rebase
 - [ ] DeterministicReplay produces identical traces
 - [ ] SnapshotManager compresses state 10x+ with delta encoding
-- [ ] Works with all Phase 1-3 components
+- [x] Works with all Phase 1-3 components
+
+---
+## ✅ Completed May 2026
+BidirectionalTimeline (forward/backward, reverseEvents), FrameInterpolator (event interpolation), SeekOptimizer (snapshot table), BranchingTimeline (branch/merge/diff/export/import), DeterministicReplay (verify, verifyMultiple), SnapshotManager (compress/decompress/prune).

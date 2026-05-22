@@ -1,0 +1,8 @@
+export { NarrativeGraph } from './NarrativeGraph'
+export type { NarrativeNode, NarrativeNodeType, NarrativePath } from './NarrativeGraph'
+export { NarrationEngine } from './NarrationEngine'
+export { NARRATION_TEMPLATES, formatTemplate, generateNarration, getEmphasis } from './templates'
+export type { NarrationTemplate } from './templates'
+export { ExplanationPipeline } from './ExplanationPipeline'
+export type { Explanation } from './ExplanationPipeline'
+export { NarrativeSync } from './NarrativeSync'

@@ -3,9 +3,9 @@ import Loading from '../../components/shared/Loading/Loading';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import styles from './Home.module.css';
 
-const ArrayVisualizer = lazy(() => import('../../features/dsa/arrays/ArrayVisualizer/ArrayVisualizer'));
-const GraphVisualizer = lazy(() => import('../../features/dsa/graphs/GraphVisualizer/GraphVisualizer'));
-const KafkaVisualizer = lazy(() => import('../../features/system-design/kafka/KafkaVisualizer/KafkaVisualizer'));
+const ArrayVisualizer = lazy(() => import('../../legacy/dsa/arrays/ArrayVisualizer/ArrayVisualizer'));
+const GraphVisualizer = lazy(() => import('../../legacy/dsa/graphs/GraphVisualizer/GraphVisualizer'));
+const KafkaVisualizer = lazy(() => import('../../legacy/system-design/kafka/KafkaVisualizer/KafkaVisualizer'));
 
 const DEMO_TABS = [
   { id: 'array', label: '📊 Array' },

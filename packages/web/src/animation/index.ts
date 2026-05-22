@@ -1,0 +1,7 @@
+export { createAnimation, applyEasing, interpolate, interpolateColor } from './primitives'
+export type { AnimationPrimitive, EasingFunction, Keyframe, AnimatedProperty, AnimationDescriptor } from './primitives'
+export { AnimationEngine } from './AnimationEngine'
+export type { ActiveAnimation, EntityAnimationState } from './AnimationEngine'
+export { SpringSystem } from './physics/Spring'
+export type { SpringConfig, ForceConfig, Position } from './physics/Spring'
+export { GraphLayoutAnimator } from './composers/GraphLayoutAnimator'

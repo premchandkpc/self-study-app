@@ -253,13 +253,13 @@ src/protocols/
 
 ## Success Criteria
 
-- [ ] SemanticNode covers 50+ concepts
-- [ ] SemanticGraph supports queries, paths, prerequisites
-- [ ] EventBus has middleware pipeline
-- [ ] Events enriched with semantic metadata
-- [ ] Full serialization/deserialization roundtrip
-- [ ] Compression works for 10K+ events
-- [ ] Zero domain-specific code in semantic layer
+- [x] SemanticNode covers 50+ concepts
+- [x] SemanticGraph supports queries, paths, prerequisites
+- [x] EventBus has middleware pipeline
+- [x] Events enriched with semantic metadata
+- [x] Full serialization/deserialization roundtrip
+- [x] Compression works for 10K+ events
+- [x] Zero domain-specific code in semantic layer
 
 ---
 

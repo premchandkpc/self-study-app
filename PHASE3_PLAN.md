@@ -352,14 +352,14 @@ src/execution/
 
 ## Success Criteria
 
-- [ ] TraceRecorder captures variables, stack, heap
-- [ ] StateReconstructor rebuilds state from events
-- [ ] Babel plugin instruments variable mutations
-- [ ] ProxyTracker wraps objects transparently
-- [ ] MemoryGraph builds/diffs heap states
-- [ ] TraceCompressor achieves 10x+ compression
-- [ ] Deterministic replay produces identical traces
-- [ ] Works with Bubble Sort, Kafka, JVM domains
+- [x] TraceRecorder captures variables, stack, heap
+- [x] StateReconstructor rebuilds state from events
+- [x] ProxyTracker wraps objects transparently
+- [x] MemoryGraph builds/diffs heap states
+- [x] TraceCompressor achieves 10x+ compression
+- [x] Deterministic replay produces identical traces
+- [ ] Babel plugin instruments variable mutations *— external dep, deferred*
+- [ ] Works with Bubble Sort, Kafka, JVM domains *— domain integration, deferred*
 
 ---
 

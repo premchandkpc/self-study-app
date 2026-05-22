@@ -1,4 +1,4 @@
-import { ICONS, NODE_COLORS } from '../../../features/system-design/sd-types';
+import { ICONS, NODE_COLORS } from '../../../legacy/system-design/sd-types';
 
 export const NODE_W = 108;
 export const NODE_H = 54;

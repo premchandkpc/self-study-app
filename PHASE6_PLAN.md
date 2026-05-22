@@ -1,517 +1,243 @@
-# Phase 6: Semantic Metadata & AI Integration
+# Phase 6: Semantic + Narrative Engine
 
-**Goal**: Enrich events with knowledge graph - concepts, importance, explanations. Enable AI generation.
-
-**Duration**: 2-3 weeks
-
-**Key Concept**: Events are data + meaning, not just actions.
+**Duration**: 2 weeks
+**Goal**: Build semantic narration system — contextual explanations, adaptive storytelling, AI-readable event enrichment.
 
 ---
 
-## Problem: Events Are Dumb
+## Week 1: Narrative Engine
 
-Current event:
-```typescript
-{
-  type: 'ARRAY_SWAP',
-  frameId: 5,
-  indices: [2, 3]
-}
-```
-
-Doesn't tell us:
-- Why swap happened?
-- What concept is this?
-- Is this important?
-- How to explain to student?
-
----
-
-## Solution: Semantic Metadata
-
-### Core Concepts
+### Day 1-2: Narrative Graph
 
 ```typescript
-// src/core/concepts/ConceptGraph.ts
-interface Concept {
+// src/narrative/NarrativeGraph.ts
+export interface NarrativeNode {
   id: string
-  name: string
-  description: string
-  importance: 'low' | 'medium' | 'high' | 'critical'
-  prerequisites: string[] // Concept IDs
-  relatedConcepts: string[]
-  applications: string[]
+  type: 'event' | 'concept' | 'explanation' | 'example' | 'question'
+  text: string
+  emphasis: string[]       // Words to highlight
+  concepts: string[]       // Linked concepts
+  complexity: number       // 0-1
+  prerequisites: string[]
+  duration: number         // ms to display
+  animationId?: string     // Associated animation
+
+  // AI
+  llmPrompt?: string
+  embedding?: number[]
 }
 
-interface ConceptGraph {
-  concepts: Map<string, Concept>
-  edges: Map<string, string[]> // concept -> related concepts
+export class NarrativeGraph {
+  private nodes: Map<string, NarrativeNode>
+  private edges: Map<string, {
+    from: string
+    to: string
+    type: 'follows' | 'explains' | 'prerequisite' | 'example-of'
+  }>
+
+  // Build narrative path from timeline events
+  buildNarrative(events: RuntimeEvent[], context: SemanticGraph): NarrativePath
+
+  // Get explanation for specific event
+  explainEvent(event: RuntimeEvent): NarrativeNode[]
+
+  // Adaptive — adjust complexity based on user level
+  adapt(narrative: NarrativePath, userLevel: number): NarrativePath
 }
 
-// Example: Bubble Sort concept graph
-const bubbleSortConcepts: ConceptGraph = {
-  concepts: new Map([
-    ['comparison', {
-      id: 'comparison',
-      name: 'Comparison',
-      description: 'Comparing two values to determine order',
-      importance: 'critical',
-      prerequisites: [],
-      relatedConcepts: ['ordering', 'conditional'],
-      applications: ['sorting', 'searching']
-    }],
-    ['swap', {
-      id: 'swap',
-      name: 'Swap',
-      description: 'Exchange positions of two elements',
-      importance: 'critical',
-      prerequisites: ['variables', 'assignment'],
-      relatedConcepts: ['permutation', 'exchange'],
-      applications: ['sorting', 'permutation']
-    }],
-    ['pass', {
-      id: 'pass',
-      name: 'Iteration/Pass',
-      description: 'One complete pass through the array',
-      importance: 'high',
-      prerequisites: ['loop', 'iteration'],
-      relatedConcepts: ['nested_loops', 'optimization'],
-      applications: ['bubble_sort', 'sorting']
-    }],
-    ['bubble_sort', {
-      id: 'bubble_sort',
-      name: 'Bubble Sort Algorithm',
-      description: 'Repeatedly swap adjacent elements if they are in wrong order',
-      importance: 'critical',
-      prerequisites: ['comparison', 'swap', 'pass'],
-      relatedConcepts: ['insertion_sort', 'time_complexity'],
-      applications: ['educational', 'teaching_sorting']
-    }]
-  ])
+export interface NarrativePath {
+  nodes: NarrativeNode[]
+  totalDuration: number
+  currentIndex: number
 }
 ```
 
-### Enhanced Events with Metadata
+### Day 3-4: NarrationEngine
 
 ```typescript
-interface SemanticEvent {
-  // Core
-  type: EventType
-  frameId: number
-  timestamp: number
-  
-  // NEW: Semantic metadata
-  concepts: string[] // Concept IDs this event demonstrates
-  complexity?: string // 'O(1)', 'O(n)', etc.
-  importance: 'low' | 'medium' | 'high' | 'critical'
-  explanation?: string // Human explanation
-  whyItMatters?: string // Why this step is important
-  commonMistake?: string // What students often get wrong
-  hint?: string // Teaching hint
-  interviewFocus?: boolean // Is this interview-important?
-  
-  // Pedagogical
-  difficulty?: 'easy' | 'medium' | 'hard' | 'expert'
-  learningObjectives?: string[]
-  
-  // Data
-  [key: string]: any
-}
+// src/narrative/NarrationEngine.ts
+export class NarrationEngine {
+  private narrativeGraph: NarrativeGraph
+  private currentPath: NarrativePath | null = null
 
-// Example enhanced bubble sort event:
-const comparisonEvent: SemanticEvent = {
-  type: 'ARRAY_COMPARE',
-  frameId: 1,
-  timestamp: 300,
-  indices: [0, 1],
-  
-  // Semantic enrichment
-  concepts: ['comparison', 'ordering'],
-  complexity: 'O(1)',
-  importance: 'critical',
-  explanation: 'Comparing adjacent elements to determine if swap is needed',
-  whyItMatters: 'This comparison determines the ordering. If we skip comparisons, the array won\'t be sorted correctly.',
-  commonMistake: 'Students often forget that we MUST compare every adjacent pair.',
-  hint: 'Watch what happens when we swap vs when we don\'t.',
-  interviewFocus: true,
-  difficulty: 'easy',
-  learningObjectives: ['understand_comparison', 'understand_ordering']
-}
+  // Generate narration for a timeline
+  generateNarration(timeline: Timeline, context: SemanticGraph): NarrativePath
 
-const swapEvent: SemanticEvent = {
-  type: 'ARRAY_SWAP',
-  frameId: 2,
-  timestamp: 600,
-  indices: [0, 1],
-  
-  concepts: ['swap', 'permutation'],
-  complexity: 'O(1)',
-  importance: 'critical',
-  explanation: 'Swapping the two elements because they were in the wrong order',
-  whyItMatters: 'Swapping moves larger values toward the end of the array.',
-  commonMistake: 'Students sometimes think swaps are always needed (they\'re not, only when out of order).',
-  hint: 'Only swap if the left element is greater than the right.',
-  interviewFocus: true,
-  difficulty: 'easy'
-}
-```
+  // Step through narration synchronized with playback
+  nextNarration(): NarrativeNode | null
+  previousNarration(): NarrativeNode | null
+  seekToFrame(frameIndex: number): NarrativeNode | null
 
-### Concept Extraction
-
-Auto-detect concepts from events:
-
-```typescript
-// src/core/concepts/ConceptExtractor.ts
-class ConceptExtractor {
-  private conceptGraph: ConceptGraph
-  
-  constructor(conceptGraph: ConceptGraph) {
-    this.conceptGraph = conceptGraph
+  // Get current narration text
+  getCurrentText(): string {
+    return this.currentPath?.nodes[this.currentPath.currentIndex]?.text ?? ''
   }
-  
-  enrichEvent(event: SemanticEvent): SemanticEvent {
-    // Detect what concepts this event demonstrates
-    const concepts = this.detectConcepts(event)
-    
+
+  // Render emphasis markers
+  renderWithEmphasis(text: string, emphasis: string[]): string {
+    // Wrap emphasized words in <mark> tags
+    return emphasis.reduce(
+      (acc, word) => acc.replaceAll(word, `<mark>${word}</mark>`),
+      text
+    )
+  }
+
+  // Events
+  onNarrationChange(cb: (node: NarrativeNode) => void): void
+}
+```
+
+### Day 5: Narration Templates
+
+```typescript
+// src/narrative/templates.ts
+
+// Universal narration templates — one template per event type
+export const NARRATION_TEMPLATES: Record<string, NarrationTemplate> = {
+  ENTITY_CREATED: {
+    template: 'A new {entityKind} [{entityId}] was created',
+    getEmphasis: (e) => [e.entityId, e.metadata?.kind]
+  },
+  PROPERTY_CHANGED: {
+    template: '{property} changed from {oldValue} to {newValue}',
+    getEmphasis: (e) => [e.property, e.newValue]
+  },
+  MESSAGE_SENT: {
+    template: '{source} sent message to {target}',
+    getEmphasis: (e) => [e.metadata?.source, e.metadata?.target]
+  },
+  LOCK_ACQUIRED: {
+    template: 'Thread {threadId} acquired lock {lockId}',
+    getEmphasis: (e) => [e.metadata?.threadId, e.metadata?.lockId]
+  }
+}
+```
+
+---
+
+## Week 2: Concept System + Educational Layer
+
+### Day 1-2: Concept Enrichment
+
+```typescript
+// src/concepts/ConceptEnricher.ts
+export class ConceptEnricher {
+  private semanticGraph: SemanticGraph
+
+  // Enrich events with educational metadata
+  enrich(event: RuntimeEvent): SemanticEvent {
+    const concept = this.detectConcept(event)
     return {
       ...event,
-      concepts,
-      importance: this.computeImportance(concepts),
-      difficulty: this.computeDifficulty(concepts),
-      explanation: this.generateExplanation(event, concepts)
+      concept: concept.name,
+      category: concept.category,
+      complexity: concept.complexity,
+      importance: concept.importance,
+      explanation: this.generateExplanation(event, concept),
+      interviewRelevant: concept.interviewRelevant,
+      whyItMatters: concept.whyItMatters
     }
   }
-  
-  private detectConcepts(event: SemanticEvent): string[] {
-    const concepts: string[] = []
-    
-    // Mapping: event type → concepts
-    const typeConceptMap: Record<string, string[]> = {
-      'ARRAY_COMPARE': ['comparison', 'ordering'],
-      'ARRAY_SWAP': ['swap', 'permutation'],
-      'ARRAY_SET': ['assignment', 'array_access'],
-      'NODE_UPDATE': ['data_structure', 'state_change'],
-      'EDGE_CREATE': ['graph_traversal', 'path_finding']
+
+  private detectConcept(event: RuntimeEvent): Concept {
+    // Match event type + entity kind to concept
+    if (event.type === 'PROPERTY_CHANGED' && event.entityKind === 'array-element') {
+      return event.metadata?.operation === 'swap'
+        ? CONCEPTS.SWAPPING
+        : CONCEPTS.COMPARISON
     }
-    
-    return typeConceptMap[event.type] ?? []
-  }
-  
-  private computeImportance(concepts: string[]): SemanticEvent['importance'] {
-    const maxImportance = concepts
-      .map(c => this.conceptGraph.concepts.get(c)?.importance)
-      .filter(Boolean)
-      .reduce((max, curr) => {
-        const order = { low: 0, medium: 1, high: 2, critical: 3 }
-        return order[curr] > order[max] ? curr : max
-      }, 'low')
-    
-    return maxImportance
-  }
-  
-  private computeDifficulty(concepts: string[]): SemanticEvent['difficulty'] {
-    // Concepts with prerequisites are harder
-    const hasPrereqs = concepts.some(
-      c => (this.conceptGraph.concepts.get(c)?.prerequisites.length ?? 0) > 0
-    )
-    
-    return hasPrereqs ? 'medium' : 'easy'
-  }
-  
-  private generateExplanation(event: SemanticEvent, concepts: string[]): string {
-    // Generate human explanation from concepts and event type
-    const conceptNames = concepts
-      .map(c => this.conceptGraph.concepts.get(c)?.name)
-      .filter(Boolean)
-    
-    if (event.type === 'ARRAY_COMPARE') {
-      return `Comparing elements at indices ${event.indices[0]} and ${event.indices[1]} to determine their order`
-    } else if (event.type === 'ARRAY_SWAP') {
-      return `Swapping elements at indices ${event.indices[0]} and ${event.indices[1]} because they are out of order`
-    }
-    
-    return `Event: ${event.type}`
+    // ... more domain mappings
   }
 }
 ```
 
----
-
-## AI Integration
-
-### 1. Event Interpretation (GPT)
+### Day 3-4: Semantic Explanation Pipeline
 
 ```typescript
-// src/core/ai/EventInterpreter.ts
-class EventInterpreter {
-  async interpretEvent(event: SemanticEvent): Promise<AIInterpretation> {
-    const prompt = `
-Given this algorithm step:
-${JSON.stringify(event, null, 2)}
+// src/narrative/ExplanationPipeline.ts
+export class ExplanationPipeline {
+  // Build multi-layered explanation
+  explain(event: SemanticEvent, depth: 'shallow' | 'medium' | 'deep'): Explanation
 
-Explain:
-1. What just happened?
-2. Why did it happen?
-3. What did this teach us?
-4. What's next?
-`
-    
-    const response = await fetch('/api/claude', {
-      method: 'POST',
-      body: JSON.stringify({ prompt })
+  // Shallow: what happened
+  // Medium: why it happened
+  // Deep: how it relates to other concepts
+}
+
+export interface Explanation {
+  summary: string           // "Swapped 34 and 64"
+  context: string           // "Bubble sort moves larger elements to the right"
+  implication: string       // "After this swap, 64 is in its correct position"
+  concepts: string[]        // ["swapping", "bubble-sort", "comparison"]
+  interviewTip?: string     // "This is O(n²) — ask about optimization"
+  relatedTopics: string[]   // ["quick-sort", "insertion-sort"]
+}
+```
+
+### Day 5: Narrative Synchronization
+
+```typescript
+// src/narrative/NarrativeSync.ts
+export class NarrativeSync {
+  private engine: RuntimeEngine
+  private narration: NarrationEngine
+
+  // Synchronize narration with playback
+  start(): void {
+    this.engine.onFrameChange((frame) => {
+      const node = this.narration.seekToFrame(frame.id)
+      if (node) {
+        this.displayNarration(node)
+      }
     })
-    
-    return response.json()
   }
-}
-```
 
-### 2. Explanation Generation
-
-```typescript
-// Generate human-friendly explanations
-class ExplanationGenerator {
-  async generateExplanation(
-    events: SemanticEvent[],
-    language: 'beginner' | 'intermediate' | 'advanced'
-  ): Promise<string> {
-    const eventSummary = events
-      .map(e => `Frame ${e.frameId}: ${e.explanation}`)
-      .join('\n')
-    
-    const prompt = `
-${eventSummary}
-
-Write a ${language}-level explanation of what the algorithm did.
-`
-    
-    return await this.ai.generate(prompt)
-  }
-}
-```
-
-### 3. Weakness Detection
-
-```typescript
-// Identify where student struggles
-class WeaknessDetector {
-  detectWeakAreas(
-    events: SemanticEvent[],
-    studentPerformance: Map<string, number>
-  ): string[] {
-    const weaknesses: string[] = []
-    
-    for (const event of events) {
-      for (const concept of event.concepts) {
-        const performance = studentPerformance.get(concept) ?? 50
-        
-        if (performance < 40) {
-          weaknesses.push(concept)
-        }
-      }
-    }
-    
-    return [...new Set(weaknesses)]
-  }
-  
-  async generateFocusedLessons(
-    weaknesses: string[],
-    conceptGraph: ConceptGraph
-  ): Promise<string[]> {
-    // Generate lessons on weak concepts
-    const lessons: string[] = []
-    
-    for (const weakness of weaknesses) {
-      const concept = conceptGraph.concepts.get(weakness)
-      
-      if (concept) {
-        const lesson = await this.generateLesson(concept)
-        lessons.push(lesson)
-      }
-    }
-    
-    return lessons
-  }
-}
-```
-
-### 4. Interview Prep
-
-```typescript
-// Focus on interview-important concepts
-class InterviewPrep {
-  getInterviewQuestions(events: SemanticEvent[]): SemanticEvent[] {
-    return events.filter(e => e.interviewFocus)
-  }
-  
-  async generateInterviewExplanations(
-    events: SemanticEvent[]
-  ): Promise<Map<string, string>> {
-    const explanations = new Map<string, string>()
-    
-    for (const event of events) {
-      if (event.interviewFocus) {
-        const explanation = await this.ai.generate(`
-Why is this step important in a technical interview?
-Event: ${event.explanation}
-Concept: ${event.concepts[0]}
-`)
-        explanations.set(event.frameId.toString(), explanation)
-      }
-    }
-    
-    return explanations
+  // Narration pacing — slow down for complex concepts
+  getOptimalPace(event: SemanticEvent): number {
+    if (event.importance > 0.8) return 0.5  // Slow for critical events
+    if (event.complexity === 'O(n²)') return 0.75
+    return 1.0
   }
 }
 ```
 
 ---
 
-## Adaptive Learning
-
-```typescript
-// Adapt visualization complexity based on student level
-class AdaptiveLearning {
-  filterEventsForLevel(
-    events: SemanticEvent[],
-    level: 'beginner' | 'intermediate' | 'advanced'
-  ): SemanticEvent[] {
-    const difficultyMap = {
-      beginner: ['easy'],
-      intermediate: ['easy', 'medium'],
-      advanced: ['easy', 'medium', 'hard', 'expert']
-    }
-    
-    return events.filter(
-      e => difficultyMap[level].includes(e.difficulty ?? 'medium')
-    )
-  }
-  
-  recommendNextTopic(
-    masteredConcepts: string[],
-    conceptGraph: ConceptGraph
-  ): string[] {
-    const recommended: string[] = []
-    
-    for (const [id, concept] of conceptGraph.concepts) {
-      // Check if prerequisites are met
-      const prereqsMet = concept.prerequisites.every(
-        p => masteredConcepts.includes(p)
-      )
-      
-      // Check if not already mastered
-      const notMastered = !masteredConcepts.includes(id)
-      
-      if (prereqsMet && notMastered) {
-        recommended.push(id)
-      }
-    }
-    
-    return recommended
-  }
-}
-```
-
----
-
-## Files to Create
+## Files Created
 
 ```
-src/core/concepts/
-├── ConceptGraph.ts
-├── ConceptExtractor.ts
+src/narrative/
+├── NarrativeGraph.ts
+├── NarrationEngine.ts
+├── templates.ts
+├── ExplanationPipeline.ts
+├── NarrativeSync.ts
 └── index.ts
 
-src/core/ai/
-├── EventInterpreter.ts
-├── ExplanationGenerator.ts
-├── WeaknessDetector.ts
-└── InterviewPrep.ts
-
-src/core/learning/
-├── AdaptiveLearning.ts
-└── LearningProfile.ts
-
-src/core/algorithms/
-└── (update all algorithms to include metadata)
-```
-
----
-
-## Enriched Algorithm Example
-
-```typescript
-// Updated bubbleSort with semantic metadata
-export function enrichedBubbleSortEvents(arr: number[]): SemanticEvent[] {
-  const events: SemanticEvent[] = []
-  let frameId = 0
-  const copy = [...arr]
-  const n = copy.length
-  let passNumber = 0
-  
-  for (let i = 0; i < n - 1; i++) {
-    passNumber++
-    for (let j = 0; j < n - i - 1; j++) {
-      frameId++
-      
-      // Comparison event with full metadata
-      events.push({
-        type: 'ARRAY_COMPARE',
-        frameId,
-        timestamp: frameId * 300,
-        indices: [j, j + 1],
-        concepts: ['comparison', 'ordering'],
-        complexity: 'O(1)',
-        importance: 'critical',
-        explanation: `Comparing ${copy[j]} and ${copy[j + 1]}`,
-        whyItMatters: 'We must check if adjacent elements are in order',
-        hint: 'If left > right, they need to be swapped',
-        interviewFocus: true,
-        difficulty: 'easy',
-        learningObjectives: ['understand_comparison', 'understand_bubble_sort']
-      } as SemanticEvent)
-      
-      if (copy[j] > copy[j + 1]) {
-        frameId++
-        [copy[j], copy[j + 1]] = [copy[j + 1], copy[j]]
-        
-        events.push({
-          type: 'ARRAY_SWAP',
-          frameId,
-          timestamp: frameId * 300,
-          indices: [j, j + 1],
-          concepts: ['swap', 'permutation'],
-          complexity: 'O(1)',
-          importance: 'critical',
-          explanation: `Swapping ${copy[j + 1]} and ${copy[j]}`,
-          whyItMatters: 'Moves larger values toward the end',
-          commonMistake: 'Only swap when out of order',
-          interviewFocus: true,
-          difficulty: 'easy',
-          metadata: { passNumber, sortedUpTo: n - i - 1 }
-        } as SemanticEvent)
-      }
-    }
-  }
-  
-  return events
-}
+src/concepts/
+├── ConceptEnricher.ts
+├── ConceptRegistry.ts   // Maps event types → concepts
+└── index.ts
 ```
 
 ---
 
 ## Success Criteria
 
-✅ **All events have concepts**  
-✅ **Concept graph complete**  
-✅ **Auto-enrichment working**  
-✅ **AI interpretations generated**  
-✅ **Interview focus identified**  
-✅ **Adaptive filtering works**  
-✅ **Weakness detection accurate**  
+- [ ] NarrationEngine generates explanations from events
+- [ ] NarrativeGraph builds paths from timelines
+- [ ] Templates cover all event types
+- [ ] ConceptEnricher maps events → educational metadata
+- [ ] ExplanationPipeline supports shallow/medium/deep
+- [ ] Narration synced with playback
+- [ ] Works across ALL domains (sorting, Kafka, JVM, etc.)
 
 ---
 
+## ✅ Completed May 2026
+
+NarrativeGraph (buildNarrative, adapt, explainEvent), NarrationEngine (generate, traverse, renderWithEmphasis), formatTemplate/getEmphasis (16 event templates), ExplanationPipeline (shallow/medium/deep), NarrativeSync (start/stop, getOptimalPace), ConceptRegistry (30+ mappings), ConceptEnricher (enrich/enrichBatch).
+
 ## Next Phase (Phase 7)
 
-Separate rendering layers: DOM, SVG, Canvas, WebGL.
+With narrative working: build AI-native layer — RAG, embeddings, scenario generation, adaptive teaching.

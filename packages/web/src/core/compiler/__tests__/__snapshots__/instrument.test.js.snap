@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Code Instrumentation > instrumentFunction > instruments return statement 1`] = `
+{
+  "code": "
+        function add(a, b) {
+const __s={a:a,b:b};
+          return (__s.__result=(a + b),__step__({...__s},3),__s.__result);
+        }
+      ",
+  "codeLines": [
+    "",
+    "        function add(a, b) {",
+    "          return a + b;",
+    "        }",
+    "      ",
+  ],
+  "fnName": "add",
+  "paramNames": [
+    "a",
+    "b",
+  ],
+}
+`;

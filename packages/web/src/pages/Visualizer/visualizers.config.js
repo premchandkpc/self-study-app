@@ -89,13 +89,13 @@ export const VISUALIZERS = {
   'java-collections': {
     label: 'Java Collections — ArrayList, LinkedList, HashMap, HashSet, TreeMap, Queue, Concurrent',
     icon: '☕',
-    component: lazy(() => import('../../features/languages/java/JavaCollectionsVisualizer/JavaCollectionsVisualizer')),
+    component: lazy(() => import('../../legacy/languages/java/JavaCollectionsVisualizer/JavaCollectionsVisualizer')),
     desc: 'Step-by-step simulations of all Java collection types: core flows, edge cases, concurrency scenarios, and exception handling.',
   },
   'java-streams': {
     label: 'Java Streams — Pipelines, FlatMap, Collectors, Parallel, Edge Cases',
     icon: '🌊',
-    component: lazy(() => import('../../features/concurrency/java-streams/JavaStreamsVisualizer/JavaStreamsVisualizer')),
+    component: lazy(() => import('../../legacy/concurrency/java-streams/JavaStreamsVisualizer/JavaStreamsVisualizer')),
     desc: 'Stream pipeline visualization: creation, intermediate/terminal ops, lazy evaluation, flatMap, collectors (groupingBy/partitioningBy/joining), parallel streams, reduce/match, and edge cases.',
   },
 
@@ -103,25 +103,25 @@ export const VISUALIZERS = {
   jvm: {
     label: 'JVM — Heap, GC, Thread Stack',
     icon: '☕',
-    component: lazy(() => import('../../features/languages/jvm/JVMVisualizer/JVMVisualizer')),
+    component: lazy(() => import('../../legacy/languages/jvm/JVMVisualizer/JVMVisualizer')),
     desc: 'Eden → Survivor → Old Gen allocation, Minor GC, Full GC stop-the-world.',
   },
   threads: {
     label: 'Threads — Mutex, Deadlock, Semaphore',
     icon: '🧵',
-    component: lazy(() => import('../../features/concurrency/threads/ThreadVisualizer/ThreadVisualizer')),
+    component: lazy(() => import('../../legacy/concurrency/threads/ThreadVisualizer/ThreadVisualizer')),
     desc: 'Thread states, mutex lock/unlock, deadlock cycle, semaphore counting.',
   },
   golang: {
     label: 'Go — Goroutines, Channels, Scheduler',
     icon: '🐹',
-    component: lazy(() => import('../../features/languages/go/GoVisualizer/GoVisualizer')),
+    component: lazy(() => import('../../legacy/languages/go/GoVisualizer/GoVisualizer')),
     desc: 'Goroutine lifecycle, buffered channels, select multiplexing, M:N scheduler G/M/P model.',
   },
   python: {
     label: 'Python — GIL, asyncio, Decorators',
     icon: '🐍',
-    component: lazy(() => import('../../features/languages/python/PythonVisualizer/PythonVisualizer')),
+    component: lazy(() => import('../../legacy/languages/python/PythonVisualizer/PythonVisualizer')),
     desc: 'GIL thread contention, asyncio event loop coroutines, decorator wrapping patterns.',
   },
 
@@ -129,43 +129,43 @@ export const VISUALIZERS = {
   database: {
     label: 'Database — B-Tree, Query Plan, ACID, Joins',
     icon: '🗄️',
-    component: lazy(() => import('../../features/system-design/databases/DatabaseVisualizer/DatabaseVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/databases/DatabaseVisualizer/DatabaseVisualizer')),
     desc: 'B-Tree index insertion/search, SQL query planning, ACID transactions, join algorithms.',
   },
   redis: {
     label: 'Redis — Data Types, Pub/Sub, Cluster, Pipeline',
     icon: '🔴',
-    component: lazy(() => import('../../features/system-design/redis/RedisVisualizer/RedisVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/redis/RedisVisualizer/RedisVisualizer')),
     desc: 'Redis data types, pub/sub channels, cluster hash slots, pipelining RTT savings.',
   },
   kafka: {
     label: 'Kafka — Producer → Partition → Consumer',
     icon: '📨',
-    component: lazy(() => import('../../features/system-design/kafka/KafkaVisualizer/KafkaVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/kafka/KafkaVisualizer/KafkaVisualizer')),
     desc: 'Partitioned log, ISR replication, consumer groups, lag, leader election.',
   },
   docker: {
     label: 'Docker — Layers, Lifecycle, Network, Compose',
     icon: '🐳',
-    component: lazy(() => import('../../features/frameworks/DockerVisualizer/DockerVisualizer')),
+    component: lazy(() => import('../../legacy/frameworks/DockerVisualizer/DockerVisualizer')),
     desc: 'Image layer filesystem, container lifecycle, bridge networking, docker-compose orchestration.',
   },
   networking: {
     label: 'Networking — TCP, HTTP/2, DNS, Load Balancer',
     icon: '🌐',
-    component: lazy(() => import('../../features/system-design/networking/NetworkingVisualizer/NetworkingVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/networking/NetworkingVisualizer/NetworkingVisualizer')),
     desc: 'TCP 3-way handshake, HTTP/1 vs HTTP/2 multiplexing, DNS resolution chain, LB algorithms.',
   },
   kubernetes: {
     label: 'Kubernetes — Pods, HPA, Rolling, CrashLoop',
     icon: '☸️',
-    component: lazy(() => import('../../features/system-design/kubernetes/KubernetesVisualizer/KubernetesVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/kubernetes/KubernetesVisualizer/KubernetesVisualizer')),
     desc: 'Pod scheduling, HPA scale-out, rolling deployments, CrashLoopBackOff.',
   },
   aws: {
     label: 'AWS — Lambda, SQS, API Gateway, EKS',
     icon: '☁️',
-    component: lazy(() => import('../../features/system-design/aws/AWSVisualizer/AWSVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/aws/AWSVisualizer/AWSVisualizer')),
     desc: 'Lambda cold/warm start, SQS DLQ, API Gateway throttling, EKS cluster autoscaler.',
   },
 
@@ -173,31 +173,31 @@ export const VISUALIZERS = {
   sd: {
     label: 'System Design — Uber, WhatsApp, LB, Cache, CDN, Raft',
     icon: '🏗️',
-    component: lazy(() => import('../../features/system-design/general/SystemDesignVisualizer/SystemDesignVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/general/SystemDesignVisualizer/SystemDesignVisualizer')),
     desc: 'Uber ride-hailing, WhatsApp messaging, Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election.',
   },
   systemdesign: {
     label: 'System Design — Uber, LB, Cache, CDN, Raft',
     icon: '🏗️',
-    component: lazy(() => import('../../features/system-design/general/SystemDesignVisualizer/SystemDesignVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/general/SystemDesignVisualizer/SystemDesignVisualizer')),
     desc: 'Uber ride-hailing, Load balancer round-robin, Redis LRU cache, CDN edge, Raft leader election.',
   },
   uber: {
     label: 'Uber System Design — Ride Matching, GPS, Surge, Payments',
     icon: '🚗',
-    component: lazy(() => import('../../features/system-design/general/SystemDesignVisualizer/SystemDesignVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/general/SystemDesignVisualizer/SystemDesignVisualizer')),
     desc: 'Uber ride-hailing architecture: 14 components (Rider/Driver app, API Gateway, Auth, Ride Match, Location, Pricing, Trip, Payment, Redis, Kafka, PostgreSQL, WebSocket).',
   },
   microservices: {
     label: 'Microservices — Circuit Breaker, Discovery, Gateway, Event-Driven',
     icon: '🔌',
-    component: lazy(() => import('../../features/system-design/microservices/MicroservicesVisualizer/MicroservicesVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/microservices/MicroservicesVisualizer/MicroservicesVisualizer')),
     desc: 'Circuit breaker states (Closed→Open→Half-Open), service discovery with health checks, API gateway routing, event-driven communication with retry and backoff.',
   },
   spring: {
     label: 'Spring Framework — IoC, MVC, AOP, Transactions, Security, JPA, Cloud',
     icon: '🍃',
-    component: lazy(() => import('../../features/frameworks/spring/SpringVisualizer')),
+    component: lazy(() => import('../../legacy/frameworks/spring/SpringVisualizer')),
     desc: 'Visual simulations of Spring internals: bean lifecycle & circular deps, MVC request flow & interceptors, JDK/CGLIB proxy & advice chain, @Transactional propagation & rollback rules, security filter chain & JWT, JPA N+1 & fetch strategies, auto-configuration & @Conditional, and Spring Cloud circuit breaker & discovery.',
   },
 
@@ -205,7 +205,7 @@ export const VISUALIZERS = {
   os: {
     label: 'Operating Systems — CPU Scheduler, Paging, Virtual Memory',
     icon: '🖥️',
-    component: lazy(() => import('../../features/languages/OSVisualizer/OSVisualizer')),
+    component: lazy(() => import('../../legacy/languages/OSVisualizer/OSVisualizer')),
     desc: 'FCFS & Round Robin CPU scheduling, page table & TLB walks, virtual memory swapping & thrashing.',
   },
 
@@ -213,7 +213,7 @@ export const VISUALIZERS = {
   ai: {
     label: 'AI / Transformers — Transformer, Attention, Embeddings',
     icon: '🤖',
-    component: lazy(() => import('../../features/ai/AIVisualizer/AIVisualizer')),
+    component: lazy(() => import('../../legacy/ai/AIVisualizer/AIVisualizer')),
     desc: 'Transformer encoder-decoder architecture, multi-head scaled dot-product attention, word embedding vectors.',
   },
 
@@ -221,7 +221,7 @@ export const VISUALIZERS = {
   distributed: {
     label: 'Distributed Systems — Raft, CAP, 2PC',
     icon: '🌍',
-    component: lazy(() => import('../../features/system-design/distributed-systems/DistributedSystemsVisualizer/DistributedSystemsVisualizer')),
+    component: lazy(() => import('../../legacy/system-design/distributed-systems/DistributedSystemsVisualizer/DistributedSystemsVisualizer')),
     desc: 'Raft leader election & log replication, CAP theorem partition simulation, two-phase commit protocol.',
   },
 
@@ -229,7 +229,7 @@ export const VISUALIZERS = {
   concurrency: {
     label: 'Concurrency — Mutex, Semaphore, Producer-Consumer',
     icon: '🧵',
-    component: lazy(() => import('../../features/concurrency/general/ConcurrencyVisualizer/ConcurrencyVisualizer')),
+    component: lazy(() => import('../../legacy/concurrency/general/ConcurrencyVisualizer/ConcurrencyVisualizer')),
     desc: 'Mutex lock/unlock with blocked queue, counting semaphore permit tracking, bounded buffer producer-consumer.',
   },
 };

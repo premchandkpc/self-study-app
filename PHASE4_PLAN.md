@@ -376,6 +376,10 @@ src/renderers/
 
 ---
 
+## ✅ Completed May 2026
+
+AnimationEngine, SpringSystem, GraphLayoutAnimator (force layout), SceneGraph with sorted rendering, SceneGraphBuilder, CanvasRenderer, SVGRenderer. 71 tests across phases 4-6.
+
 ## Next Phase (Phase 5)
 
 With animation + rendering: build the timeline + playback engine — reverse, branching, deterministic replay.
