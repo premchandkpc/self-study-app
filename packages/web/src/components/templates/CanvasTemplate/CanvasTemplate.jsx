@@ -1,5 +1,5 @@
 import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
-import { useSimulation } from '../../../core/context/SimulationContext';
+import { useSimulation } from '../../../core/context/useSimulation';
 import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';
 import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
@@ -11,12 +11,12 @@ import CanvasPanels from './CanvasPanels';
 import styles from './CanvasTemplate.module.css';
 
 export default function CanvasTemplate({ scenarios, initialScenario, initialTab }) {
+  const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios, initialScenario);
+  const { state: simState } = useSimulation();
+
   if (!scenarios || !Array.isArray(scenarios) || scenarios.length === 0) {
     return <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No scenarios available.</div>;
   }
-
-  const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios, initialScenario);
-  const { state: simState } = useSimulation();
 
   if (!viz) return null;
 

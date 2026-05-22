@@ -116,7 +116,7 @@ export const TRANSFORMER_CODE = [
 export default {
   id: 'transformer',
   label: 'Transformer',
-  icon: '\U0001f916',
+  icon: 'U0001f916',
   build: buildTransformerSteps,
   code: TRANSFORMER_CODE,
   language: 'python',

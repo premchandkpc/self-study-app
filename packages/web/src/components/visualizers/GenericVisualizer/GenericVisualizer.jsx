@@ -1,18 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { ensureScenarios, getScenarios, getTemplate } from '@/data/scenarioRegistry';
 import { CanvasTemplate, DSATemplate } from '../../templates';
 import Loading from '../../shared/Loading/Loading';
 
 const TEMPLATES = { CanvasTemplate, DSATemplate };
 
+function loadReducer(state, action) {
+  switch (action.type) {
+    case 'start': return { ready: false, error: null };
+    case 'done': return { ready: true, error: null };
+    case 'fail': return { ready: false, error: action.error };
+    default: return state;
+  }
+}
+
 export default function GenericVisualizer({ visualizerType, scenarioId, tabName }) {
-  const [ready, setReady] = useState(false);
-  const [error, setError] = useState(null);
+  const [{ ready, error }, dispatch] = useReducer(loadReducer, { ready: false, error: null });
 
   useEffect(() => {
-    setReady(false);
-    setError(null);
-    ensureScenarios(visualizerType).then(() => setReady(true)).catch(setError);
+    dispatch({ type: 'start' });
+    ensureScenarios(visualizerType).then(
+      () => dispatch({ type: 'done' }),
+      (e) => dispatch({ type: 'fail', error: e })
+    );
   }, [visualizerType]);
 
   if (error) return <p>Error loading scenarios: {error.message}</p>;

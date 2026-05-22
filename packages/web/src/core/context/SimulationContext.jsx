@@ -1,6 +1,5 @@
-import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
-
-const SimulationContext = createContext(null);
+import { useReducer, useCallback, useEffect, useRef } from 'react';
+import { SimulationContext } from './SimulationContextValue';
 
 const initialState = {
   steps: [],
@@ -98,8 +97,4 @@ export function SimulationProvider({ children }) {
   );
 }
 
-export function useSimulation() {
-  const ctx = useContext(SimulationContext);
-  if (!ctx) throw new Error('useSimulation must be inside SimulationProvider');
-  return ctx;
-}
+

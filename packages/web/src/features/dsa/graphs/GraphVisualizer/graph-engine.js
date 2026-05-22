@@ -60,7 +60,7 @@ export const SCENARIOS = [
     build(params = {}) {
       let graph = {"0":[1,2],"1":[0,3],"2":[0],"3":[1]};
       if (typeof params.graph === 'string') {
-        try { graph = JSON.parse(params.graph); } catch { }
+        try { graph = JSON.parse(params.graph); } catch { /* intentionally empty */ }
       }
       const start = String(params.start || '0');
       return compiler.compile(bfsAlgorithm, { graph, start });

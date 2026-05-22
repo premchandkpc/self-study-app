@@ -1,4 +1,4 @@
-import { useSimulation } from '../../../core/context/SimulationContext';
+import { useSimulation } from '../../../core/context/useSimulation';
 import styles from './StepControls.module.css';
 
 const SPEED_MIN = 100;

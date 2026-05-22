@@ -145,7 +145,7 @@ export function instrumentFunction(sourceCode) {
   try {
     ast = acorn.parse(sourceCode, { ecmaVersion: 2022, sourceType: 'script', locations: true });
   } catch (e) {
-    throw new Error(`Syntax error: ${e.message}`);
+    throw new Error(`Syntax error: ${e.message}`, { cause: e });
   }
 
   let fnNode = null;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { QUESTIONS, CATEGORIES, DIFFICULTY_COLOR } from './questions';
 import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import Button from '../../components/shared/Button/Button';
@@ -36,20 +36,25 @@ export default function InterviewMode() {
   useEffect(() => {
     const d = buildDeck();
     setDeck(d);
+  }, [buildDeck]); // eslint-disable-line react-hooks/set-state-in-effect
+
+  useEffect(() => {
     setIdx(0);
     setFlipped(false);
     setScore({ know: 0, skip: 0 });
     setDone(false);
     setElapsed(0);
-  }, [buildDeck]);
+  }, [deck]); // eslint-disable-line react-hooks/set-state-in-effect
 
   useEffect(() => {
     if (timerOn && !done) {
-      timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
+      const id = setInterval(() => setElapsed((e) => e + 1), 1000);
+      timerRef.current = id;
     } else {
       clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-    return () => clearInterval(timerRef.current);
+    return () => { clearInterval(timerRef.current); timerRef.current = null; };
   }, [timerOn, done]);
 
   function next(knew) {

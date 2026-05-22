@@ -1,31 +1,8 @@
 import { memo } from 'react';
 import { detectVizType } from '../../../core/types/vizTypes';
 import { VarsSection } from './VarsSection';
-import * as vizTypes from './types';
+import { getDsaRenderer } from './dsaRendererRegistry';
 import styles from '../../templates/DSATemplate/DSATemplate.module.css';
-
-const renderers = {
-  array: vizTypes.ArrayViz,
-  sort: vizTypes.SortViz,
-  linkedlist: vizTypes.LinkedListViz,
-  tree: vizTypes.TreeViz,
-  graph: vizTypes.GraphViz,
-  matrix: vizTypes.MatrixViz,
-  hashmap: vizTypes.HashMapViz,
-  dp: vizTypes.DPViz,
-  string: vizTypes.StringViz,
-  set: vizTypes.SetViz,
-};
-
-const rendererRegistry = new Map(Object.entries(renderers));
-
-export function registerDsaRenderer(type, component) {
-  rendererRegistry.set(type, component);
-}
-
-export function getDsaRenderer(type) {
-  return rendererRegistry.get(type) || null;
-}
 
 export const DsaVizRenderer = memo(function DsaVizRenderer({ viz }) {
   if (!viz) return null;

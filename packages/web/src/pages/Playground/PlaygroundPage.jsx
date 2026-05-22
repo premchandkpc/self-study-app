@@ -22,6 +22,7 @@ export default function PlaygroundPage() {
       .then(r => r.json())
       .then(setProblems)
       .catch(() => {});
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   }, []);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function PlaygroundPage() {
         setCode(p.starterCode || '');
       })
       .catch(() => setProblem(null));
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   }, [slug]);
 
   const runCode = useCallback(async (code, input) => {

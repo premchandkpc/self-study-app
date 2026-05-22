@@ -1,6 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
-  const { TOPICS, ABBR_MAP, TOPIC_EXPLANATIONS } = useTopicMapsContext();
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
 import { buildTopicRoute } from '../../core/topics/topicRoutes';
 import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Button from '../../components/shared/Button/Button';
@@ -8,6 +7,7 @@ import ExplanationCard from '../../components/shared/ExplanationCard/Explanation
 import styles from './Topics.module.css';
 
 export default function SubtopicDetail() {
+  const { TOPICS, ABBR_MAP, TOPIC_EXPLANATIONS } = useTopicMapsContext();
   const navigate = useNavigate();
   const { topicId, subtopic } = useParams();
   const [searchParams, setSearchParams] = useSearchParams({ tab: '0' });

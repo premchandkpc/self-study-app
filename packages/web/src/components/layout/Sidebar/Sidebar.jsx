@@ -1,7 +1,7 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useTopicMapsContext } from '../../../core/context/TopicMapsContext';
-import { useUI } from '../../../core/context/UIContext';
+import { useTopicMapsContext } from '../../../core/context/useTopicMapsContext';
+import { useUI } from '../../../core/context/useUI';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar({ collapsed }) {

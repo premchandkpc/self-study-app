@@ -1,4 +1,4 @@
-import { useSimulation } from '../../../core/context/SimulationContext';
+import { useSimulation } from '../../../core/context/useSimulation';
 import { COMPLEXITY_COLORS } from '../../../core/constants/colors';
 import styles from './ComplexityPanel.module.css';
 

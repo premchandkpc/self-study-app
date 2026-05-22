@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
 import { buildSubtopicLearnRoute, slugify } from '../../core/topics/topicRoutes';
 import LearningResources from '../../components/shared/LearningResources/LearningResources';
 import styles from './Topics.module.css';

@@ -47,7 +47,7 @@ export const SCENARIOS = [
       const n = Math.max(2, Math.floor(params.n || 5));
       let edges = [[0,1],[1,2],[3,4]];
       if (typeof params.edges === 'string') {
-        try { edges = JSON.parse(params.edges); } catch { }
+        try { edges = JSON.parse(params.edges); } catch { /* intentionally empty */ }
       }
       return compiler.compile(unionFindAlgorithm, { n, edges });
     },

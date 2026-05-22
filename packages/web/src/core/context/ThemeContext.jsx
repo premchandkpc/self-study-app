@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { DEFAULT_THEME } from '../constants/themes';
-
-const ThemeContext = createContext(null);
+import { ThemeContext } from './ThemeContextValue';
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(
@@ -20,8 +19,4 @@ export function ThemeProvider({ children }) {
   );
 }
 
-export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be inside ThemeProvider');
-  return ctx;
-}
+

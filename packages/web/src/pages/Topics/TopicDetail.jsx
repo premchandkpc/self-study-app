@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
+import Button from '../../components/shared/Button/Button';
 import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import StudyGuide from '../../components/shared/StudyGuide/StudyGuide';
 import SubtopicCard from './SubtopicCard';

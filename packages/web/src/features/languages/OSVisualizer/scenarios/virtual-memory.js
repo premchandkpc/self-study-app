@@ -117,7 +117,7 @@ export const VM_CODE = [
 export default {
   id: 'virtual-memory',
   label: 'Virtual Memory',
-  icon: '\U0001f9e0',
+  icon: 'U0001f9e0',
   build: buildVirtualMemorySteps,
   code: VM_CODE,
   language: 'c',

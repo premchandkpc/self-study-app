@@ -106,7 +106,7 @@ export const CAP_CODE = [
 export default {
   id: 'cap',
   label: 'CAP Theorem',
-  icon: '\U0001f53a',
+  icon: 'U0001f53a',
   build: buildCapSteps,
   code: CAP_CODE,
   language: 'text',

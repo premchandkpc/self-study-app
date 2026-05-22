@@ -1,7 +1,7 @@
 import { useState, Suspense, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { SimulationProvider } from '../../core/context/SimulationContext';
-import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
 import { VISUALIZERS } from './visualizers.config';
 import ExplanationCard from '../../components/shared/ExplanationCard/ExplanationCard';
 import Button from '../../components/shared/Button/Button';
@@ -15,14 +15,10 @@ export default function VisualizerPage() {
   const location = useLocation();
   const hash = location.hash.slice(1);
 
-  const [mode, setMode] = useState('sim');
   const [subtab, setSubtab] = useState(0);
   const { SLUG_MAP, ABBR_MAP } = useTopicMapsContext();
 
-  useEffect(() => {
-    if (hash === 'learn') setMode('learn');
-    else if (hash && hash !== 'sim') setMode('learn');
-  }, [hash]);
+  const mode = hash === 'learn' || (hash && hash !== 'sim') ? 'learn' : 'sim';
 
   // If no slug: show topic detail (subtopic listing)
   if (!slug) {
@@ -126,9 +122,9 @@ export default function VisualizerPage() {
       {hasStudy && (
         <div className={styles.modeTabs}>
           <button className={`${styles.modeTab} ${mode === 'sim' ? styles.modeTabActive : ''}`}
-            onClick={() => setMode('sim')}>▶ Simulation</button>
+            onClick={() => navigate('#sim', { replace: true })}>▶ Simulation</button>
           <button className={`${styles.modeTab} ${mode === 'learn' ? styles.modeTabActive : ''}`}
-            onClick={() => setMode('learn')}>📖 Learn</button>
+            onClick={() => navigate('#learn', { replace: true })}>📖 Learn</button>
         </div>
       )}
 

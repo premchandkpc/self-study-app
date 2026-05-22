@@ -57,7 +57,7 @@ function buildMLPipelineSteps() {
   // === STAGE 5: MODEL TRAINING ===
   s.stage = 'training';
   s.pipeline[3].status = 'completed';
-  s.pipeline.push({ name: 'Train Model', status: 'active', name: 'RandomForest', trees: 100, depth: 20 });
+  s.pipeline.push({ name: 'Train Model', status: 'active', trees: 100, depth: 20 });
   s.model.name = 'RandomForest(n_estimators=100, max_depth=20)';
   s.events.push({ type: 'info', msg: 'Training RandomForest with 100 decision trees' });
   snap(steps, s, 'Stage 5 — Model Training: Train RandomForest classifier. 100 trees, max depth 20. Training on (7840, 42) data. Progress: 25% → 50% → 75% → 100%.', 9, 'O(n*d*log n) train');

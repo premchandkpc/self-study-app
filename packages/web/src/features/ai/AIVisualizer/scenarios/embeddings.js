@@ -88,7 +88,7 @@ export const EMBEDDINGS_CODE = [
 export default {
   id: 'embeddings',
   label: 'Embeddings',
-  icon: '\U0001f522',
+  icon: 'U0001f522',
   build: buildEmbeddingsSteps,
   code: EMBEDDINGS_CODE,
   language: 'python',

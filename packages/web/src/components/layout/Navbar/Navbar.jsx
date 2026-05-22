@@ -1,6 +1,6 @@
 import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
-import { useTheme } from '../../../core/context/ThemeContext';
-import { useUI } from '../../../core/context/UIContext';
+import { useTheme } from '../../../core/context/useTheme';
+import { useUI } from '../../../core/context/useUI';
 import { THEME_LABELS } from '../../../core/constants/themes';
 import styles from './Navbar.module.css';
 

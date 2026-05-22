@@ -1,6 +1,6 @@
 import Navbar from '../Navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
-import { useUI } from '../../../core/context/UIContext';
+import { useUI } from '../../../core/context/useUI';
 import styles from './MainLayout.module.css';
 
 export default function MainLayout({ children, onSelectTopic }) {

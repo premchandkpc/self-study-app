@@ -39,12 +39,10 @@ export const VisualizerTemplate = memo(function VisualizerTemplate({ scenarios, 
 
       <div className={styles.bottomPanels}>
         <CodePanel code={active?.code} language={active?.language} />
-        {(metrics || true) && (
-          <div className={styles.rightPanels}>
-            {metrics && <MetricsPanel metrics={metrics} />}
-            <ComplexityPanel />
-          </div>
-        )}
+        <div className={styles.rightPanels}>
+          {metrics && <MetricsPanel metrics={metrics} />}
+          <ComplexityPanel />
+        </div>
       </div>
 
       <StepControls />

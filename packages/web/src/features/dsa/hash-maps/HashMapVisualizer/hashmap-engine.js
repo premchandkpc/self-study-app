@@ -138,7 +138,7 @@ export const SCENARIOS = [
       if (typeof params.operations === 'string') {
         try {
           operations = JSON.parse(params.operations);
-        } catch { }
+        } catch { /* intentionally empty */ }
       }
       return compiler.compile(lruCacheAlgorithm, { operations });
     },

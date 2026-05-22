@@ -72,7 +72,6 @@ function build({ list1 = DEFAULT_LIST1, list2 = DEFAULT_LIST2 } = {}) {
         `L2[${p2}]=${LIST2[p2]} < L1[${p1}]=${LIST1[p1]}. Take from L2. merged=[${merged.join(',')}]`, 7);
       p2++;
     }
-    s = { ...mkState(p1, p2, merged), vars: { p1: LIST1[p1] ?? null, p2: LIST2[p2] ?? null, merged: [...merged] }, complexity: { ops, label: 'O(m+n)', space: 'O(1)' } };
   }
 
   while (p1 < LIST1.length) { merged.push(LIST1[p1]); p1++; ops++; }

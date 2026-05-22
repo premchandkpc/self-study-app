@@ -122,7 +122,7 @@ export const PAGING_CODE = [
 export default {
   id: 'paging',
   label: 'Paging & TLB',
-  icon: '\U0001f4c4',
+  icon: 'U0001f4c4',
   build: buildPagingSteps,
   code: PAGING_CODE,
   language: 'c',

@@ -90,7 +90,7 @@ export const ATTENTION_CODE = [
 export default {
   id: 'attention',
   label: 'Attention',
-  icon: '\U0001f441\ufe0f',
+  icon: 'U0001f441\ufe0f',
   build: buildAttentionSteps,
   code: ATTENTION_CODE,
   language: 'python',

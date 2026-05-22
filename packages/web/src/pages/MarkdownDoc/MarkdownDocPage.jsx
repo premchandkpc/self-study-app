@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,33 +10,34 @@ import styles from './MarkdownDocPage.module.css';
 export default function MarkdownDocPage() {
   const { doc } = useParams();
   const navigate = useNavigate();
-  const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const docInfo = DOC_MAP[doc];
 
+  const [state, dispatch] = useReducer(
+    (s, a) => {
+      switch (a.type) {
+        case 'load': return { ...s, loading: true, error: null };
+        case 'done': return { content: a.content, loading: false, error: null };
+        case 'fail': return { ...s, loading: false, error: a.error };
+        case 'missing': return { content: '', loading: false, error: 'Document not found' };
+        default: return s;
+      }
+    },
+    { content: '', loading: true, error: null }
+  );
+
   useEffect(() => {
-    if (!docInfo) {
-      setError('Document not found');
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
+    if (!docInfo) { dispatch({ type: 'missing' }); return; }
+    dispatch({ type: 'load' });
     fetch(docInfo.file)
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load (${res.status})`);
         return res.text();
       })
-      .then((text) => {
-        setContent(text);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+      .then((text) => dispatch({ type: 'done', content: text }))
+      .catch((err) => dispatch({ type: 'fail', error: err.message }));
   }, [doc]);
+
+  const { content, loading, error } = state;
 
   if (!docInfo) {
     return (

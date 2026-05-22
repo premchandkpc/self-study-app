@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import styles from './InputPanel.module.css';
 
 /**
@@ -10,8 +10,6 @@ import styles from './InputPanel.module.css';
  * onApply(parsedInputs) called when user clicks Run or presses Enter.
  */
 export default function InputPanel({ schema, current = {}, onApply, hideRunButton }) {
-  if (!schema?.length) return null;
-
   const initial = Object.fromEntries(
     schema.map((f) => {
       const val = current[f.key] ?? f.default;
@@ -20,20 +18,28 @@ export default function InputPanel({ schema, current = {}, onApply, hideRunButto
     })
   );
   const [vals, setVals] = useState(initial);
+  const schemaKey = useMemo(() => schema?.map(f => f.key).join(','), [schema]);
 
-  // Update vals when schema or current changes
-  useEffect(() => {
-    if (schema?.length) {
-      const updated = Object.fromEntries(
-        schema.map((f) => {
-          const val = current[f.key] ?? f.default;
-          const display = Array.isArray(val) ? val.join(', ') : String(val ?? '');
-          return [f.key, display];
-        })
-      );
-      setVals(updated);
+  // reconcile external changes without cascading renders
+  const needsUpdate = useMemo(() => {
+    if (!schema?.length) return false;
+    for (const f of schema) {
+      const expected = Array.isArray(current[f.key] ?? f.default)
+        ? (current[f.key] ?? f.default).join(', ')
+        : String(current[f.key] ?? f.default ?? '');
+      if (vals[f.key] !== expected) return true;
     }
-  }, [schema, current]);
+    return false;
+  }, [schema, current, schemaKey, vals]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (needsUpdate) {
+    const updated = { ...vals };
+    for (const f of schema) {
+      const val = current[f.key] ?? f.default;
+      updated[f.key] = Array.isArray(val) ? val.join(', ') : String(val ?? '');
+    }
+    setVals(updated);
+  }
 
   const warnings = useMemo(() => {
     const warns = [];
@@ -48,6 +54,8 @@ export default function InputPanel({ schema, current = {}, onApply, hideRunButto
     }
     return warns;
   }, [vals, schema]);
+
+  if (!schema?.length) return null;
 
   function set(key, value) {
     setVals((prev) => ({ ...prev, [key]: value }));

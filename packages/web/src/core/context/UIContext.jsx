@@ -1,6 +1,5 @@
-import { createContext, useContext, useReducer } from 'react';
-
-const UIContext = createContext();
+import { useReducer } from 'react';
+import { UIContext } from './UIContextValue';
 
 const initialState = {
   sidebarCollapsed: false,
@@ -57,8 +56,4 @@ export function UIProvider({ children }) {
   return <UIContext.Provider value={{ state, actions }}>{children}</UIContext.Provider>;
 }
 
-export function useUI() {
-  const ctx = useContext(UIContext);
-  if (!ctx) throw new Error('useUI must be used within UIProvider');
-  return ctx;
-}
+

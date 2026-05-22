@@ -66,7 +66,7 @@ export const SCENARIOS = [
     build(params = {}) {
       let matrix = [[1,2,3],[4,5,6],[7,8,9]];
       if (typeof params.matrix === 'string') {
-        try { matrix = JSON.parse(params.matrix); } catch { }
+        try { matrix = JSON.parse(params.matrix); } catch { /* intentionally empty */ }
       }
       return compiler.compile(spiralAlgorithm, { matrix });
     },

@@ -64,7 +64,7 @@ describe('Code Instrumentation', () => {
 
       // Should not throw
       expect(() => {
-        new Function(instrumented); // eslint-disable-line no-new-func
+        new Function(instrumented);  
       }).not.toThrow();
     });
   });

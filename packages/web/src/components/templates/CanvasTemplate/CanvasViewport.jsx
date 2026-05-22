@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { STATE_COLORS, PKT_COLORS } from '../../../core/constants/colors';
 import { SvgArrowDefs, SvgEdgeTooltip, SvgSharedStyles } from '../../shared/SvgComponents.jsx';
-import { NODE_W, NODE_H, NODE_META, getLayerColors, NodeShape, PacketDot, CanvasNodeTooltip } from './CanvasPrimitives';
+import { NODE_W, NODE_H, NODE_META, getLayerColors } from './CanvasPrimitives.constants';
+import { NodeShape, PacketDot, CanvasNodeTooltip } from './CanvasPrimitives';
 import styles from './CanvasTemplate.module.css';
 
 const MIN_ZOOM = 0.15;
@@ -24,8 +25,9 @@ export default function CanvasViewport({ viz, animKey, pktDur, className }) {
   const [dragging, setDragging] = useState(null);
   const [panning, setPanning] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const [canvasSize, setCanvasSize] = useState({ w: 800, h: 400 });
 
-  useEffect(() => { setPositions({}); needsFitRef.current = true; }, [viz]);
+  useEffect(() => { setPositions({}); needsFitRef.current = true; }, [viz]); // eslint-disable-line react-hooks/set-state-in-effect
 
   useEffect(() => {
     if (!viz || !needsFitRef.current) return;
@@ -38,7 +40,12 @@ export default function CanvasViewport({ viz, animKey, pktDur, className }) {
     if (!el) return;
     const handler = (e) => wheelHandler.current?.(e);
     el.addEventListener('wheel', handler, { passive: false });
-    return () => el.removeEventListener('wheel', handler);
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      setCanvasSize({ w: width, h: height });
+    });
+    ro.observe(el);
+    return () => { el.removeEventListener('wheel', handler); ro.disconnect(); };
   }, []);
 
   const fitToContent = useCallback(() => {
@@ -57,7 +64,7 @@ export default function CanvasViewport({ viz, animKey, pktDur, className }) {
     setScale(s);
   }, [viz, positions]);
 
-  fitFnRef.current = fitToContent;
+  useEffect(() => { fitFnRef.current = fitToContent; }, [fitToContent]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
@@ -73,7 +80,8 @@ export default function CanvasViewport({ viz, animKey, pktDur, className }) {
       return next;
     });
   }, []);
-  wheelHandler.current = handleWheel;
+
+  useEffect(() => { wheelHandler.current = handleWheel; }, [handleWheel]);
 
   function handleMouseDown(e) {
     if (e.button !== 0) return;
@@ -293,10 +301,8 @@ export default function CanvasViewport({ viz, animKey, pktDur, className }) {
       </svg>
 
       {hovered && (() => {
-        const cw = canvasRef.current?.clientWidth ?? 800;
-        const ch = canvasRef.current?.clientHeight ?? 400;
-        const tx = Math.min(hovered.sx + 18, cw - 270);
-        const ty = Math.min(hovered.sy + 12, ch - 140);
+        const tx = Math.min(hovered.sx + 18, canvasSize.w - 270);
+        const ty = Math.min(hovered.sy + 12, canvasSize.h - 140);
         return (
           <div className={styles.tooltip} style={{ left: tx, top: ty }}>
             {hovered.kind === 'node' && <CanvasNodeTooltip node={hovered.data} styles={styles} />}

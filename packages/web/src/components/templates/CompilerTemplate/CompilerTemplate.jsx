@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useSimulation } from '../../../core/context/SimulationContext';
+import { useState, useEffect, useMemo } from 'react';
+import { useSimulation } from '../../../core/context/useSimulation';
 import { AlgorithmCompiler } from '../../../core/compiler/AlgorithmCompiler';
 import { FunctionSignatureParser } from '../../../core/parser/FunctionSignatureParser';
 import { EXAMPLES } from '../../../data/dsa-examples';
@@ -17,7 +17,6 @@ export default function CompilerTemplate() {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [hasRun, setHasRun] = useState(false);
-  const [inputSchema, setInputSchema] = useState([]);
   const [inputValues, setInputValues] = useState({});
   const [isCompiling, setIsCompiling] = useState(false);
   const [selectedExample, setSelectedExample] = useState(null);
@@ -41,32 +40,29 @@ export default function CompilerTemplate() {
     dispatch({ type: 'RESET' });
   }
 
-  useEffect(() => {
-    if (!code.trim()) {
-      setInputSchema([]);
-      return;
-    }
+  const inputSchema = useMemo(() => {
+    if (!code.trim()) return [];
     try {
       const params = FunctionSignatureParser.parseParams(code);
-      if (!params || params.length === 0) {
-        setInputSchema([]);
-        return;
-      }
-      const schema = FunctionSignatureParser.generateSchema(params);
-      setInputSchema(schema);
-      setInputValues(prev => {
-        const updated = { ...prev };
-        schema.forEach(field => {
-          if (!(field.key in updated)) {
-            updated[field.key] = field.default;
-          }
-        });
-        return updated;
-      });
-    } catch (e) {
-      setInputSchema([]);
+      if (!params || params.length === 0) return [];
+      return FunctionSignatureParser.generateSchema(params);
+    } catch {
+      return [];
     }
   }, [code]);
+
+  useEffect(() => {
+    if (inputSchema.length === 0) return;
+    setInputValues(prev => {
+      const updated = { ...prev };
+      inputSchema.forEach(field => {
+        if (!(field.key in updated)) {
+          updated[field.key] = field.default;
+        }
+      });
+      return updated;
+    });
+  }, [inputSchema]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function compileCode(inputs) {
     const algorithmMatch = code.match(

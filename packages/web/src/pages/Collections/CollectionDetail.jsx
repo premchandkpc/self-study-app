@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COLLECTIONS, COLLECTION_CATEGORIES } from '../../core/constants/collections';
-import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
 import { buildTopicRoute } from '../../core/topics/topicRoutes';
 import DetailPageHeader from '../../components/shared/DetailPageHeader/DetailPageHeader';
 import Badge from '../../components/shared/Badge/Badge';

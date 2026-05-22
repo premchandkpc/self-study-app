@@ -1,8 +1,6 @@
-import { createContext, useContext } from 'react';
 import { useTopicMaps } from '../hooks/useTopicMaps.js';
 import Loading from '../../components/shared/Loading/Loading';
-
-const TopicMapsContext = createContext(null);
+import { TopicMapsContext } from './TopicMapsContextValue';
 
 export function TopicMapsProvider({ children }) {
   const { data, isLoading, isError, error } = useTopicMaps();
@@ -54,10 +52,4 @@ export function TopicMapsProvider({ children }) {
   );
 }
 
-export function useTopicMapsContext() {
-  const ctx = useContext(TopicMapsContext);
-  if (!ctx) {
-    throw new Error('useTopicMapsContext must be used inside TopicMapsProvider');
-  }
-  return ctx;
-}
+

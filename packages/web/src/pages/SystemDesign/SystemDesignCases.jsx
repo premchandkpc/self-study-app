@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
 import Button from '../../components/shared/Button/Button';
 import Card from '../../components/shared/Card/Card';
 import CaseStudy from '../../components/shared/CaseStudy/CaseStudy';
@@ -8,6 +9,7 @@ import styles from '../Topics/Topics.module.css';
 
 export default function SystemDesignCases() {
   const navigate = useNavigate();
+  const { TOPIC_EXPLANATIONS } = useTopicMapsContext();
   const [selectedCase, setSelectedCase] = useState('Uber');
 
   const caseStudies = TOPIC_EXPLANATIONS['systemdesign']?.casestudies || {};

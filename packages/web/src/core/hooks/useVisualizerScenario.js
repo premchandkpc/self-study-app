@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSimulation } from '../context/SimulationContext';
+import { useSimulation } from '../context/useSimulation';
 
 /**
  * Drives any scenario-based visualizer.
@@ -57,8 +57,8 @@ export function useVisualizerScenario(scenarios, initialScenarioId) {
     const target = scenarios.find((s) => s.id === initialActiveId) ?? scenarios[0];
     dispatch({ type: 'RESET' });
     dispatch({ type: 'SET_STEPS', payload: getSteps(target, {}) });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // intentional mount-only: scenarios ref is stable, dispatch is stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
+  }, []);
 
   useEffect(() => {
     const step = state.steps[state.currentStep];

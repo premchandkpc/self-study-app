@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import CanvasTemplate from './CanvasTemplate';
 import * as VisualizerHook from '../../../core/hooks/useVisualizerScenario';
-import * as SimulationContext from '../../../core/context/SimulationContext';
+import { useSimulation } from '../../../core/context/useSimulation';
 
 vi.mock('../../../core/hooks/useVisualizerScenario');
-vi.mock('../../../core/context/SimulationContext');
+vi.mock('../../../core/context/useSimulation');
 vi.mock('../../shared/ScenarioToolbar/ScenarioToolbar', () => ({
   default: () => <div data-testid="scenario-toolbar">Toolbar</div>,
 }));
@@ -48,7 +48,7 @@ describe('CanvasTemplate', () => {
       metrics: {},
     });
 
-    vi.mocked(SimulationContext.useSimulation).mockReturnValue({
+    vi.mocked(useSimulation).mockReturnValue({
       state: { currentStep: 0 },
       actions: {},
     });

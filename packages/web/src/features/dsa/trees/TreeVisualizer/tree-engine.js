@@ -45,7 +45,7 @@ export const SCENARIOS = [
     build(params = {}) {
       let values = [1,2,3];
       if (typeof params.values === 'string') {
-        try { values = JSON.parse(params.values); } catch { }
+        try { values = JSON.parse(params.values); } catch { /* intentionally empty */ }
       }
       return compiler.compile(inorderAlgorithm, { values });
     },

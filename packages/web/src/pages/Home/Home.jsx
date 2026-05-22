@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
+import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';
 import { HeroSection } from './HeroSection';
 import { StatsSection } from './StatsSection';
 import { DemoSection } from './DemoSection';

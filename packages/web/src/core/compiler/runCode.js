@@ -77,13 +77,13 @@ export function runCode({ code, fnName, paramValues }) {
   try {
     fn = new Function(...argNames, fnBody);
   } catch (e) {
-    throw new Error(`Compile error: ${e.message}`);
+    throw new Error(`Compile error: ${e.message}`, { cause: e });
   }
 
   try {
     fn(...argVals);
   } catch (e) {
-    if (steps.length === 0) throw new Error(`Runtime error: ${e.message}`);
+    if (steps.length === 0) throw new Error(`Runtime error: ${e.message}`, { cause: e });
   }
 
   if (steps.length === 0) {

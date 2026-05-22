@@ -109,7 +109,7 @@ export const TWOPC_CODE = [
 export default {
   id: 'twopc',
   label: '2PC',
-  icon: '\U0001f504',
+  icon: 'U0001f504',
   build: buildTwoPCSteps,
   code: TWOPC_CODE,
   language: 'text',
