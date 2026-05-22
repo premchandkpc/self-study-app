@@ -8,7 +8,7 @@ import styles from './Topics.module.css';
 
 export default function TopicDetail({ topicId }) {
   const navigate = useNavigate();
-  const { TOPICS, ABBR_MAP } = useTopicMapsContext();
+  const { TOPICS } = useTopicMapsContext();
   const topic = TOPICS.find((t) => t.id === topicId);
   const meta = topic?.meta || {};
 

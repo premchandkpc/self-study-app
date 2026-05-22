@@ -45,8 +45,6 @@ export class TwoPointersCompiler {
   }
 
   _createTrackedInput(data) {
-    const state = { ...data };
-    let pointers = {};
 
     return {
       array: Array.isArray(data.array)

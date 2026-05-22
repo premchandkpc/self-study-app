@@ -1,5 +1,5 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { DIJKSTRA_CODE, DIJKSTRA_NOTES } from './shared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { DIJKSTRA_NOTES } from './shared';
 
 const _mk = createNodeFactory({ default: '●' });
 const graphNode = _mk('default');

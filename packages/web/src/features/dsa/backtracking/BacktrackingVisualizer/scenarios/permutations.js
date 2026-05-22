@@ -1,4 +1,4 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
 
 const _mk = createNodeFactory({ default: '●' });
 const arrNode = _mk('default');

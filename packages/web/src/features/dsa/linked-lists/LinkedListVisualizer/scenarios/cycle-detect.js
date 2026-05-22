@@ -46,8 +46,6 @@ function build() {
   let ops = 0;
   // Simulate with a cap to avoid infinite loop in build
   for (let iter = 0; iter < 10; iter++) {
-    const prevSlow = slow;
-    const prevFast = fast;
     const nextSlow = VALUES.length - 1 === slow ? CYCLE_TO : slow + 1;
     const fastNext1 = VALUES.length - 1 === fast ? CYCLE_TO : fast + 1;
     const nextFast = VALUES.length - 1 === fastNext1 ? CYCLE_TO : fastNext1 + 1;

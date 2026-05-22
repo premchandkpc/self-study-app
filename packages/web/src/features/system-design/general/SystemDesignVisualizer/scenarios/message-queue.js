@@ -1,10 +1,9 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
 import { ICONS } from '../../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');
 const serviceNode = _mk('service');
 const brokerNode = _mk('broker');
-const dbNode = _mk('db');
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Message Queue Pattern — async decoupling with publish-subscribe

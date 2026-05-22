@@ -35,7 +35,7 @@ export default function MarkdownDocPage() {
       })
       .then((text) => dispatch({ type: 'done', content: text }))
       .catch((err) => dispatch({ type: 'fail', error: err.message }));
-  }, [doc]);
+  }, [doc, docInfo]);
 
   const { content, loading, error } = state;
 

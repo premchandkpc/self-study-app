@@ -33,7 +33,7 @@ export default function InputFormBuilder({ schema = [], values = {}, onChange, o
         handleChange(key, [...current, ...nums]);
         setTempNum({ ...tempNum, [key]: '' });
       }
-    } catch (e) {
+    } catch {
       // fail silently
     }
   };
@@ -57,8 +57,8 @@ export default function InputFormBuilder({ schema = [], values = {}, onChange, o
     try {
       JSON.parse(jsonStr);
       return null;
-    } catch (e) {
-      return e.message;
+    } catch (err) {
+      return err.message;
     }
   };
 
@@ -188,8 +188,8 @@ export default function InputFormBuilder({ schema = [], values = {}, onChange, o
                           if (!error) {
                             try {
                               handleChange(field.key, JSON.parse(e.target.value));
-                            } catch (e) {
-                              setJsonErrors({ ...jsonErrors, [field.key]: e.message });
+                            } catch (_e) {
+                              setJsonErrors({ ...jsonErrors, [field.key]: _e.message });
                             }
                           }
                         }}
@@ -216,8 +216,8 @@ export default function InputFormBuilder({ schema = [], values = {}, onChange, o
                             try {
                               const parsed = JSON.parse(e.target.value);
                               if (Array.isArray(parsed)) handleChange(field.key, parsed);
-                            } catch (e) {
-                              setJsonErrors({ ...jsonErrors, [field.key]: e.message });
+                            } catch (_e) {
+                              setJsonErrors({ ...jsonErrors, [field.key]: _e.message });
                             }
                           }
                         }}

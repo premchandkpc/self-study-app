@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { ensureScenarios, getScenarios, getTemplate } from '@/data/scenarioRegistry';
 import { CanvasTemplate, DSATemplate } from '../../templates';
 import Loading from '../../shared/Loading/Loading';

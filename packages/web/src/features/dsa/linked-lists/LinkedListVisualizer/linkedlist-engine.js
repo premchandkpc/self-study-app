@@ -7,7 +7,6 @@ const reverseAlgorithm = (input, tracer) => {
   tracer.step('Initialize', `Reverse linked list [${array.join(',')}]`, input);
 
   let prev = null;
-  let result = null;
   const list = [...array];
 
   for (let i = 0; i < list.length; i++) {

@@ -21,7 +21,6 @@ function buildMergeSteps({ arr: inputArr = DEFAULT_ARR } = {}) {
 
   // Simulate depth-first merge sort steps
   const arr = initial.slice();
-  let stepCount = 0;
 
   function mergeSort(a, lo, hi, depth) {
     if (hi - lo <= 1) return a.slice(lo, hi);

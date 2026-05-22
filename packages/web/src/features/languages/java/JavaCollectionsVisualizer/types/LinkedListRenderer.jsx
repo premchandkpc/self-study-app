@@ -2,7 +2,7 @@ import { memo } from 'react';
 import styles from '../JavaCollectionsVisualizer.module.css';
 
 export const LinkedListRenderer = memo(function LinkedListRenderer({ viz }) {
-  const { nodes = [], head, tail, cursor } = viz;
+  const { nodes = [], head, cursor } = viz;
   if (nodes.length === 0) {
     return <div className={styles.emptyState}>[ empty list ] head=null tail=null</div>;
   }

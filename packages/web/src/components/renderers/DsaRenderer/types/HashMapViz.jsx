@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { CELL_COLORS } from '../../../../core/constants/colors';
 import styles from '../../../templates/DSATemplate/DSATemplate.module.css';
 
 export const HashMapViz = memo(function HashMapViz({ viz }) {

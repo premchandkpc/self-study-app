@@ -1,4 +1,4 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
 import { ICONS } from '../../../sd-types';
 const _mk = createNodeFactory(ICONS);
 const clientNode = _mk('client');

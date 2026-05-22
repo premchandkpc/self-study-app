@@ -52,7 +52,7 @@ const IRBasedJavaCollectionsVisualizer = memo(function IRBasedVisualizer() {
           <h3>{ir.title}</h3>
           <p style={{ fontSize: '12px', color: '#666' }}>Concept: {ir.concept}</p>
 
-          {ir.scenes.map((scene, i) => (
+          {ir.scenes.map((scene, _i) => (
             <div key={scene.id} style={{ marginTop: '16px', padding: '12px', border: '1px solid #e0e0e0', borderRadius: '6px' }}>
               <h4 style={{ margin: '0 0 8px 0' }}>
                 {scene.title} (Type: {scene.type})

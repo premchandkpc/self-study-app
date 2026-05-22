@@ -43,7 +43,7 @@ function buildFlowBasic() {
 
   // duplicate detection
   s.activeBucket = simpleHash('banana', 8);
-  const dupResult = hsAdd(s, 'banana');
+  hsAdd(s, 'banana');
   snap(steps, s, `add("banana") again. hash=${s.activeBucket}. Found existing entry with equals("banana")=true. Returns false. Set unchanged.`, 2);
   resetHS(s);
 

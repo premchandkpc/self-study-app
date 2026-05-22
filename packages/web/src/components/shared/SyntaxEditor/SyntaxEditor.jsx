@@ -12,7 +12,7 @@ export default function SyntaxEditor({ code, onChange, language = 'javascript' }
       try {
         const highlighted = hljs.highlight(code || '', { language, ignoreIllegals: true }).value;
         preRef.current.innerHTML = highlighted;
-      } catch (e) {
+      } catch {
         preRef.current.textContent = code;
       }
     }

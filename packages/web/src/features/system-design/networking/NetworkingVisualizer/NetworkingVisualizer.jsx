@@ -134,7 +134,7 @@ function TcpView({ viz }) {
 
 /* === HTTP VIEW === */
 function HttpView({ viz }) {
-  const { version, http1Requests, http2Streams, connection } = viz;
+  const { version, http1Requests, http2Streams } = viz;
 
   return (
     <div className={styles.httpLayout}>

@@ -1,8 +1,7 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
 
 const _mk = createNodeFactory({ default: '●', filled: '✓' });
 const cell = _mk('default');
-const filledCell = _mk('filled');
 
 function buildSudokuSteps() {
   const steps = [];

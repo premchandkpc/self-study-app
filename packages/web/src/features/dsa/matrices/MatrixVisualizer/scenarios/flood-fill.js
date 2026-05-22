@@ -1,4 +1,4 @@
-import { snap, makeMatrix, cloneMatrix } from '@/core/utils/scenarioShared';
+import { snap } from '@/core/utils/scenarioShared';
 
 // 0=empty, 1=target color, 2=new color
 const VALUES = [
@@ -34,11 +34,10 @@ function build() {
 
   // working grid (mutable)
   const grid = VALUES.map((row) => [...row]);
-  const visited = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
 
   function toMatrix() {
-    return grid.map((row, r) =>
-      row.map((val, c) => {
+    return grid.map((row, _r) =>
+      row.map((val, _c) => {
         if (val === NEW_COLOR) return { val, state: 'filled' };
         if (val === OLD_COLOR) return { val, state: 'idle' };
         return { val, state: 'idle' };

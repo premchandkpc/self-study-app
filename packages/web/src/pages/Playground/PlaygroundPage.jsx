@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styles from './PlaygroundPage.module.css';
 
 const BASE = '/api';
@@ -8,7 +8,6 @@ function splitLines(s) { return s.split('\n'); }
 
 export default function PlaygroundPage() {
   const { slug } = useParams();
-  const navigate = useNavigate();
   const [problems, setProblems] = useState([]);
   const [problem, setProblem] = useState(null);
   const [code, setCode] = useState('');
@@ -22,11 +21,11 @@ export default function PlaygroundPage() {
       .then(r => r.json())
       .then(setProblems)
       .catch(() => {});
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   }, []);
 
   useEffect(() => {
     if (!slug) return;
+    /* eslint-disable react-hooks/set-state-in-effect */
     setOutput(null);
     setTestResults([]);
     setShowOutput(false);
@@ -37,7 +36,7 @@ export default function PlaygroundPage() {
         setCode(p.starterCode || '');
       })
       .catch(() => setProblem(null));
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [slug]);
 
   const runCode = useCallback(async (code, input) => {

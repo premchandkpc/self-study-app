@@ -90,7 +90,6 @@ function buildPQFlow() {
 
   const vals = [15, 3, 8, 1, 12, 5];
   for (const v of vals) {
-    const before = s.size;
     heapOffer(s, v);
     s.heap = s.heap.map((x, i) => i === 0 ? x : { ...x, state: i === s.size ? 'new' : 'idle' });
     snap(steps, s, `offer(${v}). Added at end, sift-up until heap property restored. Heap: min=${s.heap[1]?.val}.`, 1);

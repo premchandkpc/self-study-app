@@ -37,7 +37,7 @@ const BTreeSVG = memo(function BTreeSVG({ nodes }) {
   return (
     <>
       {nodes.map((node) =>
-        (node.children || []).map((childId, i) => {
+        (node.children || []).map((childId, _i) => {
           const parentPos = positions[node.id];
           const childPos = positions[childId];
           if (!parentPos || !childPos) return null;

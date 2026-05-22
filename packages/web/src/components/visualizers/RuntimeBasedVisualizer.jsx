@@ -19,8 +19,6 @@ const RuntimeBasedVisualizer = memo(function RuntimeBasedVisualizer({
     advance,
     rewind,
     jumpToScene,
-    selectNode,
-    runtime,
   } = useSimulationRuntime({
     learningUnit,
     userId,

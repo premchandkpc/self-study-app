@@ -140,7 +140,7 @@ export class AlgorithmCompiler {
     }
 
     if (state.string !== undefined) {
-      viz.chars = state.string.split('').map((ch, i) => ({
+      viz.chars = state.string.split('').map((ch, _i) => ({
         char: ch,
         state: state.palindrome && typeof state.palindrome === 'string' && state.palindrome.includes(ch) ? 'highlight' : 'idle',
       }));

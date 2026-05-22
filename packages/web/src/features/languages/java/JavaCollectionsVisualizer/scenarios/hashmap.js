@@ -163,7 +163,6 @@ function buildExceptions() {
   snap(steps, s, 'HashMap exceptions: CME during entrySet iteration, null key behavior, mutable key mutation.', 0);
 
   // null key
-  const nullHash = 0; // Java maps null key to bucket 0
   s.activeBucket = 0;
   s.buckets[0] = [entry('null', 99, 0, 'new')];
   s.size++;

@@ -53,6 +53,7 @@ export default function CompilerTemplate() {
 
   useEffect(() => {
     if (inputSchema.length === 0) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputValues(prev => {
       const updated = { ...prev };
       inputSchema.forEach(field => {
@@ -62,7 +63,7 @@ export default function CompilerTemplate() {
       });
       return updated;
     });
-  }, [inputSchema]); // eslint-disable-line react-hooks/set-state-in-effect
+  }, [inputSchema]);
 
   function compileCode(inputs) {
     const algorithmMatch = code.match(

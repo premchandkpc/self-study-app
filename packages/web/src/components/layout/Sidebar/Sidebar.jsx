@@ -13,7 +13,6 @@ export default function Sidebar({ collapsed }) {
   const expandedTopics = state.expandedTopics;
   const sidebarMode = state.sidebarMode;
 
-  const currentAbbr = abbr || (topicId && TOPICS.find(t => t.id === topicId)?.abbr);
   const currentTopicId = topicId || (abbr && ABBR_MAP[abbr]?.id);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import Card from '../Card/Card';
 import styles from './ExplanationCard.module.css';
 
-export default function ExplanationCard({ topic, subtopic, data }) {
+export default function ExplanationCard({ topic: _topic, subtopic, data }) {
   if (!data) return null;
 
   return (

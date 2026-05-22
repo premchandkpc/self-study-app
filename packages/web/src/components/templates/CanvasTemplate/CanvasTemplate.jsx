@@ -10,7 +10,7 @@ import CanvasViewport from './CanvasViewport';
 import CanvasPanels from './CanvasPanels';
 import styles from './CanvasTemplate.module.css';
 
-export default function CanvasTemplate({ scenarios, initialScenario, initialTab }) {
+export default function CanvasTemplate({ scenarios, initialScenario, initialTab: _initialTab }) {
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(scenarios, initialScenario);
   const { state: simState } = useSimulation();
 

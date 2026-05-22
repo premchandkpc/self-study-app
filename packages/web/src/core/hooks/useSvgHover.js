@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 export function useSvgHover() {
   const [hovered, setHovered] = useState(null);

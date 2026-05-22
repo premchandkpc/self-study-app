@@ -10,7 +10,7 @@ export const NODE_META = {
   default: { color: 'var(--node-default)', icon: '\u25CF' },
 };
 
-export function getLayerColors(index, total) {
+export function getLayerColors(index, _total) {
   const palette = [
     { fill: 'rgba(100,140,255,0.12)', border: 'rgba(100,140,255,0.45)' },
     { fill: 'rgba(255,160,50,0.12)',  border: 'rgba(255,160,50,0.50)' },

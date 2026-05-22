@@ -1,4 +1,4 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
 import { TREE_CONCEPTS, BST_TRADEOFFS } from './shared';
 
 const _mk = createNodeFactory({ default: '●' });

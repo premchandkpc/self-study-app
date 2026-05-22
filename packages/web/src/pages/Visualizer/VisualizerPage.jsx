@@ -1,4 +1,4 @@
-import { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import { useTopicMapsContext } from '../../core/context/useTopicMapsContext';

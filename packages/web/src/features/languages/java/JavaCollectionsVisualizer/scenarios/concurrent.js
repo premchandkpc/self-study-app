@@ -90,7 +90,7 @@ function buildCHMFlow() {
   s.segments[0].locked = null; s.threads[0].state = 'idle'; s.threads[0].action = 'done';
   s.threads[2].state = 'running'; s.threads[2].action = 'acquired seg[0]'; s.threads[2].segment = 0;
   s.segments[0].locked = 'T3';
-  const { segIdx: si3, bucketIdx: bi3 } = chmPut(s, 'b', 3);
+  chmPut(s, 'b', 3);
   snap(steps, s, 'T1 releases seg[0] lock. T3 acquires it, puts "b". Java 8: no segments — per-bucket CAS + synchronized on first node. Even lower contention.', 4);
 
   resetCHM(s);

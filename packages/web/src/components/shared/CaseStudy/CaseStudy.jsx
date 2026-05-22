@@ -1,4 +1,4 @@
-import Card, { CardHeader } from '../Card/Card';
+import Card from '../Card/Card';
 import styles from './CaseStudy.module.css';
 
 export default function CaseStudy({ name, caseStudy }) {

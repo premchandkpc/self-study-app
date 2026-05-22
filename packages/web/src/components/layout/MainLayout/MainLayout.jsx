@@ -3,7 +3,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import { useUI } from '../../../core/context/useUI';
 import styles from './MainLayout.module.css';
 
-export default function MainLayout({ children, onSelectTopic }) {
+export default function MainLayout({ children, onSelectTopic: _onSelectTopic }) {
   const { state, actions } = useUI();
   const sidebarCollapsed = state.sidebarCollapsed;
   const sidebarMode = state.sidebarMode;

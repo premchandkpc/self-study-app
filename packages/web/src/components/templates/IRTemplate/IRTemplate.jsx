@@ -3,7 +3,6 @@
 // Proof-of-concept for semantic rendering architecture
 
 import { useState, useMemo } from 'react';
-import { useLegacyScenarioIR } from '../../../core/hooks/useLegacyScenarioIR';
 import { useIRSceneNavigator } from '../../../core/hooks/useIRSceneNavigator';
 import { SceneRenderer } from '../../../core/ir/sceneRenderer';
 import { LegacyMigration } from '../../../core/ir/adapters/legacyMigration';
@@ -13,7 +12,6 @@ import CodePanel from '../../shared/CodePanel/CodePanel';
 import styles from './IRTemplate.module.css';
 
 export default function IRTemplate({ scenarios, technology = 'generic' }) {
-  const { compile } = useLegacyScenarioIR();
   const [selectedScenarioId, setSelectedScenarioId] = useState(scenarios?.[0]?.id);
 
   // Compile legacy scenarios to IR (one-time, memoized)

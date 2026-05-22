@@ -1,9 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import * as TopicsModule from '../../../core/constants/topics';
-import * as RoutesModule from '../../../core/constants/routes';
 
 vi.mock('../../../core/constants/topics', () => ({
   TOPICS: [

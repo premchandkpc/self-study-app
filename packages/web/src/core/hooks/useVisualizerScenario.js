@@ -57,12 +57,11 @@ export function useVisualizerScenario(scenarios, initialScenarioId) {
     const target = scenarios.find((s) => s.id === initialActiveId) ?? scenarios[0];
     dispatch({ type: 'RESET' });
     dispatch({ type: 'SET_STEPS', payload: getSteps(target, {}) });
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const step = state.steps[state.currentStep];
-    if (step) setViz(step);
+    if (step) setViz(step); // eslint-disable-line react-hooks/set-state-in-effect
   }, [state.currentStep, state.steps]);
 
   const metrics = (active.metrics || []).map((m) => ({

@@ -1,9 +1,7 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
 
 const _mk = createNodeFactory({ default: '●', queen: '👑', invalid: '✗' });
 const boardCell = _mk('default');
-const queenCell = _mk('queen');
-const invalidCell = _mk('invalid');
 
 function buildNQueensSteps() {
   const steps = [];

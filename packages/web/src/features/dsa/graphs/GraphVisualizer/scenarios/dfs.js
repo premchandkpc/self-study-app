@@ -1,5 +1,5 @@
-import { snap, node, packet, createNodeFactory } from '@/core/utils/scenarioShared';
-import { GRAPH_CONCEPTS, BFS_DFS_CONCEPTS } from './shared';
+import { snap, packet, createNodeFactory } from '@/core/utils/scenarioShared';
+import { GRAPH_CONCEPTS } from './shared';
 
 const _mk = createNodeFactory({ default: '●' });
 const graphNode = _mk('default');
