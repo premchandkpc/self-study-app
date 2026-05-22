@@ -74,6 +74,7 @@ export default function RuntimeDemoPage() {
     semanticGraph.getAllNodes().forEach(n => semanticGraph.removeNode(n.id))
 
     const initialData = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1)
+    const entityEvents: ReturnType<typeof createEvent>[] = []
 
     for (let i = 0; i < initialData.length; i++) {
       const entity = new Entity(`elem_${i}`, 'node', 'array-element')
@@ -86,10 +87,18 @@ export default function RuntimeDemoPage() {
         `elem_${i}`, 'node', 'array-element', 'comparison', 'sorting',
         { importance: 0.6, keywords: ['element', 'array', 'sort'], interviewRelevant: true },
       ))
+
+      entityEvents.push(createEvent('ENTITY_CREATED', i + 1, {
+        entityId: `elem_${i}`,
+        newValue: initialData[i],
+        property: 'value',
+        metadata: { entityType: 'array-element', index: i, highlight: 'default' },
+      }))
     }
 
     const sortEvents = generateSortEvents(initialData)
-    eng.ingestBatch(sortEvents)
+    const allEvents = [...entityEvents, ...sortEvents]
+    eng.ingestBatch(allEvents)
     eng.build()
 
     const ratio = estimateCompressionRatio(eng.getTimeline().getFrames())

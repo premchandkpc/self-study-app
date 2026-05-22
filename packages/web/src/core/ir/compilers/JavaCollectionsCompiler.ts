@@ -155,12 +155,7 @@ export class JavaCollectionsCompiler extends ContentCompiler {
       .filter((a) => a.action !== 'idle');
 
     if (animationSteps.length === 0) return undefined;
-
-    return {
-      duration: animationSteps.reduce((sum, s) => sum + s.duration + (s.delay || 0), 0),
-      steps: animationSteps,
-      loop: false,
-    };
+    return animationSteps;
   }
 
   protected mapTechnologyToPrimitive(technology: string, concept: string): any {

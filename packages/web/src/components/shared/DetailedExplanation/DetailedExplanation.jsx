@@ -3,7 +3,7 @@ import Card from '../Card/Card';
 import styles from './DetailedExplanation.module.css';
 
 export default function DetailedExplanation({ topic: _topic, data }) {
-  const [expandedSection, setExpandedSection] = useState(0);
+  const [expandedSection, setExpandedSection] = useState(-1);
 
   if (!data) return null;
 

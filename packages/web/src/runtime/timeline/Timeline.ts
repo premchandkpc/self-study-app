@@ -75,7 +75,6 @@ export class Timeline {
 
     for (const frameId of sortedFrameIds) {
       const events = groups.get(frameId)!
-      state.reset()
 
       for (const event of events) {
         this._applyEventToState(state, event)
@@ -122,9 +121,13 @@ export class Timeline {
               'custom',
               (event.metadata?.entityType as string) ?? 'unknown',
             )
-            if (event.newValue !== undefined) {
+            if (event.property && event.newValue !== undefined) {
+              entity.set(event.property, event.newValue)
+            } else if (event.newValue !== undefined) {
               entity.set('value', event.newValue)
             }
+            if (event.metadata?.index !== undefined) entity.set('index', event.metadata.index)
+            if (event.metadata?.highlight !== undefined) entity.set('highlight', event.metadata.highlight)
             state.addEntity(entity)
           }
         }
@@ -133,6 +136,15 @@ export class Timeline {
       case 'ENTITY_DELETED':
       case 'NODE_REMOVED': {
         if (event.entityId) state.removeEntity(event.entityId)
+        break
+      }
+      case 'LABEL_ADDED': {
+        if (event.entityId && event.property) {
+          const entity = state.getEntity(event.entityId)
+          if (entity) {
+            entity.set(event.property, event.newValue)
+          }
+        }
         break
       }
       case 'PROPERTY_CHANGED': {

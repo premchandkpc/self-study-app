@@ -17,7 +17,6 @@ import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
 import PlaygroundPage from './pages/Playground/PlaygroundPage';
-import Phase1DemoPage from './pages/Phase1Demo/Phase1DemoPage';
 import RuntimeDemoPage from './pages/RuntimeDemo/RuntimeDemoPage';
 import MarkdownDocPage from './pages/MarkdownDoc/MarkdownDocPage';
 import NotFound from './pages/NotFound/NotFound';
@@ -26,10 +25,6 @@ function AppRoutes() {
   const location = useLocation();
   const navigate = useNavigate();
   const { TOPICS } = useTopicMapsContext();
-
-  if (location.pathname === '/phase1') {
-    return <Phase1DemoPage />;
-  }
 
   if (location.pathname === '/runtime') {
     return <RuntimeDemoPage />;

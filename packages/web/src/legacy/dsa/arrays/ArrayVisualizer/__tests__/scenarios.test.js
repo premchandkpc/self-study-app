@@ -6,7 +6,7 @@
 
 import slidingWindow from '../scenarios/sliding-window';
 import twoPointers from '../scenarios/two-pointers';
-import { adaptLegacyScenarioBuilder } from '../../../core/ir/LegacyAdapter';
+import { adaptLegacyScenarioBuilder } from '../../../../../core/ir/LegacyAdapter';
 
 describe('DSA Scenarios', () => {
   describe('sliding-window', () => {

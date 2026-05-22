@@ -34,7 +34,7 @@ describe('useVisualizerScenario', () => {
 
     expect(() => {
       renderHook(() => useVisualizerScenario([]), { wrapper });
-    }).toThrow();
+    }).toThrow('non-empty scenarios');
   });
 
   it('initializes with first scenario', () => {

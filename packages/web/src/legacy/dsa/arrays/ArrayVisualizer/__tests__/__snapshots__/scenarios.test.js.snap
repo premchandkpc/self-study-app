@@ -1,0 +1,1127 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DSA Scenarios > sliding-window > generates consistent steps for default params 1`] = `
+[
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "idle",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "idle",
+        "value": 2,
+      },
+    ],
+    "codeLine": 0,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 0,
+      "space": "O(1)",
+    },
+    "narration": "Start: find max sum subarray of size k=3.",
+    "vars": {},
+    "window": null,
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "active",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "idle",
+        "value": 2,
+      },
+    ],
+    "codeLine": 3,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 1,
+      "space": "O(1)",
+    },
+    "narration": "Build first window: add arr[0]=2 → windowSum=2",
+    "vars": {
+      "i": 0,
+      "k": 3,
+      "maxSum": 0,
+      "windowSum": 2,
+    },
+    "window": {
+      "left": 0,
+      "right": 0,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "active",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "active",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "idle",
+        "value": 2,
+      },
+    ],
+    "codeLine": 3,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 2,
+      "space": "O(1)",
+    },
+    "narration": "Build first window: add arr[1]=1 → windowSum=3",
+    "vars": {
+      "i": 1,
+      "k": 3,
+      "maxSum": 0,
+      "windowSum": 3,
+    },
+    "window": {
+      "left": 0,
+      "right": 1,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "active",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "active",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "active",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "idle",
+        "value": 2,
+      },
+    ],
+    "codeLine": 3,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 3,
+      "space": "O(1)",
+    },
+    "narration": "Build first window: add arr[2]=5 → windowSum=8",
+    "vars": {
+      "i": 2,
+      "k": 3,
+      "maxSum": 0,
+      "windowSum": 8,
+    },
+    "window": {
+      "left": 0,
+      "right": 2,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "window",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "window",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "window",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "idle",
+        "value": 2,
+      },
+    ],
+    "codeLine": 4,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 3,
+      "space": "O(1)",
+    },
+    "narration": "Initial window [0..2] sum=8. Set maxSum=8.",
+    "vars": {
+      "k": 3,
+      "maxSum": 8,
+      "windowSum": 8,
+    },
+    "window": {
+      "left": 0,
+      "right": 2,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "removing",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "window",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "window",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "adding",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "visited",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "visited",
+        "value": 2,
+      },
+    ],
+    "codeLine": 6,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 4,
+      "space": "O(1)",
+    },
+    "narration": "Slide [1..3]: windowSum=7, maxSum=8",
+    "vars": {
+      "i": 3,
+      "k": 3,
+      "maxSum": 8,
+      "windowSum": 7,
+    },
+    "window": {
+      "left": 1,
+      "right": 3,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "removing",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "window",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "window",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "adding",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "visited",
+        "value": 2,
+      },
+    ],
+    "codeLine": 6,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 5,
+      "space": "O(1)",
+    },
+    "narration": "Slide [2..4]: windowSum=9, maxSum=9",
+    "vars": {
+      "i": 4,
+      "k": 3,
+      "maxSum": 9,
+      "windowSum": 9,
+    },
+    "window": {
+      "left": 2,
+      "right": 4,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "removing",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "window",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "window",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "adding",
+        "value": 2,
+      },
+    ],
+    "codeLine": 6,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 6,
+      "space": "O(1)",
+    },
+    "narration": "Slide [3..5]: windowSum=6, maxSum=9",
+    "vars": {
+      "i": 5,
+      "k": 3,
+      "maxSum": 9,
+      "windowSum": 6,
+    },
+    "window": {
+      "left": 3,
+      "right": 5,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "done",
+        "value": 2,
+      },
+      {
+        "index": 1,
+        "state": "done",
+        "value": 1,
+      },
+      {
+        "index": 2,
+        "state": "done",
+        "value": 5,
+      },
+      {
+        "index": 3,
+        "state": "done",
+        "value": 1,
+      },
+      {
+        "index": 4,
+        "state": "done",
+        "value": 3,
+      },
+      {
+        "index": 5,
+        "state": "done",
+        "value": 2,
+      },
+    ],
+    "codeLine": 9,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 6,
+      "space": "O(1)",
+    },
+    "narration": "Done! Maximum window sum = 9",
+    "vars": {
+      "maxSum": 9,
+      "result": 9,
+    },
+    "window": null,
+  },
+]
+`;
+
+exports[`DSA Scenarios > sliding-window > respects custom input params 1`] = `
+[
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "idle",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "idle",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+    ],
+    "codeLine": 0,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 0,
+      "space": "O(1)",
+    },
+    "narration": "Start: find max sum subarray of size k=2.",
+    "vars": {},
+    "window": null,
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "active",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "idle",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+    ],
+    "codeLine": 3,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 1,
+      "space": "O(1)",
+    },
+    "narration": "Build first window: add arr[0]=1 → windowSum=1",
+    "vars": {
+      "i": 0,
+      "k": 2,
+      "maxSum": 0,
+      "windowSum": 1,
+    },
+    "window": {
+      "left": 0,
+      "right": 0,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "active",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "active",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+    ],
+    "codeLine": 3,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 2,
+      "space": "O(1)",
+    },
+    "narration": "Build first window: add arr[1]=2 → windowSum=3",
+    "vars": {
+      "i": 1,
+      "k": 2,
+      "maxSum": 0,
+      "windowSum": 3,
+    },
+    "window": {
+      "left": 0,
+      "right": 1,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "window",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "window",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+    ],
+    "codeLine": 4,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 2,
+      "space": "O(1)",
+    },
+    "narration": "Initial window [0..1] sum=3. Set maxSum=3.",
+    "vars": {
+      "k": 2,
+      "maxSum": 3,
+      "windowSum": 3,
+    },
+    "window": {
+      "left": 0,
+      "right": 1,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "removing",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "window",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "adding",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "visited",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "visited",
+        "value": 5,
+      },
+    ],
+    "codeLine": 6,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 3,
+      "space": "O(1)",
+    },
+    "narration": "Slide [1..2]: windowSum=5, maxSum=5",
+    "vars": {
+      "i": 2,
+      "k": 2,
+      "maxSum": 5,
+      "windowSum": 5,
+    },
+    "window": {
+      "left": 1,
+      "right": 2,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "removing",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "window",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "adding",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "visited",
+        "value": 5,
+      },
+    ],
+    "codeLine": 6,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 4,
+      "space": "O(1)",
+    },
+    "narration": "Slide [2..3]: windowSum=7, maxSum=7",
+    "vars": {
+      "i": 3,
+      "k": 2,
+      "maxSum": 7,
+      "windowSum": 7,
+    },
+    "window": {
+      "left": 2,
+      "right": 3,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "visited",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "removing",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "window",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "adding",
+        "value": 5,
+      },
+    ],
+    "codeLine": 6,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 5,
+      "space": "O(1)",
+    },
+    "narration": "Slide [3..4]: windowSum=9, maxSum=9",
+    "vars": {
+      "i": 4,
+      "k": 2,
+      "maxSum": 9,
+      "windowSum": 9,
+    },
+    "window": {
+      "left": 3,
+      "right": 4,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "done",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "done",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "done",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "done",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "done",
+        "value": 5,
+      },
+    ],
+    "codeLine": 9,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 5,
+      "space": "O(1)",
+    },
+    "narration": "Done! Maximum window sum = 9",
+    "vars": {
+      "maxSum": 9,
+      "result": 9,
+    },
+    "window": null,
+  },
+]
+`;
+
+exports[`DSA Scenarios > two-pointers > generates consistent steps for default params 1`] = `
+[
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "left",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "idle",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 5,
+        "state": "right",
+        "value": 6,
+      },
+    ],
+    "codeLine": 1,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 0,
+      "space": "O(1)",
+    },
+    "narration": "Two Pointers: left=0, right=5. Target=9. Array sorted.",
+    "pointers": {
+      "left": 0,
+      "right": 5,
+    },
+    "vars": {
+      "found": false,
+      "left": 0,
+      "right": 5,
+      "sum": "-",
+      "target": 9,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "left",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "idle",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 5,
+        "state": "right",
+        "value": 6,
+      },
+    ],
+    "codeLine": 5,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 1,
+      "space": "O(1)",
+    },
+    "narration": "sum=7 < target=9 → move left pointer right (need bigger sum)",
+    "pointers": {
+      "left": 0,
+      "right": 5,
+    },
+    "vars": {
+      "found": false,
+      "left": 0,
+      "right": 5,
+      "sum": 7,
+      "target": 9,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "left",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 5,
+        "state": "right",
+        "value": 6,
+      },
+    ],
+    "codeLine": 2,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 1,
+      "space": "O(1)",
+    },
+    "narration": "Pointers now: left=1, right=5. Continue.",
+    "pointers": {
+      "left": 1,
+      "right": 5,
+    },
+    "vars": {
+      "found": false,
+      "left": 1,
+      "right": 5,
+      "sum": "-",
+      "target": 9,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "left",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "idle",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 5,
+        "state": "right",
+        "value": 6,
+      },
+    ],
+    "codeLine": 5,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 2,
+      "space": "O(1)",
+    },
+    "narration": "sum=8 < target=9 → move left pointer right (need bigger sum)",
+    "pointers": {
+      "left": 1,
+      "right": 5,
+    },
+    "vars": {
+      "found": false,
+      "left": 1,
+      "right": 5,
+      "sum": 8,
+      "target": 9,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "visited",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "left",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 5,
+        "state": "right",
+        "value": 6,
+      },
+    ],
+    "codeLine": 2,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 2,
+      "space": "O(1)",
+    },
+    "narration": "Pointers now: left=2, right=5. Continue.",
+    "pointers": {
+      "left": 2,
+      "right": 5,
+    },
+    "vars": {
+      "found": false,
+      "left": 2,
+      "right": 5,
+      "sum": "-",
+      "target": 9,
+    },
+  },
+  {
+    "cells": [
+      {
+        "index": 0,
+        "state": "visited",
+        "value": 1,
+      },
+      {
+        "index": 1,
+        "state": "visited",
+        "value": 2,
+      },
+      {
+        "index": 2,
+        "state": "found",
+        "value": 3,
+      },
+      {
+        "index": 3,
+        "state": "idle",
+        "value": 4,
+      },
+      {
+        "index": 4,
+        "state": "idle",
+        "value": 5,
+      },
+      {
+        "index": 5,
+        "state": "found",
+        "value": 6,
+      },
+    ],
+    "codeLine": 4,
+    "complexity": {
+      "label": "O(n)",
+      "ops": 3,
+      "space": "O(1)",
+    },
+    "narration": "Found! arr[2]+arr[5] = 3+6 = 9 == target!",
+    "pointers": {
+      "left": 2,
+      "right": 5,
+    },
+    "vars": {
+      "found": true,
+      "left": 2,
+      "right": 5,
+      "sum": 9,
+      "target": 9,
+    },
+  },
+]
+`;

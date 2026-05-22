@@ -127,8 +127,8 @@ describe('PrimitiveRenderer', () => {
   });
 
   it('accepts event handlers', () => {
-    const handleNodeClick = jest.fn();
-    const handleEdgeClick = jest.fn();
+    const handleNodeClick = vi.fn();
+    const handleEdgeClick = vi.fn();
 
     const viz: VisualizationPayload = {
       type: 'graph',

@@ -63,18 +63,18 @@ describe('CanvasTemplate', () => {
       metrics: {},
     });
 
-    const { container } = render(<CanvasTemplate scenarios={[]} />);
+    const { container } = render(<CanvasTemplate scenarios={[{ id: 's1' }]} />);
     expect(container.firstChild).toBeNull();
   });
 
   it('renders canvas and panels when viz is available', () => {
-    render(<CanvasTemplate scenarios={[]} />);
+    render(<CanvasTemplate scenarios={[{ id: 's1' }]} />);
     expect(screen.getByTestId('scenario-toolbar')).toBeInTheDocument();
     expect(screen.getByTestId('step-controls')).toBeInTheDocument();
   });
 
   it('renders visualization components', () => {
-    const { container } = render(<CanvasTemplate scenarios={[]} />);
+    const { container } = render(<CanvasTemplate scenarios={[{ id: 's1' }]} />);
     const canvas = container.querySelector('svg');
     expect(canvas).toBeInTheDocument();
   });
@@ -85,6 +85,6 @@ describe('CanvasTemplate', () => {
       { id: 'scenario2', name: 'Test Scenario 2' },
     ];
     render(<CanvasTemplate scenarios={scenarios} />);
-    expect(VisualizerHook.useVisualizerScenario).toHaveBeenCalledWith(scenarios);
+    expect(VisualizerHook.useVisualizerScenario).toHaveBeenCalledWith(scenarios, undefined);
   });
 });

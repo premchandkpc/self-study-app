@@ -1,5 +1,78 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Code Instrumentation > instrumentFunction > handles array patterns 1`] = `
+{
+  "code": "function solve(arr) {
+const __s={arr:arr}; const [a, b] = arr;
+try{__s.a=a;}catch(_){}try{__s.b=b;}catch(_){}__step__({...__s},1); }",
+  "codeLines": [
+    "function solve(arr) { const [a, b] = arr; }",
+  ],
+  "fnName": "solve",
+  "paramNames": [
+    "arr",
+  ],
+}
+`;
+
+exports[`Code Instrumentation > instrumentFunction > handles destructuring patterns 1`] = `
+{
+  "code": "function solve(obj) {
+const __s={obj:obj}; const { x, y } = obj;
+try{__s.x=x;}catch(_){}try{__s.y=y;}catch(_){}__step__({...__s},1); }",
+  "codeLines": [
+    "function solve(obj) { const { x, y } = obj; }",
+  ],
+  "fnName": "solve",
+  "paramNames": [
+    "obj",
+  ],
+}
+`;
+
+exports[`Code Instrumentation > instrumentFunction > instruments assignment expression 1`] = `
+{
+  "code": "function solve() {
+const __s={}; let x = 5;
+try{__s.x=x;}catch(_){}__step__({...__s},1); x = 10;
+try{__s.x=x;}catch(_){}__step__({...__s},1); }",
+  "codeLines": [
+    "function solve() { let x = 5; x = 10; }",
+  ],
+  "fnName": "solve",
+  "paramNames": [],
+}
+`;
+
+exports[`Code Instrumentation > instrumentFunction > instruments for loop 1`] = `
+{
+  "code": "
+        function solve() {
+const __s={};
+          const arr = [1, 2, 3];
+try{__s.arr=arr;}catch(_){}__step__({...__s},3);
+          for (let i = 0; i < arr.length; i++) {
+try{__s.i=i;}catch(_){}__step__({...__s},4);
+            arr[i] *= 2;
+try{__s.arr=arr;}catch(_){}__step__({...__s},5);
+          }
+        }
+      ",
+  "codeLines": [
+    "",
+    "        function solve() {",
+    "          const arr = [1, 2, 3];",
+    "          for (let i = 0; i < arr.length; i++) {",
+    "            arr[i] *= 2;",
+    "          }",
+    "        }",
+    "      ",
+  ],
+  "fnName": "solve",
+  "paramNames": [],
+}
+`;
+
 exports[`Code Instrumentation > instrumentFunction > instruments return statement 1`] = `
 {
   "code": "
@@ -20,5 +93,18 @@ const __s={a:a,b:b};
     "a",
     "b",
   ],
+}
+`;
+
+exports[`Code Instrumentation > instrumentFunction > instruments simple variable declaration 1`] = `
+{
+  "code": "function solve() {
+const __s={}; let x = 5;
+try{__s.x=x;}catch(_){}__step__({...__s},1); }",
+  "codeLines": [
+    "function solve() { let x = 5; }",
+  ],
+  "fnName": "solve",
+  "paramNames": [],
 }
 `;

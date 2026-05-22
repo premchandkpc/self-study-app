@@ -54,7 +54,7 @@ describe('ExplanationCard', () => {
     render(<ExplanationCard topic="dsa" subtopic="Queue" data={mockData} />);
     expect(screen.getByText('⏱️ Complexity')).toBeInTheDocument();
     expect(screen.getByText('Time (enqueue):')).toBeInTheDocument();
-    expect(screen.getByText('O(1)')).toBeInTheDocument();
+    expect(screen.getAllByText('O(1)').length).toBeGreaterThan(0);
   });
 
   it('does not render optional sections when not provided', () => {

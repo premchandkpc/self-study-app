@@ -1,6 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { createContext } from 'react';
 import App from './App';
+
+const mockTopics = [
+  { id: 'dsa', label: 'Data Structures', icon: '📦', abbr: 'dsa', subtopics: ['Arrays', 'LinkedList'] },
+  { id: 'algos', label: 'Algorithms', icon: '🔄', abbr: 'algos', subtopics: ['Sorting', 'Search'] },
+];
 
 vi.mock('./pages/Home/Home', () => ({
   default: () => <div>Home Page</div>,
@@ -34,6 +40,12 @@ vi.mock('./components/layout/MainLayout/MainLayout', () => ({
 }));
 vi.mock('./components/shared/AgentWidget/AgentWidget', () => ({
   default: () => <div data-testid="agent-widget">Agent Widget</div>,
+}));
+vi.mock('./core/context/TopicMapsContext', () => ({
+  TopicMapsProvider: ({ children }) => <>{children}</>,
+}));
+vi.mock('./core/context/useTopicMapsContext', () => ({
+  useTopicMapsContext: () => ({ TOPICS: mockTopics }),
 }));
 
 describe('App', () => {
