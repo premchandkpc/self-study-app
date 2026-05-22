@@ -1,0 +1,14 @@
+{
+  "name": "react-stateless-app",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd packages/api && node src/index.js",
+    "dev:web": "cd packages/web && npx vite",
+    "seed": "cd packages/api && node src/seed.js",
+    "install:all": "cd packages/api && npm install && cd ../web && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

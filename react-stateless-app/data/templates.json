@@ -1,0 +1,48 @@
+[
+  {
+    "slug": "markdown",
+    "name": "Markdown Document",
+    "description": "Renders markdown content with optional frontmatter",
+    "config": {
+      "themes": ["light", "dark"]
+    }
+  },
+  {
+    "slug": "playground",
+    "name": "Code Playground",
+    "description": "Code editor with run button and output display",
+    "config": {
+      "languages": ["javascript"]
+    }
+  },
+  {
+    "slug": "split-panel",
+    "name": "Split Panel",
+    "description": "Two-panel resizable layout",
+    "config": {
+      "defaultRatio": 0.5,
+      "minRatio": 0.2,
+      "maxRatio": 0.8
+    }
+  },
+  {
+    "slug": "tabs",
+    "name": "Tabbed Container",
+    "description": "Tab-based container for switching between templates",
+    "config": {}
+  },
+  {
+    "slug": "card-grid",
+    "name": "Card Grid",
+    "description": "Grid of clickable cards for subtopic listings",
+    "config": {
+      "columns": 3
+    }
+  },
+  {
+    "slug": "visualizer",
+    "name": "Algorithm Visualizer",
+    "description": "Step-by-step algorithm visualization",
+    "config": {}
+  }
+]
