@@ -6,7 +6,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 20px 1fr 1fr 80px;
+  grid-template-columns: 20px 3fr 1fr 80px;
   gap: var(--space-sm);
   align-items: center;
   padding: 6px var(--space-sm);
@@ -30,6 +30,7 @@
 .name {
   color: var(--node-default);
   font-weight: 600;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -38,6 +39,7 @@
 .value {
   color: var(--node-active);
   font-weight: 700;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

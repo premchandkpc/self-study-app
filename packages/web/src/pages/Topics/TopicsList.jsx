@@ -8,7 +8,7 @@ import styles from './Topics.module.css';
 export default function TopicsList() {
   const navigate = useNavigate();
   const [openTopic, setOpenTopic] = useState(null);
-  const { TOPICS, ABBR_MAP, SUBTOPIC_ROUTES, VISUALIZER_MAP, TOPIC_META } = useTopicMapsContext();
+  const { TOPICS, VISUALIZER_MAP } = useTopicMapsContext();
 
   const learningResources = [
     { icon: '▶️', name: 'Interactive Visualizer', desc: 'Step through algorithms and data structures with full animation control' },
@@ -35,7 +35,7 @@ export default function TopicsList() {
 
       <div className={styles.topicList}>
         {TOPICS.map((topic) => {
-          const meta = TOPIC_META[topic.id] || {};
+          const meta = topic.meta || {};
           const isOpen = openTopic === topic.id;
           return (
             <div key={topic.id} className={styles.topicSection}>

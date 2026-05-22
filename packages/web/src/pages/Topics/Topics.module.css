@@ -27,6 +27,23 @@
   margin-bottom: var(--space-xl);
 }
 
+/* ── Document action (full doc read button area) ── */
+.docAction {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+}
+
+.docActionHint {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
 /* ── Topic list with dropdown ── */
 .topicList {
   display: flex;

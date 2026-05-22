@@ -91,6 +91,13 @@
   gap: var(--space-xs);
 }
 
+.noResults {
+  padding: var(--space-md);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .topicItem {
   padding: var(--space-sm) var(--space-md);
   background-color: var(--background);

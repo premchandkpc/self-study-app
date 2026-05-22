@@ -10,7 +10,9 @@
       "Bash(grep -E \"\\\\.\\(jsx|js\\)$\")",
       "Bash(pkill -f \"vite\")",
       "Bash(npm -w packages/web run dev)",
-      "Bash(node /tmp/test-custom-code.js)"
+      "Bash(node /tmp/test-custom-code.js)",
+      "Bash(chromium-cli http://localhost:5173/dsa/arrays --screenshot /tmp/visualizer-vars.png --wait 2000)",
+      "Bash(node -e ' *)"
     ]
   }
 }

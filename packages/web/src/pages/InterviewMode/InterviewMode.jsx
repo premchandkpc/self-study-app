@@ -56,7 +56,6 @@ export default function InterviewMode() {
     setScore((s) => ({ ...s, [knew ? 'know' : 'skip']: s[knew ? 'know' : 'skip'] + 1 }));
     if (idx + 1 >= deck.length) {
       setDone(true);
-      clearInterval(timerRef.current);
     } else {
       setIdx((i) => i + 1);
       setFlipped(false);
@@ -70,6 +69,7 @@ export default function InterviewMode() {
     setFlipped(false);
     setScore({ know: 0, skip: 0 });
     setDone(false);
+    setTimerOn(false);
     setElapsed(0);
   }
 

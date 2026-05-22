@@ -6,6 +6,7 @@ import { DemoSection } from './DemoSection';
 import { FeaturesSection } from './FeaturesSection';
 import { TopicsSection } from './TopicsSection';
 import { PathsSection } from './PathsSection';
+import { ReadSection } from './ReadSection';
 import { ModesSection } from './ModesSection';
 import styles from './Home.module.css';
 
@@ -21,6 +22,7 @@ const HomeComponent = memo(function Home({ onSelectTopic }) {
       <DemoSection initialDemo="array" />
       <FeaturesSection />
       <TopicsSection topics={TOPICS} onSelectTopic={onSelectTopic} />
+      <ReadSection />
       <PathsSection />
       <ModesSection />
     </div>

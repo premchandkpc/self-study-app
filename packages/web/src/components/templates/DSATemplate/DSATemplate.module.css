@@ -17,7 +17,7 @@
 .varChipVal       { font-size: 12px; color: var(--node-active); font-weight: 700; }
 
 /* ── body ── */
-.body { display: grid; grid-template-columns: 1fr minmax(280px, 320px); gap: var(--space-md); }
+.body { display: grid; grid-template-columns: 1fr minmax(350px, 420px); gap: var(--space-md); }
 .vizArea { display: flex; flex-direction: column; gap: var(--space-sm); min-height: 240px; }
 .panels  { display: flex; flex-direction: column; gap: var(--space-sm); }
 

@@ -5,7 +5,7 @@ import styles from './ErrorBoundary.module.css';
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, errorInfo: null, showDetails: false };
   }
 
   static getDerivedStateFromError(error) {
@@ -14,6 +14,19 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
+    this.setState({ errorInfo });
+  }
+
+  handleReset() {
+    this.setState({ hasError: false, error: null, errorInfo: null, showDetails: false });
+  }
+
+  handleGoHome() {
+    if (this.props.onReset) {
+      this.props.onReset();
+    } else {
+      window.location.href = '/';
+    }
   }
 
   render() {
@@ -23,15 +36,29 @@ export default class ErrorBoundary extends Component {
           <div className={styles.errorBox}>
             <h2>Something went wrong</h2>
             <p className={styles.errorMessage}>{this.state.error?.message}</p>
-            <Button
-              variant="primary"
-              onClick={() => {
-                this.setState({ hasError: false });
-                window.location.href = '/';
-              }}
-            >
-              Go Home
-            </Button>
+
+            {this.state.errorInfo && (
+              <div className={styles.detailsSection}>
+                <button
+                  className={styles.detailsToggle}
+                  onClick={() => this.setState((s) => ({ showDetails: !s.showDetails }))}
+                >
+                  {this.state.showDetails ? 'Hide' : 'Show'} error details
+                </button>
+                {this.state.showDetails && (
+                  <pre className={styles.stackTrace}>{this.state.errorInfo.componentStack}</pre>
+                )}
+              </div>
+            )}
+
+            <div className={styles.errorActions}>
+              <Button variant="secondary" onClick={() => this.handleReset()}>
+                Try Again
+              </Button>
+              <Button variant="primary" onClick={() => this.handleGoHome()}>
+                Go Home
+              </Button>
+            </div>
           </div>
         </div>
       );

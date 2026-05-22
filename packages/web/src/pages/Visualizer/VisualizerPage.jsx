@@ -2,7 +2,6 @@ import { useState, Suspense, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { SimulationProvider } from '../../core/context/SimulationContext';
 import { useTopicMapsContext } from '../../core/context/TopicMapsContext';
-import { useSubtopic } from '../../core/hooks/useSubtopic';
 import { VISUALIZERS } from './visualizers.config';
 import ExplanationCard from '../../components/shared/ExplanationCard/ExplanationCard';
 import Button from '../../components/shared/Button/Button';
@@ -19,7 +18,6 @@ export default function VisualizerPage() {
   const [mode, setMode] = useState('sim');
   const [subtab, setSubtab] = useState(0);
   const { SLUG_MAP, ABBR_MAP } = useTopicMapsContext();
-  const { data: subtopicData, isLoading: isSubtopicLoading } = useSubtopic(abbr, slug);
 
   useEffect(() => {
     if (hash === 'learn') setMode('learn');
@@ -47,17 +45,40 @@ export default function VisualizerPage() {
             <p className={styles.desc}>{topicInfo.meta?.desc}</p>
           </div>
         </div>
-        <div className={styles.subtopicList}>
-          {topicInfo.subtopics.map((s, i) => {
-            const key = `${topicInfo.abbr}:${s.scenarioId || slugify(s.name)}`;
-            return (
-              <Card key={i} variant="default" hoverable className={styles.subtopicCard}
+        {topicInfo.abbr === 'systemdesign' && (
+        <div className={styles.docActions}>
+          <div className={styles.docActionsLabel}>📖 Full System Design Documents</div>
+          <div className={styles.docActionsBtns}>
+            <Card variant="default" hoverable className={styles.docActionCard}
+              onClick={() => navigate('/read/whatsapp')}>
+              <span className={styles.docActionIcon}>💬</span>
+              <div>
+                <div className={styles.docActionTitle}>WhatsApp</div>
+                <div className={styles.docActionDesc}>Complete deep dive — 43 sections</div>
+              </div>
+              <span className={styles.docActionArrow}>→</span>
+            </Card>
+            <Card variant="default" hoverable className={styles.docActionCard}
+              onClick={() => navigate('/read/uber')}>
+              <span className={styles.docActionIcon}>🚗</span>
+              <div>
+                <div className={styles.docActionTitle}>Uber</div>
+                <div className={styles.docActionDesc}>Complete deep dive — 44 sections</div>
+              </div>
+              <span className={styles.docActionArrow}>→</span>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      <div className={styles.subtopicList}>
+          {topicInfo.subtopics.map((s) => (
+              <Card key={s.slug || s.scenarioId || slugify(s.name)} variant="default" hoverable className={styles.subtopicCard}
                 onClick={() => navigate(`/${topicInfo.abbr}/${s.scenarioId || slugify(s.name)}`)}>
                 <span>{s.name}</span>
                 {s.scenarioId && <span className={styles.simBadge}>▶ Sim</span>}
               </Card>
-            );
-          })}
+          ))}
         </div>
       </div>
     );
@@ -113,25 +134,19 @@ export default function VisualizerPage() {
 
       {mode === 'learn' && hasStudy ? (
         <div className={styles.studyContent}>
-          {isSubtopicLoading ? (
-            <Loading label="Loading content…" />
-          ) : subtopicData ? (
-            subtopicData.tabs ? (
-              <>
-                <div className={styles.tabNav}>
-                  {subtopicData.tabs.map((t, i) => (
-                    <button key={t.name}
-                      className={`${styles.tabNavBtn} ${i === subtab ? styles.tabNavBtnActive : ''}`}
-                      onClick={() => setSubtab(i)}>{t.name}</button>
-                  ))}
-                </div>
-                <ExplanationCard topic={subtopicData.topicId} subtopic={subtopicData.tabs[subtab].name} data={subtopicData.tabs[subtab]} />
-              </>
-            ) : (
-              <ExplanationCard topic={subtopicData.topicId} subtopic={subtopicData.name} data={subtopicData} />
-            )
+          {entry.tabs ? (
+            <>
+              <div className={styles.tabNav}>
+                {entry.tabs.map((t, i) => (
+                  <button key={t.name}
+                    className={`${styles.tabNavBtn} ${i === subtab ? styles.tabNavBtnActive : ''}`}
+                    onClick={() => setSubtab(i)}>{t.name}</button>
+                ))}
+              </div>
+              <ExplanationCard topic={entry.topicId} subtopic={entry.tabs[subtab].name} data={entry.tabs[subtab]} />
+            </>
           ) : (
-            <div style={{ color: 'var(--text-muted)', padding: '20px' }}>Failed to load content</div>
+            <ExplanationCard topic={entry.topicId} subtopic={entry.name} data={entry} />
           )}
         </div>
       ) : (

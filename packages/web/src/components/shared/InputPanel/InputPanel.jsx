@@ -9,7 +9,7 @@ import styles from './InputPanel.module.css';
  *
  * onApply(parsedInputs) called when user clicks Run or presses Enter.
  */
-export default function InputPanel({ schema, current = {}, onApply }) {
+export default function InputPanel({ schema, current = {}, onApply, hideRunButton }) {
   if (!schema?.length) return null;
 
   const initial = Object.fromEntries(
@@ -99,7 +99,7 @@ export default function InputPanel({ schema, current = {}, onApply }) {
           ))}
         </div>
       )}
-      <button className={styles.runBtn} onClick={apply}>▶ Run</button>
+      {!hideRunButton && <button className={styles.runBtn} onClick={apply}>▶ Run</button>}
     </div>
   );
 }

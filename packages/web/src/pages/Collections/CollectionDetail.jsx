@@ -98,9 +98,18 @@ export default function CollectionDetail({ collectionId }) {
                     icon="▶"
                     onClick={() => {
                       const topicId = VIZ_TYPE_TO_TOPIC[scenario.vizType];
+                      if (!topicId) {
+                        console.warn('CollectionDetail: unknown vizType "%s" for scenario "%s"', scenario.vizType, scenario.id);
+                        navigate('/topics');
+                        return;
+                      }
                       const topic = ABBR_MAP[topicId];
-                      const route = topic ? buildTopicRoute(topic.abbr) : '/topics';
-                      navigate(route);
+                      if (!topic) {
+                        console.warn('CollectionDetail: topic "%s" not found in ABBR_MAP', topicId);
+                        navigate('/topics');
+                        return;
+                      }
+                      navigate(buildTopicRoute(topic.abbr));
                     }}
                   >
                     Simulate

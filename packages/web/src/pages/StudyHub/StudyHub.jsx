@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DETAILED_EXPLANATIONS } from '../../core/constants/detailedExplanations';
 import Button from '../../components/shared/Button/Button';
-import Card from '../../components/shared/Card/Card';
 import DetailedExplanation from '../../components/shared/DetailedExplanation/DetailedExplanation';
-import AnimatedBox from '../../components/shared/AnimatedBox/AnimatedBox';
 import styles from './StudyHub.module.css';
 
 const TOPICS_BY_CATEGORY = {
@@ -60,17 +58,21 @@ export default function StudyHub() {
 
           {searchTerm ? (
             // Search results
-            <div className={styles.topicList}>
-              {filteredTopics.map((topic) => (
-                <div
-                  key={topic.key}
-                  className={`${styles.topicItem} ${selectedTopic === topic.key ? styles.active : ''}`}
-                  onClick={() => setSelectedTopic(topic.key)}
-                >
-                  {topic.title}
-                </div>
-              ))}
-            </div>
+            filteredTopics.length === 0 ? (
+              <div className={styles.noResults}>No topics found for &quot;{searchTerm}&quot;</div>
+            ) : (
+              <div className={styles.topicList}>
+                {filteredTopics.map((topic) => (
+                  <div
+                    key={topic.key}
+                    className={`${styles.topicItem} ${selectedTopic === topic.key ? styles.active : ''}`}
+                    onClick={() => setSelectedTopic(topic.key)}
+                  >
+                    {topic.title}
+                  </div>
+                ))}
+              </div>
+            )
           ) : (
             // Categorized topics
             Object.entries(TOPICS_BY_CATEGORY).map(([category, topics]) => (
@@ -79,6 +81,7 @@ export default function StudyHub() {
                 <div className={styles.topicList}>
                   {topics.map((topicKey) => {
                     const topic = DETAILED_EXPLANATIONS[topicKey];
+                    if (!topic) return null;
                     return (
                       <div
                         key={topicKey}

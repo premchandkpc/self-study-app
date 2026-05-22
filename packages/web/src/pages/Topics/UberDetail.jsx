@@ -69,6 +69,17 @@ export default function UberDetail() {
         desc="14 components across 5 layers — explore each sub-system below."
       />
 
+      <div className={styles.docAction}>
+        <Button
+          variant="primary"
+          icon="📖"
+          onClick={() => navigate('/read/uber')}
+        >
+          Read Full Document
+        </Button>
+        <span className={styles.docActionHint}>Complete system design deep dive — 44 sections</span>
+      </div>
+
       <div className={styles.modulesGrid}>
         {UBER_COMPONENTS.map((comp, i) => (
           <AnimatedBox key={comp.id} animation="slide-up" delay={i * 40}>

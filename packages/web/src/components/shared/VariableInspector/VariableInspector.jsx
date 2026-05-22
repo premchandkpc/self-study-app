@@ -10,6 +10,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
   if (depth > MAX_DEPTH) {
     return (
       <div className={styles.row}>
+        <span className={styles.toggle}></span>
         <span className={styles.name}>{name}</span>
         <span className={styles.value}>…</span>
         <span className={styles.type}>max depth</span>
@@ -20,6 +21,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
   if (value === null || value === undefined) {
     return (
       <div className={styles.row}>
+        <span className={styles.toggle}></span>
         <span className={styles.name}>{name}</span>
         <span className={styles.value}>null</span>
         <span className={styles.type}>{type}</span>
@@ -30,6 +32,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
   if (typeof value === 'boolean') {
     return (
       <div className={styles.row}>
+        <span className={styles.toggle}></span>
         <span className={styles.name}>{name}</span>
         <span className={`${styles.value} ${value ? styles.true : styles.false}`}>{String(value)}</span>
         <span className={styles.type}>{type}</span>
@@ -40,6 +43,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
   if (typeof value === 'number') {
     return (
       <div className={styles.row}>
+        <span className={styles.toggle}></span>
         <span className={styles.name}>{name}</span>
         <span className={styles.value}>{value}</span>
         <span className={styles.type}>{type}</span>
@@ -51,6 +55,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
     if (value.length <= 20) {
       return (
         <div className={styles.row}>
+          <span className={styles.toggle}></span>
           <span className={styles.name}>{name}</span>
           <span className={styles.value}>"{value}"</span>
           <span className={styles.type}>{type}</span>
@@ -59,6 +64,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
     }
     return (
       <div className={styles.row}>
+        <span className={styles.toggle}></span>
         <span className={styles.name}>{name}</span>
         <span className={styles.value}>"{value.slice(0, 17)}…"</span>
         <span className={styles.type}>{type}</span>
@@ -123,6 +129,7 @@ export default function VariableInspector({ name, value, type, depth = 0 }) {
 
   return (
     <div className={styles.row}>
+      <span className={styles.toggle}></span>
       <span className={styles.name}>{name}</span>
       <span className={styles.value}>{String(value)}</span>
       <span className={styles.type}>{type}</span>
