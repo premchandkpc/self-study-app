@@ -1,11 +1,11 @@
 import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './k8s-engine';
-import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
-import StepControls from '../../shared/StepControls/StepControls';
-import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
-import CodePanel from '../../shared/CodePanel/CodePanel';
-import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
-import ResultPanel from '../../shared/ResultPanel/ResultPanel';
+import ScenarioToolbar from '../../../components/shared/ScenarioToolbar/ScenarioToolbar';
+import StepControls from '../../../components/shared/StepControls/StepControls';
+import ComplexityPanel from '../../../components/shared/ComplexityPanel/ComplexityPanel';
+import CodePanel from '../../../components/shared/CodePanel/CodePanel';
+import MetricsPanel from '../../../components/shared/MetricsPanel/MetricsPanel';
+import ResultPanel from '../../../components/shared/ResultPanel/ResultPanel';
 import styles from './KubernetesVisualizer.module.css';
 
 const POD_STATE_COLOR = {

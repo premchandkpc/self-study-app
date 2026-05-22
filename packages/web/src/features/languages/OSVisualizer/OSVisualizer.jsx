@@ -1,12 +1,12 @@
 import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './os-engine';
-import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
-import StepControls from '../../shared/StepControls/StepControls';
-import ComplexityPanel from '../../shared/ComplexityPanel/ComplexityPanel';
-import CodePanel from '../../shared/CodePanel/CodePanel';
-import MetricsPanel from '../../shared/MetricsPanel/MetricsPanel';
-import VariablesPanel from '../../shared/VariablesPanel/VariablesPanel';
-import TopicContentSection from '../../shared/TopicContentSection/TopicContentSection';
+import ScenarioToolbar from '../../../components/shared/ScenarioToolbar/ScenarioToolbar';
+import StepControls from '../../../components/shared/StepControls/StepControls';
+import ComplexityPanel from '../../../components/shared/ComplexityPanel/ComplexityPanel';
+import CodePanel from '../../../components/shared/CodePanel/CodePanel';
+import MetricsPanel from '../../../components/shared/MetricsPanel/MetricsPanel';
+import VariablesPanel from '../../../components/shared/VariablesPanel/VariablesPanel';
+import TopicContentSection from '../../../components/shared/TopicContentSection/TopicContentSection';
 import styles from './OSVisualizer.module.css';
 
 const STATE_COLORS = {

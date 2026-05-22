@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { STREAM_SCENARIOS, STREAM_CATEGORIES } from './java-streams-engine';
-import StepControls from '../../shared/StepControls/StepControls';
-import CodePanel from '../../shared/CodePanel/CodePanel';
-import NarrationPanel from '../../shared/NarrationPanel/NarrationPanel';
+import StepControls from '../../../components/shared/StepControls/StepControls';
+import CodePanel from '../../../components/shared/CodePanel/CodePanel';
+import NarrationPanel from '../../../components/shared/NarrationPanel/NarrationPanel';
 import styles from './JavaStreamsVisualizer.module.css';
 
 const STATE_COLORS = {
