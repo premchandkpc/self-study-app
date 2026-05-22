@@ -1,11 +1,11 @@
-import { useVisualizerScenario } from '../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './concurrency-engine';
-import ScenarioToolbar from '../../components/shared/ScenarioToolbar/ScenarioToolbar';
-import StepControls from '../../components/shared/StepControls/StepControls';
-import CodePanel from '../../components/shared/CodePanel/CodePanel';
-import MetricsPanel from '../../components/shared/MetricsPanel/MetricsPanel';
-import ComplexityPanel from '../../components/shared/ComplexityPanel/ComplexityPanel';
-import TopicContentSection from '../../components/shared/TopicContentSection/TopicContentSection';
+import ScenarioToolbar from '../../../../components/shared/ScenarioToolbar/ScenarioToolbar';
+import StepControls from '../../../../components/shared/StepControls/StepControls';
+import CodePanel from '../../../../components/shared/CodePanel/CodePanel';
+import MetricsPanel from '../../../../components/shared/MetricsPanel/MetricsPanel';
+import ComplexityPanel from '../../../../components/shared/ComplexityPanel/ComplexityPanel';
+import TopicContentSection from '../../../../components/shared/TopicContentSection/TopicContentSection';
 import styles from './ConcurrencyVisualizer.module.css';
 
 const STATE_COLORS = {

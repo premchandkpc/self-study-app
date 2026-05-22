@@ -1,13 +1,13 @@
 import { memo, useState } from 'react';
-import { useVisualizerScenario } from '../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { JC_SCENARIOS } from './java-collections-engine';
 import { JC_COLLECTION_TYPES, JC_CATEGORIES } from './jc-constants';
 import { OpsLog } from './shared/OpsLog';
 import { ExceptionBanner } from './shared/ExceptionBanner';
 import { ArrayListRenderer, LinkedListRenderer, BucketRenderer, TreeMapRenderer, PriorityQueueRenderer, ArrayDequeRenderer, ConcurrentHashMapRenderer, CopyOnWriteRenderer } from './types';
-import StepControls from '../../components/shared/StepControls/StepControls';
-import CodePanel from '../../components/shared/CodePanel/CodePanel';
-import NarrationPanel from '../../components/shared/NarrationPanel/NarrationPanel';
+import StepControls from '../../../../components/shared/StepControls/StepControls';
+import CodePanel from '../../../../components/shared/CodePanel/CodePanel';
+import NarrationPanel from '../../../../components/shared/NarrationPanel/NarrationPanel';
 import styles from './JavaCollectionsVisualizer.module.css';
 
 function VizRenderer({ viz }) {

@@ -1,4 +1,4 @@
-import { AlgorithmCompiler } from '../../../core/compiler/AlgorithmCompiler.js';
+import { AlgorithmCompiler } from '../../../../core/compiler/AlgorithmCompiler.js';
 
 // Two Pointers algorithm scenarios
 // Generated from algorithm definitions using AlgorithmCompiler

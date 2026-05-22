@@ -3,7 +3,7 @@
  * Verifies graph structure consistency.
  */
 
-import { adaptLegacyScenarioBuilder } from '../../core/ir/LegacyAdapter';
+import { adaptLegacyScenarioBuilder } from '../../../core/ir/LegacyAdapter';
 
 describe('SystemDesign Scenarios', () => {
   let uberSteps, whatsappSteps;

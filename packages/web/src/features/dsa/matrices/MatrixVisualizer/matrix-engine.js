@@ -1,4 +1,4 @@
-import { AlgorithmCompiler } from '../../core/compiler/AlgorithmCompiler';
+import { AlgorithmCompiler } from '../../../../core/compiler/AlgorithmCompiler';
 
 const compiler = new AlgorithmCompiler();
 
