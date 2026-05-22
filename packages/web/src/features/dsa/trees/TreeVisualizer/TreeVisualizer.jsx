@@ -1,4 +1,4 @@
-import { DSATemplate } from '../../templates';
+import { DSATemplate } from '../../../../components/templates';
 import { SCENARIOS } from './tree-engine';
 
 export default function TreeVisualizer() {

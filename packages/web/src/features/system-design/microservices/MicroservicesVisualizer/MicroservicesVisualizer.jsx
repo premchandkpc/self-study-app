@@ -1,4 +1,4 @@
-import { CanvasTemplate } from '../../templates';
+import { CanvasTemplate } from '../../../../components/templates';
 import { SCENARIOS } from './microservices-engine';
 
 export default function MicroservicesVisualizer() {

@@ -1,4 +1,4 @@
-import { CanvasTemplate } from '../../templates';
+import { CanvasTemplate } from '../../../../components/templates';
 import { SCENARIOS } from './sd-engine';
 
 export default function SystemDesignVisualizer({ scenarioId, tabName }) {

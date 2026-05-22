@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { JC_SCENARIOS } from './java-collections-engine';
 import { JC_COLLECTION_TYPES, JC_CATEGORIES } from './jc-constants';
 import { OpsLog } from './shared/OpsLog';

@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './redis-engine';
 import { createView } from './viewFactory.jsx';
-import { VisualizerTemplate } from '../../templates/VisualizerTemplate/VisualizerTemplate';
+import { VisualizerTemplate } from '../../../../components/templates/VisualizerTemplate/VisualizerTemplate';
 
 const RedisVisualizerComponent = memo(function RedisVisualizer() {
   const { activeId, active, viz, select, metrics } = useVisualizerScenario(SCENARIOS);

@@ -1,4 +1,4 @@
-import { SystemTemplate } from '../../templates';
+import { SystemTemplate } from '../../../../components/templates';
 import { SCENARIOS } from './aws-engine';
 
 export default function AWSVisualizer() {

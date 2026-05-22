@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { STREAM_SCENARIOS, STREAM_CATEGORIES } from './java-streams-engine';
 import StepControls from '../../shared/StepControls/StepControls';
 import CodePanel from '../../shared/CodePanel/CodePanel';

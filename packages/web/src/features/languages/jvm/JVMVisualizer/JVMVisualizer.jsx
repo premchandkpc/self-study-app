@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { SCENARIOS } from './jvm-engine';
 import ScenarioToolbar from '../../shared/ScenarioToolbar/ScenarioToolbar';
 import StepControls from '../../shared/StepControls/StepControls';

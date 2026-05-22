@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useVisualizerScenario } from '../../../core/hooks/useVisualizerScenario';
+import { useVisualizerScenario } from '../../../../core/hooks/useVisualizerScenario';
 import { SPRING_SCENARIOS, SPRING_CATEGORIES } from './spring-engine';
 import StepControls from '../../shared/StepControls/StepControls';
 import CodePanel from '../../shared/CodePanel/CodePanel';

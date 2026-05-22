@@ -1,4 +1,4 @@
-import { DSATemplate } from '../../templates';
+import { DSATemplate } from '../../../../components/templates';
 import { SCENARIOS } from './unionfind-engine';
 
 export default function UnionFindVisualizer() {
