@@ -17,8 +17,7 @@ import VisualizerPage from './pages/Visualizer/VisualizerPage';
 import InterviewMode from './pages/InterviewMode/InterviewMode';
 import CompilerPage from './pages/Compiler/CompilerPage';
 import PlaygroundPage from './pages/Playground/PlaygroundPage';
-import Phase1DemoPage from './pages/Phase1Demo/Phase1DemoPage';
-import Study2Page from './pages/Study2/Study2Page';
+import Runtime2Page from './pages/Runtime2/Runtime2Page';
 import MarkdownDocPage from './pages/MarkdownDoc/MarkdownDocPage';
 import NotFound from './pages/NotFound/NotFound';
 
@@ -27,12 +26,8 @@ function AppRoutes() {
   const navigate = useNavigate();
   const { TOPICS } = useTopicMapsContext();
 
-  if (location.pathname === '/phase1') {
-    return <Phase1DemoPage />;
-  }
-
-  if (location.pathname === '/study2') {
-    return <Study2Page />;
+  if (location.pathname === '/runtime2') {
+    return <Runtime2Page />;
   }
 
   return (

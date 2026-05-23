@@ -11,11 +11,11 @@ function buildDnsSteps() {
     domain: 'example.com',
     chain: [
       makeNode('browser', 'Browser Cache', 'cache'),
-      makeNode('os', 'OS Cache', 'cache'),
-      makeNode('resolver', 'Recursive Resolver\n8.8.8.8', 'resolver'),
-      makeNode('root', 'Root NS\n(.)', 'nameserver'),
-      makeNode('tld', 'TLD NS\n(.com)', 'nameserver'),
-      makeNode('auth', 'Authoritative NS\nexample.com', 'nameserver'),
+      makeNode('os', 'OS Resolver\n(/etc/hosts, nscd)', 'cache'),
+      makeNode('resolver', 'Local DNS Resolver\n(ISP / 8.8.8.8)', 'resolver'),
+      makeNode('root', 'Root Nameserver', 'nameserver'),
+      makeNode('tld', 'TLD Nameserver\n(.com)', 'nameserver'),
+      makeNode('auth', 'Authoritative\nNameserver', 'nameserver'),
     ],
     result: null,
     events: [],
@@ -42,9 +42,9 @@ function buildDnsSteps() {
   s.chain[1].active = true;
   s.activeNode = 'os';
   s.metrics.lookups++;
-  s.events.push({ msg: 'Check OS DNS cache (/etc/hosts, nscd)', type: 'info' });
+  s.events.push({ msg: 'Check OS resolver (/etc/hosts, nscd)', type: 'info' });
   s.vars = { domain: 'example.com', step: 'os-cache', ttl: 0, cached: false };
-  snap(steps, s, 'OS checks /etc/hosts and system DNS cache. Not found.', 3);
+  snap(steps, s, 'OS resolver checks /etc/hosts and system DNS cache. Not found.', 3);
 
   s.chain[1].active = false;
 
@@ -52,15 +52,15 @@ function buildDnsSteps() {
   s.chain[2].active = true;
   s.activeNode = 'resolver';
   s.metrics.lookups++;
-  s.events.push({ msg: 'Query recursive resolver (8.8.8.8)', type: 'info' });
+  s.events.push({ msg: 'Query local DNS resolver (ISP / 8.8.8.8)', type: 'info' });
   s.vars = { domain: 'example.com', step: 'recursive-resolver', ttl: 300, cached: false };
-  snap(steps, s, 'Query sent to recursive resolver (8.8.8.8). Resolver does the heavy lifting.', 4);
+  snap(steps, s, 'Query sent to local DNS resolver (ISP / 8.8.8.8). Resolver does the heavy lifting.', 4);
 
   // Root NS
   s.chain[3].active = true;
   s.activeNode = 'root';
   s.metrics.lookups++;
-  s.events.push({ msg: 'Resolver → Root NS: "who handles .com?"', type: 'info' });
+  s.events.push({ msg: 'Resolver → Root Nameserver: "who handles .com?"', type: 'info' });
   s.vars = { domain: 'example.com', step: 'root-ns', ttl: 300, cached: false };
   snap(steps, s, 'Resolver asks Root Nameserver: "Who handles .com TLD?"', 5);
 
@@ -71,8 +71,8 @@ function buildDnsSteps() {
   s.chain[4].active = true;
   s.activeNode = 'tld';
   s.metrics.lookups++;
-  s.events.push({ msg: 'Root → .com TLD NS address', type: 'ok' });
-  s.events.push({ msg: 'Resolver → TLD NS: "who handles example.com?"', type: 'info' });
+  s.events.push({ msg: 'Root → .com TLD Nameserver address', type: 'ok' });
+  s.events.push({ msg: 'Resolver → TLD Nameserver: "who handles example.com?"', type: 'info' });
   s.vars = { domain: 'example.com', step: 'tld-ns', ttl: 300, cached: false };
   snap(steps, s, 'Root responds with .com TLD NS address. Resolver queries .com TLD.', 6);
 
@@ -83,10 +83,10 @@ function buildDnsSteps() {
   s.chain[5].active = true;
   s.activeNode = 'auth';
   s.metrics.lookups++;
-  s.events.push({ msg: 'TLD → authoritative NS for example.com', type: 'ok' });
-  s.events.push({ msg: 'Resolver → Authoritative NS: "IP for example.com?"', type: 'info' });
+  s.events.push({ msg: 'TLD → Authoritative Nameserver for example.com', type: 'ok' });
+  s.events.push({ msg: 'Resolver → Authoritative Nameserver: "IP for example.com?"', type: 'info' });
   s.vars = { domain: 'example.com', step: 'authoritative-ns', ttl: 300, cached: false };
-  snap(steps, s, 'TLD responds with authoritative NS. Resolver queries it directly.', 7);
+  snap(steps, s, 'TLD responds with Authoritative Nameserver. Resolver queries it directly.', 7);
 
   // Got IP
   s.chain[5].active = false;
@@ -113,11 +113,11 @@ function buildDnsSteps() {
 export const DNS_CODE = [
   '// DNS lookup chain',
   '// 1. Browser cache (TTL check)',
-  '// 2. OS cache (/etc/hosts, nscd)',
-  '// 3. Recursive resolver (ISP / 8.8.8.8)',
-  '// 4. Root nameservers (13 root clusters)',
-  '// 5. TLD nameserver (.com, .org, etc.)',
-  '// 6. Authoritative nameserver',
+  '// 2. OS resolver (/etc/hosts, nscd)',
+  '// 3. Local DNS resolver (ISP / 8.8.8.8)',
+  '// 4. Root Nameserver (13 root clusters)',
+  '// 5. TLD Nameserver (.com, .org, etc.)',
+  '// 6. Authoritative Nameserver',
   '',
   '# Inspect DNS resolution',
   'dig +trace example.com',

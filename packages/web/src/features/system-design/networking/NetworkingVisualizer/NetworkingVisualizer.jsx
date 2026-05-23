@@ -20,6 +20,7 @@ export default function NetworkingVisualizer() {
       <div className={styles.vizArea}>
         <div className={styles.mainViz}>
           {activeId === 'tcp-handshake' && <TcpView viz={viz} />}
+          {activeId === 'tls-handshake' && <TlsView  viz={viz} />}
           {activeId === 'http'          && <HttpView viz={viz} />}
           {activeId === 'dns'           && <DnsView  viz={viz} />}
           {activeId === 'load-balancer' && <LBView   viz={viz} />}
@@ -127,6 +128,79 @@ function TcpView({ viz }) {
         </div>
         <div className={styles.epSeq}>SEQ: {server?.seq}</div>
         <div className={styles.epSeq}>ACK: {server?.ack}</div>
+      </div>
+    </div>
+  );
+}
+
+/* === TLS VIEW === */
+const TLS_STATE_COLOR = {
+  CLOSED:       'var(--text-faint)',
+  HELLO_SENT:   'var(--node-comparing)',
+  HELLO_RCVD:   'var(--node-comparing)',
+  KEY_EXCHANGE: 'var(--node-active)',
+  FINISHED_SENT:'var(--kafka-producer)',
+  FINISHED_RCVD:'var(--kafka-producer)',
+  ESTABLISHED:  'var(--pod-running)',
+};
+
+const TLS_RECORD_COLOR = {
+  ClientHello:      'var(--node-comparing)',
+  ServerHello:      'var(--node-comparing)',
+  Certificate:      'var(--node-active)',
+  ServerKeyExchange:'var(--kafka-producer)',
+  ClientKeyExchange:'var(--kafka-producer)',
+  ChangeCipherSpec: 'var(--pod-running)',
+  Finished:         'var(--pod-running)',
+  'App Data':       'var(--node-active)',
+};
+
+function TlsView({ viz }) {
+  const { client, server, records, cipher } = viz;
+
+  return (
+    <div className={styles.tlsLayout}>
+      <div className={styles.tlsEndpoint}>
+        <div className={styles.epIcon}>💻</div>
+        <div className={styles.epLabel}>Client</div>
+        <div
+          className={styles.epState}
+          style={{ color: TLS_STATE_COLOR[client?.state] || 'var(--text-faint)' }}
+        >
+          {client?.state}
+        </div>
+      </div>
+
+      <div className={styles.tlsChannel}>
+        {cipher && (
+          <div className={styles.tlsCipher}>{cipher}</div>
+        )}
+        {records?.map((rec, i) => (
+          <div
+            key={i}
+            className={`${styles.packet} ${rec.from === 'client' ? styles.packetRight : styles.packetLeft} ${rec.active ? styles.packetActive : ''}`}
+            style={{ '--pkt-color': TLS_RECORD_COLOR[rec.label] || 'var(--node-active)' }}
+          >
+            <span className={styles.packetLabel}>{rec.label}</span>
+            {rec.detail && (
+              <span className={styles.packetFlags}>{rec.detail}</span>
+            )}
+          </div>
+        ))}
+        {(!records || records.length === 0) && (
+          <div className={styles.channelIdle}>Channel idle</div>
+        )}
+      </div>
+
+      <div className={styles.tlsEndpoint}>
+        <div className={styles.epIcon}>🖥️</div>
+        <div className={styles.epLabel}>Server</div>
+        <div
+          className={styles.epState}
+          style={{ color: TLS_STATE_COLOR[server?.state] || 'var(--text-faint)' }}
+        >
+          {server?.state}
+        </div>
       </div>
     </div>
   );

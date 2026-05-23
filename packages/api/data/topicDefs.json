@@ -2084,6 +2084,21 @@
           "latency": "<1ms",
           "failover": "Seconds after health check failure"
         }
+      },
+      {
+        "name": "TLS Handshake",
+        "visualizer": "networking",
+        "explanation": "TLS 1.2 handshake: ClientHello (cipher suites, random), ServerHello (chosen cipher), Certificate (X.509 chain), KeyExchange (ECDHE params), ChangeCipherSpec + Finished (encrypted verify). Establishes encrypted tunnel over TCP. 2 RTTs total with TCP.",
+        "useCases": [
+          "HTTPS encryption",
+          "API security (REST/GraphQL)",
+          "Secure WebSocket"
+        ],
+        "realWorld": "Every HTTPS connection does TLS handshake after TCP. TLS 1.3 reduces to 1-RTT via pre-shared keys.",
+        "complexity": {
+          "rtt": "2 RTTs (TLS 1.2) or 1 RTT (TLS 1.3)",
+          "cpu": "Asymmetric crypto: RSA/ECDHE signature verify (1-5ms)"
+        }
       }
     ]
   },
